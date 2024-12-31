@@ -1,0 +1,30 @@
+{
+  "name": "dmvic",
+  "version": "1.0.0",
+  "description": "A DMVIC NPM package to manage DMVIC certificate requests",
+  "main": "test.js",
+  "scripts": {
+    "start": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/coduori/dmvic.git"
+  },
+  "keywords": [
+    "dmvic",
+    "certificates",
+    "kenya",
+    "aki"
+  ],
+  "author": "oduori oranga",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/coduori/dmvic/issues"
+  },
+  "homepage": "https://github.com/coduori/dmvic#readme",
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7",
+    "redis": "^4.7.0"
+  }
+}
