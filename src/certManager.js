@@ -1,13 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 
-let certificates = {};
-
 const configureCertificatePath = (certConfig) => {
   if (!certConfig || typeof certConfig !== 'object') {
     throw new Error("Invalid certificate configuration. Expected an object.");
   }
-  certificates = {};
+
   for (const [key, certPath] of Object.entries(certConfig)) {
     try {
       process.env[`DMVIC_${key}`] = path.resolve(certPath);
@@ -23,7 +21,7 @@ const getCertificate = (key) => {
     throw new Error(`Certificate "${key}" is not configured.`);
   }
 
-  return fs.readFileSync(path.resolve(`DMVIC_${key}`), 'utf8');
+  return process.env[`DMVIC_${key}`];
 };
 
 module.exports = {
