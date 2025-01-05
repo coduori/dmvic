@@ -2,9 +2,9 @@
   "name": "dmvic",
   "version": "1.0.0",
   "description": "A DMVIC NPM package to manage DMVIC certificate requests",
-  "main": "lib/index.js",
+  "main": "src/index.js",
   "scripts": {
-    "start": "node lib/index.js"
+    "start": "node src/index.js"
   },
   "repository": {
     "type": "git",
@@ -12,7 +12,7 @@
   },
   "keywords": [
     "dmvic",
-    "certificates",
+    "motor vehicle insurance certificates",
     "kenya",
     "aki"
   ],
@@ -23,9 +23,9 @@
   },
   "homepage": "https://github.com/coduori/dmvic#readme",
   "dependencies": {
+    "axios": "^1.7.9",
     "fs": "^0.0.1-security",
     "path": "^0.12.7",
     "redis": "^4.7.0"
   }
-  
 }

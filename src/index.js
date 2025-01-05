@@ -15,7 +15,7 @@ const initialize = (config) => {
       secretsManager.configureSecrets(secrets);
     }
     if (certificates) {
-      certManager.configureCertificates(certificates);
+      certManager.configureCertificatePath(certificates);
     }
 
     const redisClient = redis.createClient(secretsManager.getSecret('redis'));

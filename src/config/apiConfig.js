@@ -1,27 +1,15 @@
 const secretsManager = require('../secretsManager');
 
-const APIBaseURL = secretsManager.getSecret('dmvicBaseURL');
+const APIBaseURL = process.env.ENVIRONMENT === 'production' ? 'https://api.dmvic.com/api' : 'https://uat-api.dmvic.com/api';
 
+const types = ['A', 'B', 'C', 'D'];
+const buildEndpoints = (action) =>
+  Object.fromEntries(types.map((type) => [`type${type}`, `${APIBaseURL}/V5/IntermediaryIntegration/${action}Type${type}Certificate`]));
 
 const apiConfig = {
-  issuance: {
-    typeA: `${APIBaseURL}/V5/IntermediaryIntegration/IssuanceTypeACertificate`,
-    typeB: `${APIBaseURL}/V5/IntermediaryIntegration/IssuanceTypeBCertificate`,
-    typeC: `${APIBaseURL}/V5/IntermediaryIntegration/IssuanceTypeCCertificate`,
-    typeD: `${APIBaseURL}/V5/IntermediaryIntegration/IssuanceTypeDCertificate`,
-  },
-  preview: {
-    typeA: `${APIBaseURL}/V5/IntermediaryIntegration/PreviewTypeACertificate`,
-    typeB: `${APIBaseURL}/V5/IntermediaryIntegration/PreviewTypeBCertificate`,
-    typeC: `${APIBaseURL}/V5/IntermediaryIntegration/PreviewTypeCCertificate`,
-    typeD: `${APIBaseURL}/V5/IntermediaryIntegration/PreviewTypeDCertificate`,
-  },
-  validation: {
-    typeA: `${APIBaseURL}/V5/IntermediaryIntegration/ValidateTypeACertificate`,
-    typeB: `${APIBaseURL}/V5/IntermediaryIntegration/ValidateTypeBCertificate`,
-    typeC: `${APIBaseURL}/V5/IntermediaryIntegration/ValidateTypeCCertificate`,
-    typeD: `${APIBaseURL}/V5/IntermediaryIntegration/ValidateTypeDCertificate`,
-  },
+  issuance: buildEndpoints('Issuance'),
+  preview: buildEndpoints('Preview'),
+  validation: buildEndpoints('Validate'),
   general: {
     memberCompanyStock: `${APIBaseURL}/V5/IntermediaryIntegration/MemberCompanyStock`,
     login: `${APIBaseURL.replace('/api', '/api/V1/Account/Login')}`,
@@ -33,6 +21,4 @@ const apiConfig = {
   },
 };
 
-module.exports = {
-  apiConfig,
-};
+module.exports = apiConfig;
