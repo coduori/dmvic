@@ -20,7 +20,7 @@ const authenticate = async () => {
       }
 
       const redisClient = redis.createClient(JSON.parse(process.env.DMVIC_redis));
-      await redisClient.connect()
+      await redisClient.connect();
       await redisClient.set('DMVIC_AUTH_TOKEN', response.token, { EX: 604800 });
     
       } catch (error) {

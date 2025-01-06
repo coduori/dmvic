@@ -9,7 +9,6 @@ const configureCertificatePath = (certConfig) => {
   for (const [key, certPath] of Object.entries(certConfig)) {
     try {
       process.env[`DMVIC_${key}`] = path.resolve(certPath);
-
     } catch (error) {
       throw new Error(`Error reading certificate "${key}" from path: ${certPath}`);
     }
