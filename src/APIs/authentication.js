@@ -1,8 +1,8 @@
 const redis = require('redis');
 
-const { apiConfig } = require('../config/apiConfig');
+const { apiConfig, APIBaseURL } = require('../config/apiConfig');
 const secretsManager = require('../secretsManager');
-const invoke = require('../utils/http');
+const { getClient } = require('../utils/dmvicClient');
 
 const authenticate = async () => {
   let response;
@@ -13,16 +13,28 @@ const authenticate = async () => {
         password: secretsManager.getSecret('password')
       };
 
-      response = await invoke('POST', apiConfig.general.login, body, false);
+      const headers = {
+        accept: 'application/json',
+        'Content-Type': 'application/json',
+        clientId: secretsManager.getSecret('clientId')
+      };
 
-      if (!response.statusCode === 200) {
-        return response.error;
+      const rezponse = await getClient().request({
+        path: `${APIBaseURL}/${apiConfig.general.login}`,
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers,
+      });
+      response = await rezponse.body.json();
+
+      if (!rezponse.statusCode === 200) {
+        return response.message;
       }
 
       const redisClient = redis.createClient(JSON.parse(process.env.DMVIC_redis));
       await redisClient.connect();
       await redisClient.set('DMVIC_AUTH_TOKEN', response.token, { EX: 604800 });
-    
+
       } catch (error) {
         throw new Error('Error fetching data:', error);
       }

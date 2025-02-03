@@ -1,16 +1,17 @@
-const secrets = {};
-
-const configureSecrets = (config) => {
-  if (!config || typeof config !== 'object') {
+const configureSecrets = (secretConfig) => {
+  if (!secretConfig || typeof secretConfig !== 'object') {
     throw new Error("Invalid configuration. Expected an object.");
   }
 
-  for (const [key, value] of Object.entries(config)) {
-    if (typeof value === 'object') {
-      process.env[`DMVIC_${key}`] = JSON.stringify(value);
-
-    } else {
-      process.env[`DMVIC_${key}`] = value;
+  for (const [key, secretPath] of Object.entries(secretConfig)) {
+    try {
+      if (typeof secretPath === 'object') {
+        process.env[`DMVIC_${key}`] = JSON.stringify(secretPath);
+      } else {
+        process.env[`DMVIC_${key}`] = secretPath;
+      }
+    } catch (error) {
+      throw new Error(`Error reading certificate "${key}" from path: ${secretPath}`);
     }
   }
 

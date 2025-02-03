@@ -1,23 +1,10 @@
-const { readFileSync } = require('fs');
-const path = require('path');
-const { Client } = require('undici');
 const redis = require('redis');
 
-const { APIBaseURL } = require('../config/apiConfig');
 const secretsManager = require('../secretsManager');
-const certificateManager = require('../certManager');
 const { authenticate } = require('../APIs/authentication');
+const { getClient } = require('../utils/dmvicClient');
 
 const invoke = async (method, endpoint, data, isAuthorised = true) => {
-    const client = new Client(APIBaseURL, {
-        connect: {
-            key: readFileSync(path.resolve(certificateManager.getCertificate('sslKey')), 'utf8'),
-            cert: readFileSync(path.resolve(certificateManager.getCertificate('sslCert')), 'utf8'),
-            requestCert: true,
-            rejectUnauthorized: false,
-        },
-    });
-
     let token;
     if (isAuthorised) {
         const redisClient = redis.createClient(JSON.parse(process.env.DMVIC_redis));
@@ -40,12 +27,13 @@ const invoke = async (method, endpoint, data, isAuthorised = true) => {
             clientId: secretsManager.getSecret('clientId'),
         };
 
-        res = await client.request({
+        const response = await getClient().request({
             path: endpoint,
             method,
             body: JSON.stringify(data),
             headers,
         });
+        res = await response.body.json();
     } catch (error) {
         throw new Error(`DMVIC Request error: ${error}`);
 
@@ -53,7 +41,7 @@ const invoke = async (method, endpoint, data, isAuthorised = true) => {
 
     if (res.statusCode !== 200) {
         const rez = { error: `Failed to fetch data: ${res.statusCode}, ${await res.body.text()}` };
-        log.error(rez.error);
+        console.error(rez.error);
         return rez;
     }
 
