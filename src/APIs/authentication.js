@@ -1,45 +1,45 @@
-const redis = require('redis');
+import redis from 'redis';
 
-const { apiConfig, APIBaseURL } = require('../config/apiConfig');
-const secretsManager = require('../secretsManager');
-const { getClient } = require('../utils/dmvicClient');
+import { apiConfig, APIBaseURL } from '../config/apiConfig.js';
+import { getSecret } from '../secretsManager.js';
+import { getClient } from '../utils/dmvicClient.js';
 
 const authenticate = async () => {
   let response;
 
-    try {
-      const body = {
-        username: secretsManager.getSecret('username'),
-        password: secretsManager.getSecret('password')
-      };
+  try {
+    const body = {
+      username: getSecret('username'),
+      password: getSecret('password')
+    };
 
-      const headers = {
-        accept: 'application/json',
-        'Content-Type': 'application/json',
-        clientId: secretsManager.getSecret('clientId')
-      };
+    const headers = {
+      accept: 'application/json',
+      'Content-Type': 'application/json',
+      clientId: getSecret('clientId')
+    };
 
-      const rezponse = await getClient().request({
-        path: `${APIBaseURL}/${apiConfig.general.login}`,
-        method: 'POST',
-        body: JSON.stringify(body),
-        headers,
-      });
-      response = await rezponse.body.json();
+    const rezponse = await getClient().request({
+      path: `${APIBaseURL}/${apiConfig.general.login}`,
+      method: 'POST',
+      body: JSON.stringify(body),
+      headers,
+    });
+    response = await rezponse.body.json();
 
-      if (!rezponse.statusCode === 200) {
-        return response.message;
-      }
+    if (!rezponse.statusCode === 200) {
+      return response.message;
+    }
 
-      const redisClient = redis.createClient(JSON.parse(process.env.DMVIC_redis));
-      await redisClient.connect();
-      await redisClient.set('DMVIC_AUTH_TOKEN', response.token, { EX: 604800 });
+    const redisClient = redis.createClient(JSON.parse(process.env.DMVIC_redis));
+    await redisClient.connect();
+    await redisClient.set('DMVIC_AUTH_TOKEN', response.token, { EX: 604800 });
 
-      } catch (error) {
-        throw new Error('Error fetching data:', error);
-      }
+  } catch (error) {
+    throw new Error('Error fetching data:', error);
+  }
 };
 
-module.exports = {
-    authenticate,
+export {
+  authenticate,
 };

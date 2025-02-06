@@ -29,7 +29,7 @@ const getSecret = (key) => {
   return result;
 };
 
-module.exports = {
+export {
   configureSecrets,
   getSecret,
 };

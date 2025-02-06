@@ -1,4 +1,4 @@
-const path = require('path');
+import path from 'path';
 
 const configureCertificatePath = (certConfig) => {
   if (!certConfig || typeof certConfig !== 'object') {
@@ -22,7 +22,7 @@ const getCertificate = (key) => {
   return process.env[`DMVIC_${key}`];
 };
 
-module.exports = {
+export {
   configureCertificatePath,
   getCertificate,
 };

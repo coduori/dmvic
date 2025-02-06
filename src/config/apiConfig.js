@@ -19,7 +19,7 @@ const apiConfig = {
   },
 };
 
-module.exports = {
+export {
   apiConfig,
   APIBaseURL,
 };

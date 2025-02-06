@@ -1,8 +1,8 @@
-const redis = require('redis');
+import redis from 'redis';
 
-const secretsManager = require('../secretsManager');
-const { authenticate } = require('../APIs/authentication');
-const { getClient } = require('../utils/dmvicClient');
+import { getSecret } from '../secretsManager.js';
+import { authenticate } from '../APIs/authentication.js';
+import { getClient } from './dmvicClient.js';
 
 const invoke = async (method, endpoint, data, isAuthorised = true) => {
     let token;
@@ -24,7 +24,7 @@ const invoke = async (method, endpoint, data, isAuthorised = true) => {
             authorization: isAuthorised ? `Bearer ${token}` : undefined,
             accept: 'application/json',
             'Content-Type': 'application/json',
-            clientId: secretsManager.getSecret('clientId'),
+            clientId: getSecret('clientId'),
         };
 
         const response = await getClient().request({
@@ -48,4 +48,4 @@ const invoke = async (method, endpoint, data, isAuthorised = true) => {
     return res.body.json();
 };
 
-module.exports =  invoke;
+export default invoke;
