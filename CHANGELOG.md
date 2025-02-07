@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.2](https://github.com/coduori/dmvic/compare/v1.0.1...v1.0.2) (2025-02-07)
+
+
+### Bug Fixes
+
+* update release workflow ([065a352](https://github.com/coduori/dmvic/commit/065a35297d73cbc9e152e4fbb6404c37b7125650))
+* update release workflow strategy ([c538d03](https://github.com/coduori/dmvic/commit/c538d0317131ea53271c71d6f090aac90f8d1543))
+
 ## [1.0.1](https://github.com/coduori/dmvic/compare/v1.0.0...v1.0.1) (2025-02-07)
 
 
