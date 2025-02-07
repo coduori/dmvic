@@ -30,7 +30,6 @@ jobs:
         with:
           token: ${{ secrets.GH_WORKFLOW_TOKEN_RELEASE }}
           release-type: node
-          versioning-strategy: increase
 
       - name: Merge Release PR
         run: |
