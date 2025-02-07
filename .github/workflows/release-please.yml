@@ -4,11 +4,10 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    types:
-      - closed
-    branches:
-      - main
+
+permissions: 
+  contents: write
+  pull-requests: write
 
 jobs:
   test:
@@ -32,14 +31,10 @@ jobs:
       - name: Set up Release Please
         uses: googleapis/release-please-action@v4
         with:
-          token: ${{ secrets.GH_WORKFLOW_TOKEN_RELEASE }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           release-type: node
+          merge: true
 
-      - name: Merge Release PR
-        run: |
-          gh auth login --with-token <<< "${{ secrets.GH_WORKFLOW_TOKEN_RELEASE }}"
-          PR_NUMBER=$(gh pr list --state open --json number,title -L 10 | grep 'release' | head -n 1 | awk '{print $1}')
-          gh pr merge $PR_NUMBER --merge --delete-branch
 
   publish-npm:
     needs: release
