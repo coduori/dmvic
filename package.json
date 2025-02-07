@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A DMVIC NPM package to manage DMVIC certificate requests",
   "main": "src/index.js",
+  "type": "module",
   "scripts": {
     "start": "node src/index.js"
   },
@@ -17,7 +18,7 @@
     "aki"
   ],
   "author": "oduori oranga",
-  "license": "MIT",
+  "license": "GNU",
   "bugs": {
     "url": "https://github.com/coduori/dmvic/issues"
   },

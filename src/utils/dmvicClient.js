@@ -1,7 +1,7 @@
-const { Client } = require('undici');
-const { readFileSync } = require('fs');
+import { Client } from 'undici';
+import { readFileSync } from 'fs';
 
-const { APIBaseURL } = require('../config/apiConfig');
+import { APIBaseURL } from '../config/apiConfig.js';
 
 let client;
 const getClient = () => {
@@ -18,6 +18,6 @@ const getClient = () => {
   return client;
 };
 
-module.exports = {
+export {
   getClient,
 };

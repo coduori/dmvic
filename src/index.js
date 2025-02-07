@@ -1,19 +1,19 @@
-const { Client } = require('undici');
-const path = require('path');
-const { readFileSync } = require('fs');
+import { Client } from 'undici';
+import path from 'path';
+import { readFileSync } from 'fs';
 
-const secretsManager = require('./secretsManager');
-const authentication = require('./APIs/authentication');
-const { APIBaseURL } = require('./config/apiConfig');
-const certificateManager = require('./certManager');
+import { authenticate } from './APIs/authentication.js';
+import { getCertificate, configureCertificatePath } from './certManager.js';
+import { getSecret, configureSecrets } from './secretsManager.js';
+import { APIBaseURL } from './config/apiConfig.js';
 
 let client;
 const getClient = () => {
   if (!client) {
     client = new Client(APIBaseURL, {
       connect: {
-        key: readFileSync(path.resolve(certificateManager.getCertificate('sslKey')), 'utf8'),
-        cert: readFileSync(path.resolve(certificateManager.getCertificate('sslCert')), 'utf8'),
+        key: readFileSync(path.resolve(getCertificate('sslKey')), 'utf8'),
+        cert: readFileSync(path.resolve(getCertificate('sslCert')), 'utf8'),
         requestCert: true,
         rejectUnauthorized: false,
       },
@@ -31,19 +31,19 @@ const initialize = async (config) => {
   const { secrets, certificates } = config;
 
   if (secrets) {
-    secretsManager.configureSecrets(secrets);
+    configureSecrets(secrets);
   }
   if (certificates) {
-    certificateManager.configureCertificatePath(certificates);
+    configureCertificatePath(certificates);
   }
 
   console.log("Service initialized with provided secrets and certificates.");
 };
 
-module.exports = {
+export {
   getClient,
   initialize,
-  getSecret: secretsManager.getSecret,
-  sendRequest: certificateManager.getCertificate,
-  authenticate: authentication.authenticate
+  getSecret,
+  getCertificate,
+  authenticate
 };
