@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.0.1](https://github.com/coduori/dmvic/compare/v1.0.0...v1.0.1) (2025-02-07)
+
+
+### Features
+
+* update gh workflow jobs ([fd881a2](https://github.com/coduori/dmvic/commit/fd881a271d4cf303a170e8e9b2e19fddb6152720))
+* update gh workflows ([12d7574](https://github.com/coduori/dmvic/commit/12d7574c56ec994c245fb8172e5acbab1c92fe93))
+
+
+### Bug Fixes
+
+* revert workflow file name ([adb9b2f](https://github.com/coduori/dmvic/commit/adb9b2f68ff2aeaca23b64da600fd0b28f441529))
+
+
+### Miscellaneous Chores
+
+* release 1.0.1 ([69bf5f0](https://github.com/coduori/dmvic/commit/69bf5f060d9af125bdb6f00bbd456afd8e056e2e))
+
 ## 1.0.0 (2025-02-07)
 
 
