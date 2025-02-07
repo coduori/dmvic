@@ -2,10 +2,10 @@ import { Client } from 'undici';
 import path from 'path';
 import { readFileSync } from 'fs';
 
-import { authenticate } from './APIs/authentication.js';
-import { getCertificate, configureCertificatePath } from './certManager.js';
-import { getSecret, configureSecrets } from './secretsManager.js';
-import { APIBaseURL } from './config/apiConfig.js';
+import { authenticate } from './APIs/authentication.mjs';
+import { getCertificate, configureCertificatePath } from './certManager.mjs';
+import { getSecret, configureSecrets } from './secretsManager.mjs';
+import { APIBaseURL } from './config/apiConfig.mjs';
 
 let client;
 const getClient = () => {

@@ -1,7 +1,7 @@
 import { Client } from 'undici';
 import { readFileSync } from 'fs';
 
-import { APIBaseURL } from '../config/apiConfig.js';
+import { APIBaseURL } from '../config/apiConfig.mjs';
 
 let client;
 const getClient = () => {

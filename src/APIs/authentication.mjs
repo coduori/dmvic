@@ -1,8 +1,8 @@
 import redis from 'redis';
 
-import { apiConfig, APIBaseURL } from '../config/apiConfig.js';
-import { getSecret } from '../secretsManager.js';
-import { getClient } from '../utils/dmvicClient.js';
+import { apiConfig, APIBaseURL } from '../config/apiConfig.mjs';
+import { getSecret } from '../secretsManager.mjs';
+import { getClient } from '../utils/dmvicClient.mjs';
 
 const authenticate = async () => {
   let response;

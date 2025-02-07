@@ -1,8 +1,8 @@
 import redis from 'redis';
 
-import { getSecret } from '../secretsManager.js';
-import { authenticate } from '../APIs/authentication.js';
-import { getClient } from './dmvicClient.js';
+import { getSecret } from '../secretsManager.mjs';
+import { authenticate } from '../APIs/authentication.mjs';
+import { getClient } from './dmvicClient.mjs';
 
 const invoke = async (method, endpoint, data, isAuthorised = true) => {
     let token;
