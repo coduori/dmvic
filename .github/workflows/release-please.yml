@@ -22,7 +22,7 @@ jobs:
       - run: npm test
 
   release:
-    name: Version bump
+    name: version bump
     needs: test
     runs-on: ubuntu-latest
     steps:
@@ -33,7 +33,7 @@ jobs:
 
       - name: Merge Release PR
         run: |
-          gh auth login --with-token < ${{ secrets.GH_WORKFLOW_TOKEN_RELEASE }}
+          gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
           PR_NUMBER=$(gh pr list --state open --json number,title -L 10 | grep 'release' | head -n 1 | awk '{print $1}')
           gh pr merge $PR_NUMBER --merge --delete-branch
 
