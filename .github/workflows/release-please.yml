@@ -26,11 +26,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Release Please
-        uses: googleapis/release-please-action@v4
+        uses: GoogleCloudPlatform/release-please-action@v4
         with:
           token: ${{ secrets.GH_WORKFLOW_TOKEN_NPM }}
           release-type: node
-          merge: true
+          bump-minor-pre-major: true
+          versioning-strategy: increase
+
 
 
   publish-npm:
