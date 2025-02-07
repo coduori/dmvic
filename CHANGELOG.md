@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.3](https://github.com/coduori/dmvic/compare/v1.0.2...v1.0.3) (2025-02-07)
+
+
+### Bug Fixes
+
+* trigger gh workflow after updating perms ([4c15529](https://github.com/coduori/dmvic/commit/4c15529ab82be35d70c1c67fda0696e9647820ed))
+* update workflow - checkout during version bump ([7c7a1e2](https://github.com/coduori/dmvic/commit/7c7a1e27b24abe273d8d0595842c80dfc5c86cbd))
+
 ## [1.0.2](https://github.com/coduori/dmvic/compare/v1.0.1...v1.0.2) (2025-02-07)
 
 
