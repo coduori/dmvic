@@ -1,4 +1,4 @@
-name: Node.js Package
+name: Publish NPM Package
 
 on:
   push:
@@ -28,7 +28,6 @@ jobs:
       - uses: googleapis/release-please-action@v4
         with:
           token: ${{ secrets.GH_WORKFLOW_TOKEN_RELEASE }}
-          release-type: node
           release-type: node
           versioning-strategy: increase
 
