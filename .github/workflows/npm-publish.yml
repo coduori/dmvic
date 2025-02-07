@@ -21,6 +21,14 @@ jobs:
       - run: npm ci
       - run: npm test
 
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        with:
+          token: ${{ secrets.GH_WORKFLOW_RELEASE_PLEASE_TOKEN }}
+          release-type: node
+
   publish-npm:
     needs: build
     runs-on: ubuntu-latest
