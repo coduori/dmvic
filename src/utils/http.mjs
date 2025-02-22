@@ -14,8 +14,7 @@ const invoke = async (method, endpoint, data, isAuthorised = true) => {
 
     if (!token) {
         await authenticate();
-        await invoke(method, endpoint, data, isAuthorised);
-        return;
+        return invoke(method, endpoint, data, isAuthorised);
     }
 
     let res;
@@ -34,18 +33,14 @@ const invoke = async (method, endpoint, data, isAuthorised = true) => {
             headers,
         });
         res = await response.body.json();
+        if (res.statusCode !== 200) {
+            const errorMessage = await res.body.text();
+            throw new Error(`Failed to fetch data: ${res.statusCode}, ${errorMessage}`);
+        }
+        return res.body.json();
     } catch (error) {
         throw new Error(`DMVIC Request error: ${error}`);
-
     }
-
-    if (res.statusCode !== 200) {
-        const rez = { error: `Failed to fetch data: ${res.statusCode}, ${await res.body.text()}` };
-        console.error(rez.error);
-        return rez;
-    }
-
-    return res.body.json();
 };
 
 export default invoke;

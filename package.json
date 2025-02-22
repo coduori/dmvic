@@ -5,6 +5,8 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
+    "lint": "eslint . --ext .mjs,.js",
+    "lint:fix": "eslint . --ext .mjs,.js --fix",
     "start": "node src/index.js",
     "test": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules npx jest --detectOpenHandles"
   },
@@ -29,5 +31,12 @@
     "path": "^0.12.7",
     "redis": "^4.7.0",
     "undici": "^7.2.0"
+  },
+  "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-security": "^3.0.1"
   }
 }

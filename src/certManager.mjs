@@ -1,28 +1,28 @@
 import path from 'path';
 
 const configureCertificatePath = (certConfig) => {
-  if (!certConfig || typeof certConfig !== 'object') {
-    throw new Error("Invalid certificate configuration. Expected an object.");
-  }
-
-  for (const [key, certPath] of Object.entries(certConfig)) {
-    try {
-      process.env[`DMVIC_${key}`] = path.resolve(certPath);
-    } catch (error) {
-      throw new Error(`Error reading certificate "${key}" from path: ${certPath}`);
+    if (!certConfig || typeof certConfig !== 'object') {
+        throw new Error('Invalid certificate configuration. Expected an object.');
     }
-  }
+
+    Object.entries(certConfig).forEach(([key, certPath]) => {
+        try {
+            process.env[`DMVIC_${key}`] = path.resolve(certPath);
+        } catch (error) {
+            throw new Error(`Error reading certificate "${key}" from path: ${certPath}`);
+        }
+    });
 };
 
 const getCertificate = (key) => {
-  if (!process.env[`DMVIC_${key}`]) {
-    throw new Error(`Certificate "${key}" is not configured.`);
-  }
+    if (!process.env[`DMVIC_${key}`]) {
+        throw new Error(`Certificate "${key}" is not configured.`);
+    }
 
-  return process.env[`DMVIC_${key}`];
+    return process.env[`DMVIC_${key}`];
 };
 
 export {
-  configureCertificatePath,
-  getCertificate,
+    configureCertificatePath,
+    getCertificate,
 };
