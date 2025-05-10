@@ -29,6 +29,10 @@ const initialize = async (config) => {
 
     const { secrets, certificates } = config;
 
+    if (!secrets || !certificates) {
+        throw new Error('Configuration must include "secrets" and "certificates".');
+    }
+
     if (secrets) {
         configureSecrets(secrets);
     }

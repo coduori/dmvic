@@ -3,6 +3,11 @@ const configureSecrets = (secretConfig) => {
         throw new Error('Invalid configuration. Expected an object.');
     }
 
+    ['username', 'password', 'clientId', 'environment'].forEach((key) => {
+        if (!(key in secretConfig)) {
+            throw new Error(`Missing required key: "${key}" in secrets configuration.`);
+        }
+    });
     Object.entries(secretConfig).forEach(([key, secretPath]) => {
         try {
             if (typeof secretPath === 'object') {
@@ -32,3 +37,8 @@ export {
     configureSecrets,
     getSecret,
 };
+
+/*
+TODO:
+1. Add a function to clear the configured secrets from the environment variables.
+*/
