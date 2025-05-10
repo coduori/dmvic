@@ -20,7 +20,7 @@ yarn install dmvic
 
 ## Usage
 
-To send a request to a protected DMVIC endpoint, you need to be authenticated using the credentials provided to you by DMVIC.
+To send a request to a protected DMVIC endpoint, you need to be authenticated using the credentials provided to you by DMVIC. All DMVIC endpoints apart from the login endpoint are protected. This documentation assumes that you have already decoded the certificates provided to you by DMVIC.
 
 ### Initialization
 
@@ -51,10 +51,10 @@ async function initializeDmvic() {
 main();
 ```
 
-Calling the initialize() function  stores the configurations in your service environment. The configs will be used by the library to make requests to DMVIC.
+Calling the initialize() function stores the configurations in your service environment variables. The configs will be used by the library to make requests to DMVIC.
 
 ### Authentication
-To authenticate your requests to DMVIC, use the `authenticate()` function. This function takes no parameters. You only need to call it once throughout your project. You can call the function immediately after initialization. When this function is called, it sends an authentication request to DMVIC and stores the token on redis using the credentials provided in the init function.
+To authenticate your requests to DMVIC, use the `authenticate()` function. This function takes no parameters. You only need to call it once throughout your project. You can call the function immediately after initialization. When this function is called, it sends an authentication request to DMVIC and stores the resulting token on redis using the redis credentials provided in the init function.
 
 ```javascript
 import dmvic from 'dmvic';

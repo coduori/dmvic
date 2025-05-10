@@ -1,31 +1,31 @@
 module.exports = {
-  testTimeout: 25000,
+    testTimeout: 25000,
 
-  // Automatically clear mock calls and instances between every test
-  clearMocks: true,
+    // Automatically clear mock calls and instances between every test
+    clearMocks: true,
 
-  // The directory where Jest should output its coverage files
-  coverageDirectory: "coverage",
+    // The directory where Jest should output its coverage files
+    coverageDirectory: 'coverage',
 
-  // An array of file extensions your modules use
-  moduleFileExtensions: [
-    "js",
-    "mjs",
-    "json",
-    "jsx",
-    "ts",
-    "tsx",
-    "node"
-  ],
+    // An array of file extensions your modules use
+    moduleFileExtensions: [
+        'js',
+        'mjs',
+        'json',
+        'jsx',
+        'ts',
+        'tsx',
+        'node',
+    ],
 
-  // The test environment that will be used for testing
-  testEnvironment: "node",
+    // The test environment that will be used for testing
+    testEnvironment: 'node',
 
-  // The glob patterns Jest uses to detect test files
-  testMatch: [
-    "**.test.mjs"
-  ],
+    // The glob patterns Jest uses to detect test files
+    testMatch: [
+        '**.test.mjs',
+    ],
 
-  // A map from regular expressions to paths to transformers
-  transform: {}
+    // A map from regular expressions to paths to transformers
+    transform: {},
 };

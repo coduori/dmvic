@@ -1,7 +1,30 @@
 {
-  "extends": "airbnb-base",
+  "extends": [
+    "plugin:jest/recommended",
+    "airbnb-base"
+  ],
   "plugins": [
-    "security"
+    "security",
+    "jest"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "*.test.js",
+        "*.test.mjs"
+      ],
+      "parserOptions": {
+        "ecmaVersion": 2022,
+        "sourceType": "module"
+      },
+      "rules": {
+        "import/first": "off"
+      },
+      "env": {
+        "jest": true,
+        "es2022": true
+      }
+    }
   ],
   "env": {
     "browser": false,
