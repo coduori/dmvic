@@ -47,16 +47,12 @@ jobs:
           echo "Title: ${{ fromJson(steps.release.outputs.pr).title }}"
           echo "Branch: ${{ fromJson(steps.release.outputs.pr).headBranchName }}"
 
-      - name: Debug release PR output 4
-        run: |
-          echo "${{ steps.release.outputs.pr }}" | base64
-
       - name: Merge release PR
         if: ${{ steps.release.outputs.pr != '' }}
         uses: peter-evans/enable-pull-request-automerge@v3
         with:
           token: ${{ secrets.GH_WORKFLOW_TOKEN_RELEASE }}
-          pull-request-number: ${{ steps.release.outputs.pr }}
+          pull-request-number: ${{ fromJson(steps.release.outputs.pr).number }}
           merge-method: squash
 
   publish-npm:
