@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.1.0](https://github.com/coduori/dmvic/compare/v1.0.4...v1.1.0) (2025-05-15)
+
+
+### Features
+
+* adjust NPM release steps ([545ddab](https://github.com/coduori/dmvic/commit/545ddabcb9bac598daf3c702a3a060bf84282083))
+
+
+### Bug Fixes
+
+* update github credentials for test step in release ([a28a468](https://github.com/coduori/dmvic/commit/a28a468a236eca070b5376cf70718b239f1e03cf))
+* update github credentials for test step in release ([0fb7b3e](https://github.com/coduori/dmvic/commit/0fb7b3ea7721a3edd656f0684f5b84d8f919019e))
+
 ## [1.0.4](https://github.com/coduori/dmvic/compare/v1.0.3...v1.0.4) (2025-02-07)
 
 
