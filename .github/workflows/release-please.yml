@@ -28,7 +28,7 @@ jobs:
       - name: Set up Release Please
         uses: GoogleCloudPlatform/release-please-action@v4
         with:
-          token: ${{ secrets.GH_WORKFLOW_TOKEN_NPM }}
+          token: ${{ secrets.GH_WORKFLOW_TOKEN_RELEASE }}
           release-type: node
           bump-minor-pre-major: true
           versioning-strategy: increase
