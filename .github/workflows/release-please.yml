@@ -36,7 +36,14 @@ jobs:
           versioning-strategy: increase
 
       - name: Debug release PR output
-        run: "echo \"PR: ${{ steps.release.outputs.pr }}\""
+        run: "echo \"PR Number: ${{ fromJson(steps.release.outputs.pr).number }}\""
+        run: echo '${{ steps.release.outputs.pr }}' | base64
+        run: |
+          echo "PR Number: ${{ fromJson(steps.release.outputs.pr).number }}"
+          echo "Title: ${{ fromJson(steps.release.outputs.pr).title }}"
+          echo "Branch: ${{ fromJson(steps.release.outputs.pr).headBranchName }}"
+        run: |
+          echo "${{ steps.release.outputs.pr }}" | base64
 
       - name: Merge release PR
         if: ${{ steps.release.outputs.pr != '' }}
