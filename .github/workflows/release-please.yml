@@ -34,9 +34,12 @@ jobs:
           release-type: node
           bump-minor-pre-major: true
           versioning-strategy: increase
+
+      - name: Debug release PR output
+        run: echo "PR: ${{ steps.release.outputs.pr }}"
     
       - name: Enable automerge for release PR
-        if: ${{ steps.release.outputs.pr }}
+        if: ${{ steps.release.outputs.pr != '' }}
         uses: peter-evans/enable-pull-request-automerge@v3
         with:
           token: ${{ secrets.GH_WORKFLOW_TOKEN_RELEASE }}
