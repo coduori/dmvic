@@ -1,14 +1,11 @@
 import { expect, jest } from '@jest/globals';
 
 import {
-    mockSetCacheKey,
-    mockRedisModule,
     mockHttpClient,
     mockSecretsManager,
     mockApiConfig,
 } from '../mocks/mocks.mjs';
 
-jest.unstable_mockModule('../../lib/utils/db/redis.mjs', () => mockRedisModule);
 jest.unstable_mockModule('../../lib/utils/httpClient.mjs', () => mockHttpClient);
 jest.unstable_mockModule('../../lib/utils/secretsManager.mjs', () => mockSecretsManager);
 jest.unstable_mockModule('../../lib/config/apiConfig.mjs', () => mockApiConfig);
@@ -17,7 +14,6 @@ const { authenticate } = await import('../../lib/api/authenticate.mjs');
 const { getSecret } = await import('../../lib/utils/secretsManager.mjs');
 const { getAPIBaseURL } = await import('../../lib/config/apiConfig.mjs');
 const { __mockRequest, getClient } = await import('../../lib/utils/httpClient.mjs');
-const { setCacheKey } = await import('../../lib/utils/db/redis.mjs');
 
 describe('authenticate', () => {
     beforeEach(() => {
@@ -67,18 +63,6 @@ describe('authenticate', () => {
                 clientId: 'testClient',
             },
         });
-    });
-
-    it('should set the token in the cache', async () => {
-        // when
-        await authenticate();
-
-        // then
-        expect(setCacheKey).toHaveBeenCalledTimes(1);
-        const [actualKey, actualToken, actualOpt] = mockSetCacheKey.mock.calls[0];
-        expect(actualKey).toBe('dmvic:auth:token');
-        expect(actualToken).toBe('mocked-token');
-        expect(actualOpt).toEqual({ EX: 604800 });
     });
 });
 

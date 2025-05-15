@@ -14,12 +14,6 @@ const mockSetConfigurationProperty = (prop, key, value = null) => {
     }
 };
 
-const mockSetCacheKey = jest.fn();
-
-const mockRedisModule = {
-    setCacheKey: mockSetCacheKey,
-};
-
 const mockRequest = jest.fn(() => ({
     statusCode: 200,
     body: {
@@ -62,8 +56,6 @@ const mockApiConfig = {
 export {
     cleanUpEnv,
     mockSetConfigurationProperty,
-    mockSetCacheKey,
-    mockRedisModule,
     mockRequest,
     mockHttpClient,
     mockGetSecret,
