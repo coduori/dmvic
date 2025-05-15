@@ -39,7 +39,7 @@ jobs:
         if: ${{ steps.release.outputs.pr }}
         uses: peter-evans/enable-pull-request-automerge@v3
         with:
-          token: ${{ secrets.GH_WORKFLOW_TOKEN_NPM }}
+          token: ${{ secrets.GH_WORKFLOW_TOKEN_RELEASE }}
           pull-request-number: ${{ steps.release.outputs.pr }}
           merge-method: squash
 
