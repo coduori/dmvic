@@ -1,5 +1,34 @@
 # Changelog
 
+## [1.1.0](https://github.com/coduori/dmvic/compare/v1.0.4...v1.1.0) (2025-05-15)
+
+
+### Features
+
+* adjust NPM release steps ([545ddab](https://github.com/coduori/dmvic/commit/545ddabcb9bac598daf3c702a3a060bf84282083))
+
+
+### Bug Fixes
+
+* change automerge step token ([33807a0](https://github.com/coduori/dmvic/commit/33807a021044a1fd3d051e0aeaa62228b2057b08))
+* change automerge step token ([e59fe9f](https://github.com/coduori/dmvic/commit/e59fe9fd0906493c9c5f6301472a6c8fceeb2fef))
+* debug log statement ([56a2817](https://github.com/coduori/dmvic/commit/56a28179c7085704fbc60ecc3526a20497ad4911))
+* debug log statement ([6648cea](https://github.com/coduori/dmvic/commit/6648cea94d46d59a34355130061214ec606115ee))
+* debug script ([bcf5cfb](https://github.com/coduori/dmvic/commit/bcf5cfbfb6241f999021e553ad4eb33cc53c3501))
+* debug script ([e62e7a6](https://github.com/coduori/dmvic/commit/e62e7a6e7bb92df32d87b1dc52629db8b9b39b07))
+* debug the automerge step ([378bccf](https://github.com/coduori/dmvic/commit/378bccfe0738b3db3aa38e65c34ca15bf614f6b7))
+* debug the automerge step ([11f19af](https://github.com/coduori/dmvic/commit/11f19affff77902cda57603e9e61e55054df8923))
+* echo errors ([51f449d](https://github.com/coduori/dmvic/commit/51f449d66053a6542444904c29b442d1aedc63ee))
+* echo errors ([1529f72](https://github.com/coduori/dmvic/commit/1529f726d8e9bf5a1429217c04f4fa0b41560814))
+* remove debug scripts ([0972eb1](https://github.com/coduori/dmvic/commit/0972eb1a537f9714dddd16d7193b9e09896fa292))
+* remove debug scripts ([9c8cea5](https://github.com/coduori/dmvic/commit/9c8cea51389b3e42983635808f0c4feaf88b964b))
+* revert automerge token ([e87ff9c](https://github.com/coduori/dmvic/commit/e87ff9c8b93520f42c965380b56e81c2417d352b))
+* revert automerge token ([17affde](https://github.com/coduori/dmvic/commit/17affdec784681dfd82cf29d588982b3542fdc5a))
+* update github credentials for test step in release ([a28a468](https://github.com/coduori/dmvic/commit/a28a468a236eca070b5376cf70718b239f1e03cf))
+* update github credentials for test step in release ([0fb7b3e](https://github.com/coduori/dmvic/commit/0fb7b3ea7721a3edd656f0684f5b84d8f919019e))
+* update npm publish to remove --provenance --access public ([ba67178](https://github.com/coduori/dmvic/commit/ba67178a55cb6675f30d60daf06a6c905ea079ce))
+* update npm publish to remove --provenance --access public ([1f46f48](https://github.com/coduori/dmvic/commit/1f46f4856d93e82dc785444c7fcadc51655d75b3))
+
 ## [1.0.4](https://github.com/coduori/dmvic/compare/v1.0.3...v1.0.4) (2025-02-07)
 
 
