@@ -35,18 +35,6 @@ jobs:
           bump-minor-pre-major: true
           versioning-strategy: increase
 
-      - name: Debug release PR output
-        run: "echo \"PR Number: ${{ fromJson(steps.release.outputs.pr).number }}\""
-      
-      - name: Debug release PR output 2
-        run: echo '${{ steps.release.outputs.pr }}' | base64
-      
-      - name: Debug release PR output 3
-        run: |
-          echo "PR Number: ${{ fromJson(steps.release.outputs.pr).number }}"
-          echo "Title: ${{ fromJson(steps.release.outputs.pr).title }}"
-          echo "Branch: ${{ fromJson(steps.release.outputs.pr).headBranchName }}"
-
       - name: Merge release PR
         if: ${{ steps.release.outputs.pr != '' }}
         uses: peter-evans/enable-pull-request-automerge@v3
