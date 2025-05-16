@@ -1,11 +1,7 @@
-/* eslint-env jest */
+import { jest } from '@jest/globals';
 
-import { describe, expect, jest } from '@jest/globals';
-
-import { configureCertificatePath, getCertificate } from '../src/certManager.mjs';
-import { cleanUpEnv, mockSetConfigurationProperty } from './utils.mjs';
-
-jest.mock('fs');
+import { configureCertificatePath, getCertificate } from '../../lib/utils/certManager.mjs';
+import { cleanUpEnv, mockSetConfigurationProperty } from '../mocks/mocks.mjs';
 
 describe('Configure DMVIC Certificates', () => {
     beforeEach(() => {
@@ -13,7 +9,7 @@ describe('Configure DMVIC Certificates', () => {
     });
 
     afterEach(() => {
-        cleanUpEnv(['DMVIC_sslKey', 'DMVIC_sslCert']);
+        cleanUpEnv(['dmvic_sslKey', 'dmvic_sslCert']);
     });
 
     it('should throw an error for missing certificate configurations', () => {
@@ -42,7 +38,7 @@ describe('Get Configured Certificates', () => {
     });
 
     afterEach(() => {
-        cleanUpEnv(['DMVIC_sslKey', 'DMVIC_sslCert']);
+        cleanUpEnv(['dmvic_sslKey', 'dmvic_sslCert']);
     });
 
     it('should throw an error if sslKey certificate configuration is not set', () => {

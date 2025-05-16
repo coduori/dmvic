@@ -1,25 +1,19 @@
-/* eslint-env jest */
+import { jest } from '@jest/globals';
 
-import { expect, jest } from '@jest/globals';
-
-import { configureSecrets, getSecret } from '../src/secretsManager.mjs';
-import { cleanUpEnv, mockSetConfigurationProperty } from './utils.mjs';
-
-jest.mock('fs');
+import { configureSecrets, getSecret } from '../../lib/utils/secretsManager.mjs';
+import { cleanUpEnv, mockSetConfigurationProperty } from '../mocks/mocks.mjs';
 
 const envVariables = [
-    'DMVIC_username',
-    'DMVIC_password',
-    'DMVIC_clientId',
-    'DMVIC_environment',
+    'dmvic_username',
+    'dmvic_password',
+    'dmvic_clientId',
+    'dmvic_environment',
 ];
 
 describe('Configure DMVIC Secrets', () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
-
-    // add all the variables to cleanup
 
     afterEach(() => {
         cleanUpEnv(envVariables);
