@@ -28,18 +28,15 @@ Before making any requests, you need to initialize the library with your credent
 
 
 ```javascript
-import dmvic from 'dmvic';
+import { initialize } from 'dmvic';
 
 async function initializeDmvic() {
-  await dmvic.initialize({
+  await initialize({
     secrets: {
       username: "your_dmvic_username",
       password: "your_dmvic_password",
       clientId: "your_dmvic_client_id",
       environment: "staging",
-      redis: {
-        url: 'redis://localhost:6379',
-      }
     },
     certificates: {
       sslCert: "./path/to/your/dmvic/cert.pem",
@@ -54,10 +51,10 @@ initializeDmvic();
 Calling the initialize() function stores the configurations in your service environment variables. The configs will be used by the library to make requests to DMVIC.
 
 ### Authentication
-To authenticate your requests to DMVIC, use the `authenticate()` function. This function takes no parameters. You only need to call it once throughout your project. You can call the function immediately after initialization. When this function is called, it sends an authentication request to DMVIC and stores the resulting token on redis using the redis credentials provided in the init function.
+To authenticate your requests to DMVIC, use the `authenticate()` function. This function takes no parameters. You only need to call it once throughout your project. You can call the function immediately after initialization. When this function is called, it sends an authentication request to DMVIC and returns an authentication token which should be cached in your service and used to make subsequent requests to DMVIC.
 
 > **Note:** DMVIC requires that you cache your authentication token for 7 days. Make sure your authentication logic stores the token you receive in the response.
-> It is recommended to use redis to cache the token
+> 
 > If you do not cache your token, your application will call the authentication API on every request. This can quickly lead to rate limiting and may result in your DMVIC account being locked.
 
 ```javascript
@@ -78,7 +75,7 @@ async function authenticateDMVICRequests() {
 authenticateDMVICRequests();
 ```
 
-All requests to DMVIC will require you to pass the token along when making a request.
+All subsequent requests to DMVIC will require you to pass the token along when making a request.
 
 ## License
 
