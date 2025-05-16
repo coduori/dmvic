@@ -58,7 +58,7 @@ To authenticate your requests to DMVIC, use the `authenticate()` function. This 
 > If you do not cache your token, your application will call the authentication API on every request. This can quickly lead to rate limiting and may result in your DMVIC account being locked.
 
 ```javascript
-import dmvic from 'dmvic';
+import { authenticate } from 'dmvic';
 import redis from 'redis';
 
 const redisClient = redis.createClient({
@@ -67,7 +67,7 @@ const redisClient = redis.createClient({
 await redisClient.connect()
 
 async function authenticateDMVICRequests() {
-  const dmvicAuthToken = await dmvic.authenticate();
+  const dmvicAuthToken = await authenticate();
 
   // store the token in a redis cache
   await redisClient.set('dmvic:auth:token', dmvicAuthToken, { EX: 604800 });
