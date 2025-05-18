@@ -53,12 +53,18 @@ const mockApiConfig = {
     getAPIBaseURL: jest.fn((environment) => `https://${environment}-api.example.com`),
 };
 
+const mockInvoke = jest.fn();
+const mockRequestHandler = { invoke: mockInvoke };
+
+
 export {
     cleanUpEnv,
-    mockSetConfigurationProperty,
-    mockRequest,
-    mockHttpClient,
-    mockGetSecret,
-    mockSecretsManager,
     mockApiConfig,
+    mockGetSecret,
+    mockHttpClient,
+    mockInvoke,
+    mockRequest,
+    mockRequestHandler,
+    mockSetConfigurationProperty,
+    mockSecretsManager,
 };

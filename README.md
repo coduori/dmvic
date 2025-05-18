@@ -77,6 +77,79 @@ authenticateDMVICRequests();
 
 All subsequent requests to DMVIC will require you to pass the token along when making a request.
 
+### Check Insurance Company Stock Status
+Before requesting for a motor vehicle insurance certificate as an intermediary, the target insurance company
+should have allocated stock to your DMVIC account. This feature enables checking the stock count that has been provided by the insurance company. When the stock is 0, you cannot succesfully request for a motor vehicle certificate and thus you need to request for stock replenishment from the insurance company.
+
+> **Note:** The insurance company ID required as input in the checkStockStatus() function is provided by DMVIC and is not an arbitrary number. See below the list of supported companies and their matching DMVIC IDs. 
+> 
+>
+
+```javascript
+import { checkStockStatus } from 'dmvic';
+import redis from 'redis';
+
+const redisClient = redis.createClient({
+  url: 'redis://localhost:6379',
+})
+await redisClient.connect()
+
+async function checkInsuranceCompanyStockCount(insuranceCompanyId) {
+  // retrieve the token from your cache
+  const authToken = await redisClient.get('dmvic:auth:token');
+
+  return checkStockStatus(authToken, insuranceCompanyId);
+}
+checkInsuranceCompanyStockCount();
+```
+
+The stock count response is organised according to the types of motor vehicle insurance certificates.
+```
+  {
+      "CertificateClassificationID": 1,
+      "ClassificationTitle": "Class A - PSV Unmarked",
+      "Stock": 100
+  },
+```
+
+#### Member Company IDs
+
+| Company Name                | DMVIC Member Company ID |
+|-----------------------------|:----------------------:|
+| AIG                         | 12                     |
+| AMACO                       | 11                     |
+| APA                         | 14                     |
+| Britam Insurance            | 15                     |
+| Cannon                      | 32                     |
+| CIC                         | 16                     |
+| Definite Insurance          | 49                     |
+| Directline                  | 18                     |
+| Fidelity Insurance          | 19                     |
+| First Assurance             | 20                     |
+| GA insurance                | 21                     |
+| Geminia                     | 22                     |
+| Heritage                    | 42                     |
+| ICEA Lion                   | 23                     |
+| Kenindia                    | 27                     |
+| Intraafrica                 | 24                     |
+| Invesco                     | 29                     |
+| Jubilee Allianz             | 26                     |
+| Kenya Alliance              | 29                     |
+| Kenya Orient                | 28                     |
+| Madison                     | 30                     |
+| Mayfair                     | 31                     |
+| MUA                         | 35                     |
+| Monarch                     | 43                     |
+| Old Mutual                  | 45                     |
+| Occidental                  | 33                     |
+| Pacis                       | 34                     |
+| Pioneer                     | 36                     |
+| Sanlam                      | 39                     |
+| Star Discover               | 47                     |
+| Takaful                     | 40                     |
+| Trident                     | 44                     |
+| Xplico                      | 46                     |
+
 ## License
 
 This library is licensed under the [GNU](https://www.gnu.org/licenses/lgpl-3.0.md/) License.
@@ -85,3 +158,5 @@ This library is licensed under the [GNU](https://www.gnu.org/licenses/lgpl-3.0.m
 
 - Initialization
 - Authentication
+- Check Insurance Company Stock Status
+```
