@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://github.com/coduori/dmvic/compare/v1.1.0...v1.2.0) (2025-05-18)
+
+
+### Features
+
+* add check stock status support ([#27](https://github.com/coduori/dmvic/issues/27)) ([97ef8f8](https://github.com/coduori/dmvic/commit/97ef8f873f0eaba9de0059ec05fc5c696a8cb057))
+* update authenticate to use invoke function and add new feature - check stock count ([97ef8f8](https://github.com/coduori/dmvic/commit/97ef8f873f0eaba9de0059ec05fc5c696a8cb057))
+
 ## [1.1.0](https://github.com/coduori/dmvic/compare/v1.0.4...v1.1.0) (2025-05-15)
 
 
