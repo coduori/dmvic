@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 
-import { configureSecrets, getSecret } from '../../lib/utils/secretsManager.mjs';
+import { configureSecrets, getSecret } from '../../lib/utils/secrets-manager.mjs';
 import { cleanUpEnv, mockSetConfigurationProperty } from '../mocks/mocks.mjs';
 
 const envVariables = [

@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 
 import { mockSetConfigurationProperty } from '../mocks/mocks.mjs';
-import { apiConfig, getAPIBaseURL } from '../../lib/config/apiConfig.mjs';
+import { apiConfig, getAPIBaseURL } from '../../lib/config/api-configs.mjs';
 
 describe('API Base URL', () => {
     beforeEach(() => {

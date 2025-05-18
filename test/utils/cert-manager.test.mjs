@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 
-import { configureCertificatePath, getCertificate } from '../../lib/utils/certManager.mjs';
+import { configureCertificatePath, getCertificate } from '../../lib/utils/cert-manager.mjs';
 import { cleanUpEnv, mockSetConfigurationProperty } from '../mocks/mocks.mjs';
 
 describe('Configure DMVIC Certificates', () => {
