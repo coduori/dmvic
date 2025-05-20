@@ -47,7 +47,9 @@ const mockSecretsManager = {
 const mockApiConfig = {
     apiConfig: {
         general: {
-            login: '/api/V1/Account/Login',
+            login: '/api/T1/Account/Login',
+            getCertificatePDF: '/api/t5/Integration/GetCertificate',
+            memberCompanyStock: '/api/t5/Integration/MemberCompanyStock',
         },
     },
     getAPIBaseURL: jest.fn((environment) => `https://${environment}-api.example.com`),
@@ -55,7 +57,6 @@ const mockApiConfig = {
 
 const mockInvoke = jest.fn();
 const mockRequestHandler = { invoke: mockInvoke };
-
 
 export {
     cleanUpEnv,

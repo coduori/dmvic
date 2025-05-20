@@ -45,13 +45,12 @@ describe('authenticate', () => {
         await authenticate();
         expect(mockInvoke).toHaveBeenCalledWith(
             'POST',
-            'https://test-api.example.com/api/V1/Account/Login',
+            'https://test-api.example.com/api/T1/Account/Login',
             { username: 'testUser', password: 'testPass' },
             null,
-            false
+            false,
         );
         expect(mockInvoke).toHaveBeenCalledTimes(1);
-
     });
 
     it('should return the token from the response', async () => {
