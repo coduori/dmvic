@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/coduori/dmvic/compare/v1.2.0...v1.3.0) (2025-05-20)
+
+
+### Features
+
+* add support for retrieving certificate PDF ([#29](https://github.com/coduori/dmvic/issues/29)) ([fee28a9](https://github.com/coduori/dmvic/commit/fee28a9d67f6f43c6c2254b67865e99c9db3a9cc))
+
 ## [1.2.0](https://github.com/coduori/dmvic/compare/v1.1.0...v1.2.0) (2025-05-18)
 
 
