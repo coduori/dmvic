@@ -5,10 +5,11 @@
   "main": "lib/index.mjs",
   "type": "module",
   "scripts": {
-    "lint": "eslint . --ext .mjs,.js",
-    "lint:fix": "eslint . --ext .mjs,.js --fix",
+    "lint": "eslint --ext .mjs,.js .",
+    "lint:fix": "eslint --ext .mjs,.js . --fix",
     "start": "node lib/index.js",
-    "test": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules npx jest --detectOpenHandles"
+    "test": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules npx jest --detectOpenHandles",
+    "test:watch": "npm run lint && NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules npx jest --detectOpenHandles --watch"
   },
   "repository": {
     "type": "git",
