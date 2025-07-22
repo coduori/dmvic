@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/coduori/dmvic/compare/v1.3.0...v1.4.0) (2025-07-22)
+
+
+### Features
+
+* add support for certificate cancellation ([#31](https://github.com/coduori/dmvic/issues/31)) ([00b20b6](https://github.com/coduori/dmvic/commit/00b20b67b5cb1f8a347fc8d198440c508b9e9a64))
+
 ## [1.3.0](https://github.com/coduori/dmvic/compare/v1.2.0...v1.3.0) (2025-05-20)
 
 
