@@ -231,6 +231,8 @@ Cancelling a certificate that was not issued by the cancelling intermediary will
 
 ```
 
+#### Successful certificate cancellation response
+
 ```javascript
 {
   responseBody: {
