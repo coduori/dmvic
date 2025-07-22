@@ -22,6 +22,15 @@ npm install dmvic
 yarn install dmvic
 ```
 
+## Features
+
+- Initialization
+- Authentication
+- Check Insurance Company Stock Status
+- Get certificate PDF document
+- Cancel Certificate Issuance
+
+
 ## Usage
 
 <div align="justify">
@@ -181,13 +190,62 @@ Opening the link on a browser automatically downloads the certificate PDF docume
   }
 ```
 
+### Cancel Certificate Issuance
+
+<div align="justify">
+This feature facilitates cancellation of a motor vehicle certificate. DMVIC allows cancellation of a policy certificate if it is done within 6 hours of cover issuance. Beyond 6 hours intemediaries have to request cover cancellation directly from the insurer.
+</div>
+
+#### Example
+```javascript
+import { cancelCertificate } from 'dmvic';
+
+async function cancelMotorVehicleCertificate(certificateNumber, cancellationReasonId) {
+  // retrieve the token from your cache
+  const authToken = await redisClient.get('dmvic:auth:token');
+
+  return cancelCertificate(authToken, certificateNumber, cancellationReasonId);
+}
+cancelMotorVehicleCertificate();
+```
+
+#### More than 6 hours cancellation
+
+Policies cancelled after 6 hours of issuing will have the following error response:
+```javascript
+    {
+      errorCode: 'ER0010',
+      errorText: 'Sorry! you can not cancel the certificate since issuance time exceeded 6 hours.'
+    }
+
+```
+#### Invalid certificate number cancellation
+
+Cancelling a certificate that was not issued by the cancelling intermediary will receive the following error:
+
+```javascript
+{
+  errorCode: 'ER004',
+  errorText: 'Certificate Number is not valid'
+}
+
+```
+
+```javascript
+{
+  responseBody: {
+      Inputs: '{"certificatenumber":"C27384993","cancelreasonid":18}',
+      callbackObj: { TransactionReferenceNumber: 'UAT-XAK0552' },
+      success: true,
+      Error: [],
+      APIRequestNumber: 'UAT-OIH7618',
+      DMVICRefNo: null,
+  },
+  statusCode: 200,
+}
+```
+
 ## License
 
 This library is licensed under the [GNU](https://www.gnu.org/licenses/lgpl-3.0.md/) License.
 
-## Features
-
-- Initialization
-- Authentication
-- Check Insurance Company Stock Status
-- Get certificate PDF document

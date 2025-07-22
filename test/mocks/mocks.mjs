@@ -50,6 +50,8 @@ const mockApiConfig = {
             login: '/api/T1/Account/Login',
             getCertificatePDF: '/api/t5/Integration/GetCertificate',
             memberCompanyStock: '/api/t5/Integration/MemberCompanyStock',
+            cancelCertificate: '/api/t5/Integration/CancelCertificate',
+
         },
     },
     getAPIBaseURL: jest.fn((environment) => `https://${environment}-api.example.com`),
