@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/coduori/dmvic/compare/v1.4.0...v1.5.0) (2025-07-23)
+
+
+### Features
+
+* add check double insurance feature ([#33](https://github.com/coduori/dmvic/issues/33)) ([9172996](https://github.com/coduori/dmvic/commit/9172996e49513d729236b35ac9120eddb3cb1be5))
+
 ## [1.4.0](https://github.com/coduori/dmvic/compare/v1.3.0...v1.4.0) (2025-07-22)
 
 
