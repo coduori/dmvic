@@ -258,31 +258,35 @@ This feature checks whether a vehicle has han active cover. IRA prohibits double
 ```javascript
 import { checkInsuranceStatus } from 'dmvic';
 
-async function preIssuanceCheck(certificateNumber, cancellationReasonId) {
+async function preIssuanceCheck(registrationNumber, chassisNumber) {
   // retrieve the token from your cache
   const authToken = await redisClient.get('dmvic:auth:token');
 
   const insuranceStatus = await checkInsuranceStatus(authToken, {
-    registrationNumber: 'VVD300J'
-    // you can optionally pass the 
+    // vehicle registration must be passed if the chassis number is not passed
+    registrationNumber,
+    // you can optionally pass the chassis number
+    chassisNumber,
   });
-  return cancelCertificate(authToken, certificateNumber, cancellationReasonId);
+  return insuranceStatus;
 }
-cancelMotorVehicleCertificate();
+preIssuanceCheck('KKA12A', 'AT211-7689809');
 ```
 
 #### Vehicle not covered by insurance response
 
 ```javascript
-    responseBody: {
-      Inputs: '{"vehicleregistrationnumber":"VVD300J","policystartdate":"24/07/2025","policyenddate":"24/07/2026"}',
-      callbackObj: {},
-      success: false,
-      Error:  [ { errorCode: 'ER0016', errorText: 'No Records Found' } ],
-      APIRequestNumber: 'UAT-OIC7914',
-      DMVICRefNo: null
-    },
-    statusCode: 200
+{
+  {
+    Inputs: '{"vehicleregistrationnumber":"VVD300J","policystartdate":"24/07/2025","policyenddate":"24/07/2026"}',
+    callbackObj: {},
+    success: false,
+    Error:  [ { errorCode: 'ER0016', errorText: 'No Records Found' } ],
+    APIRequestNumber: 'UAT-OIC7914',
+    DMVICRefNo: null
+  },
+  statusCode: 200
+}
 ```
 
 #### Vehicle covered by insurance
