@@ -51,6 +51,7 @@ const mockApiConfig = {
             getCertificatePDF: '/api/t5/Integration/GetCertificate',
             memberCompanyStock: '/api/t5/Integration/MemberCompanyStock',
             cancelCertificate: '/api/t5/Integration/CancelCertificate',
+            validateDoubleInsurance: '/api/t5/Integration/ValidateDoubleInsurance',
 
         },
     },
