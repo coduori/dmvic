@@ -52,7 +52,7 @@ const mockApiConfig = {
             memberCompanyStock: '/api/t5/Integration/MemberCompanyStock',
             cancelCertificate: '/api/t5/Integration/CancelCertificate',
             validateDoubleInsurance: '/api/t5/Integration/ValidateDoubleInsurance',
-
+            validateInsuranceCertificate: '/api/t5/Integration/ValidateInsurance',
         },
     },
     getAPIBaseURL: jest.fn((environment) => `https://${environment}-api.example.com`),
