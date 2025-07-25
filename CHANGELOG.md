@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/coduori/dmvic/compare/v1.5.0...v1.6.0) (2025-07-25)
+
+
+### Features
+
+* add support to check for certificate validity ([#35](https://github.com/coduori/dmvic/issues/35)) ([eab222d](https://github.com/coduori/dmvic/commit/eab222d3109b3bea7c4472c39cf08574a4824332))
+
 ## [1.5.0](https://github.com/coduori/dmvic/compare/v1.4.0...v1.5.0) (2025-07-23)
 
 
