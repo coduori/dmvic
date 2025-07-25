@@ -42,7 +42,7 @@ describe('API Endpoints Configuration', () => {
         expect(generalEndpoints).toHaveProperty('login');
         expect(generalEndpoints).toHaveProperty('confirmIssuance');
         expect(generalEndpoints).toHaveProperty('getCertificatePDF');
-        expect(generalEndpoints).toHaveProperty('validateInsurance');
+        expect(generalEndpoints).toHaveProperty('validateInsuranceCertificate');
         expect(generalEndpoints).toHaveProperty('cancelCertificate');
         expect(generalEndpoints).toHaveProperty('validateDoubleInsurance');
     });
@@ -95,7 +95,7 @@ describe('API Endpoints Configuration', () => {
             login: '/api/V1/Account/Login',
             confirmIssuance: '/api/v5/Integration/ConfirmCertificateIssuance',
             getCertificatePDF: '/api/v5/Integration/GetCertificate',
-            validateInsurance: '/api/v5/Integration/ValidateInsurance',
+            validateInsuranceCertificate: '/api/v5/Integration/ValidateInsurance',
             cancelCertificate: '/api/v5/Integration/CancelCertificate',
             validateDoubleInsurance: '/api/v5/Integration/ValidateDoubleInsurance',
         });
