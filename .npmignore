@@ -1,2 +1,8 @@
 test/
 .github
+.gitignore
+.npmignore
+.eslintrc.json
+package-lock.json
+
+
