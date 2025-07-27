@@ -13,6 +13,21 @@ describe('API Base URL', () => {
         expect(getAPIBaseURL()).toBe('https://uat-api.dmvic.com');
     });
 
+    [
+        null,
+        undefined,
+        'test',
+        'uat',
+        'development',
+        'staging',
+        'prod',
+    ].forEach((environmentString) => {
+        it('should return DMVIC UAT URL if the environment is not production', async () => {
+            // then
+            expect(getAPIBaseURL('secrets', 'environment', environmentString)).toBe('https://uat-api.dmvic.com');
+        });
+    });
+
     it('should return the production URL if the environment is set to production', async () => {
         // when
         jest.resetModules();
