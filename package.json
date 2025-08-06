@@ -7,7 +7,7 @@
   "scripts": {
     "lint": "eslint --ext .mjs,.js .",
     "lint:fix": "eslint --ext .mjs,.js . --fix",
-    "start": "node lib/index.js",
+    "start": "NODE_ENV=production node lib/index.js",
     "test": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules npx jest --detectOpenHandles",
     "test:watch": "npm run lint && NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules npx jest --detectOpenHandles --watch"
   },
