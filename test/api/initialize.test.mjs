@@ -22,7 +22,13 @@ describe('initialize DMVIC Configurations', () => {
                 sslKey: '/path/to/test/sslKey',
                 sslCert: '/path/to/test/sslCert',
             },
-        })).rejects.toThrow('Missing required key: "username" in secrets configuration.');
+        })).rejects.toThrowErrorMatchingInlineSnapshot(`
+            "Configuration validation failed:
+            - username (missing or invalid string)
+            - password (missing or invalid string)
+            - clientId (missing or invalid string)
+            - environment (missing or invalid string)"
+            `);
         await expect(initialize({
             secrets: {
                 username: 'test-user-name',
@@ -31,7 +37,12 @@ describe('initialize DMVIC Configurations', () => {
                 sslKey: '/path/to/test/sslKey',
                 sslCert: '/path/to/test/sslCert',
             },
-        })).rejects.toThrow('Missing required key: "password" in secrets configuration.');
+        })).rejects.toThrowErrorMatchingInlineSnapshot(`
+            "Configuration validation failed:
+            - password (missing or invalid string)
+            - clientId (missing or invalid string)
+            - environment (missing or invalid string)"
+            `);
         await expect(initialize({
             secrets: {
                 username: 'test-user-name',
@@ -41,7 +52,11 @@ describe('initialize DMVIC Configurations', () => {
                 sslKey: '/path/to/test/sslKey',
                 sslCert: '/path/to/test/sslCert',
             },
-        })).rejects.toThrow('Missing required key: "clientId" in secrets configuration.');
+        })).rejects.toThrowErrorMatchingInlineSnapshot(`
+            "Configuration validation failed:
+            - clientId (missing or invalid string)
+            - environment (missing or invalid string)"
+            `);
         await expect(initialize({
             secrets: {
                 username: 'test-user-name',
@@ -52,7 +67,10 @@ describe('initialize DMVIC Configurations', () => {
                 sslKey: '/path/to/test/sslKey',
                 sslCert: '/path/to/test/sslCert',
             },
-        })).rejects.toThrow('Missing required key: "environment" in secrets configuration.');
+        })).rejects.toThrowErrorMatchingInlineSnapshot(`
+            "Configuration validation failed:
+            - environment (missing or invalid string)"
+            `);
     });
 
     it('should throw an error for missing certificate configurations', async () => {
