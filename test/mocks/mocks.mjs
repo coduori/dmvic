@@ -1,12 +1,18 @@
 import { jest } from '@jest/globals';
 
+import { getEnvKey } from '../../lib/utils/secrets-manager.mjs';
+
 const cleanUpEnv = (keys) => {
-    keys.forEach((key) => {
+    for (const key of keys) {
         delete process.env[key];
-    });
+    }
 };
 
 const mockSetConfigurationProperty = (prop, key, value = null) => {
+    if (prop === 'secrets') {
+        const envKey = getEnvKey(key);
+        process.env[envKey] = value;
+    }
     if (prop === 'certificate') {
         process.env[`dmvic_${key}`] = `/path/to/test/${key}`;
     } else {
