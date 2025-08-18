@@ -48,7 +48,7 @@ describe('authenticate', () => {
             'https://test-api.example.com/api/T1/Account/Login',
             { username: 'testUser', password: 'testPass' },
             null,
-            false,
+            false
         );
         expect(mockInvoke).toHaveBeenCalledTimes(1);
     });

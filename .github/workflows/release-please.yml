@@ -1,61 +1,71 @@
 name: Publish NPM Package
 
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
+    workflow_dispatch:
+    push:
+        branches:
+            - main
 
-permissions: 
-  contents: write
-  pull-requests: write
+permissions:
+    contents: write
+    pull-requests: write
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - run: npm ci
-      - run: npm test
+    test:
+        name: Test, Lint, Format
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+            - run: npm ci
 
-  release:
-    name: version bump
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set up Release Please
-        id: release
-        uses: GoogleCloudPlatform/release-please-action@v4
-        with:
-          token: ${{ secrets.GH_WORKFLOW_TOKEN_RELEASE }}
-          release-type: node
-          bump-minor-pre-major: true
-          versioning-strategy: increase
+            - name: Check formatting
+              run: npm run format:check
 
-      - name: Merge release PR
-        if: ${{ steps.release.outputs.pr != '' }}
-        uses: peter-evans/enable-pull-request-automerge@v3
-        with:
-          token: ${{ secrets.GH_WORKFLOW_TOKEN_RELEASE }}
-          pull-request-number: ${{ fromJson(steps.release.outputs.pr).number }}
-          merge-method: squash
+            - name: Lint code
+              run: npm run lint
 
-  publish-npm:
-    needs: release
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          registry-url: https://registry.npmjs.org/
-      - run: npm ci
-      - run: npm publish # --provenance --access public to be added when we make the package public
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.GH_WORKFLOW_TOKEN_NPM}}
+            - name: Run tests
+              run: npm test
+
+    release:
+        name: version bump
+        needs: test
+        runs-on: ubuntu-latest
+        steps:
+            - name: Set up Release Please
+              id: release
+              uses: GoogleCloudPlatform/release-please-action@v4
+              with:
+                  token: ${{ secrets.GH_WORKFLOW_TOKEN_RELEASE }}
+                  release-type: node
+                  bump-minor-pre-major: true
+                  versioning-strategy: increase
+
+            - name: Merge release PR
+              if: ${{ steps.release.outputs.pr != '' }}
+              uses: peter-evans/enable-pull-request-automerge@v3
+              with:
+                  token: ${{ secrets.GH_WORKFLOW_TOKEN_RELEASE }}
+                  pull-request-number: ${{ fromJson(steps.release.outputs.pr).number }}
+                  merge-method: squash
+
+    publish-npm:
+        name: Publish to NPM
+        needs: release
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            id-token: write
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  registry-url: https://registry.npmjs.org/
+            - run: npm ci
+            - run: npm publish # --provenance --access public to be added when we make the package public
+              env:
+                  NODE_AUTH_TOKEN: ${{secrets.GH_WORKFLOW_TOKEN_NPM}}

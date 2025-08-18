@@ -22,7 +22,9 @@ describe('getCertificatePdf', () => {
     });
 
     it('should throw if no authToken is provided', async () => {
-        await expect(getCertificatePdf(null, 'CERT123')).rejects.toThrow('Authentication token is required!');
+        await expect(getCertificatePdf(null, 'CERT123')).rejects.toThrow(
+            'Authentication token is required!'
+        );
     });
 
     it('should call invoke with correct arguments and returns response', async () => {
@@ -35,13 +37,15 @@ describe('getCertificatePdf', () => {
             'POST',
             'https://test-api.example.com/api/t5/Integration/GetCertificate',
             { CertificateNumber: 'CERT123' },
-            'token123',
+            'token123'
         );
         expect(result).toEqual({ pdf: 'mocked-pdf-data' });
     });
 
     it('should throw with correct message if invoke throws', async () => {
         mockInvoke.mockRejectedValue(new Error('Network error'));
-        await expect(getCertificatePdf('token123', 'CERT123')).rejects.toThrow('Error fetching data: Network error');
+        await expect(getCertificatePdf('token123', 'CERT123')).rejects.toThrow(
+            'Error fetching data: Network error'
+        );
     });
 });

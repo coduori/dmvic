@@ -1,0 +1,28 @@
+# Normalize all text files to LF on checkout
+* text=auto eol=lf
+
+# Ensure shell scripts retain LF endings (important on Unix)
+*.sh text eol=lf
+
+# Treat these as binary — don't normalize line endings
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.svg binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.gz binary
+
+# Avoid CRLF noise in lockfiles
+package-lock.json text eol=lf
+yarn.lock text eol=lf
+pnpm-lock.yaml text eol=lf
+
+# Ensure consistent line endings in Markdown/docs
+*.md text eol=lf
+*.markdown text eol=lf
+
+# Explicitly ignore changelog from lint/prettier but still normalize line endings
+CHANGELOG.md text eol=lf

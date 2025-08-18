@@ -11,7 +11,9 @@ jest.unstable_mockModule('../../lib/utils/request-handler.mjs', () => mockReques
 jest.unstable_mockModule('../../lib/config/api-configs.mjs', () => mockApiConfig);
 jest.unstable_mockModule('../../lib/utils/secrets-manager.mjs', () => mockSecretsManager);
 
-const { verifyInsuranceCertificate } = await import('../../lib/api/verify-insurance-certificate.mjs');
+const { verifyInsuranceCertificate } = await import(
+    '../../lib/api/verify-insurance-certificate.mjs'
+);
 
 describe('check vehicle insurance validity', () => {
     beforeEach(() => {
@@ -20,7 +22,9 @@ describe('check vehicle insurance validity', () => {
 
     [undefined, null].forEach((invalidAuthToken) => {
         it('should throw if no authToken is provided', async () => {
-            await expect(verifyInsuranceCertificate(invalidAuthToken, {})).rejects.toThrow('Authentication token is required!');
+            await expect(verifyInsuranceCertificate(invalidAuthToken, {})).rejects.toThrow(
+                'Authentication token is required!'
+            );
         });
     });
 
@@ -37,21 +41,27 @@ describe('check vehicle insurance validity', () => {
         },
     ].forEach((payload) => {
         it('should throw if no certificate number is provided', async () => {
-            await expect(verifyInsuranceCertificate('token123', payload)).rejects.toThrow('Certificate number is required!');
+            await expect(verifyInsuranceCertificate('token123', payload)).rejects.toThrow(
+                'Certificate number is required!'
+            );
         });
     });
 
     it('should throw if neither vehicle registration or chassis number is provided', async () => {
-        await expect(verifyInsuranceCertificate('token123', { certificateNumber: 'C1864903' })).rejects.toThrow('Either vehicle registration or chassis number must be provided!');
+        await expect(
+            verifyInsuranceCertificate('token123', { certificateNumber: 'C1864903' })
+        ).rejects.toThrow('Either vehicle registration or chassis number must be provided!');
     });
 
     it('should throw with correct message if invoke throws', async () => {
         mockInvoke.mockRejectedValue(new Error('Network error'));
-        await expect(verifyInsuranceCertificate('token123', {
-            vehicleRegistration: 'KBJ705Y',
-            chassisNumber: 'AT211-7689809',
-            certificateNumber: 'C1864903',
-        })).rejects.toThrow('Error fetching data: Network error');
+        await expect(
+            verifyInsuranceCertificate('token123', {
+                vehicleRegistration: 'KBJ705Y',
+                chassisNumber: 'AT211-7689809',
+                certificateNumber: 'C1864903',
+            })
+        ).rejects.toThrow('Error fetching data: Network error');
     });
 
     const payload = {
@@ -152,7 +162,7 @@ describe('check vehicle insurance validity', () => {
                     VehicleRegistrationnumber: payload.vehicleRegistration,
                     Chassisnumber: payload.chassisNumber,
                 },
-                'token123',
+                'token123'
             );
             expect(result).toEqual({
                 responseBody: dmvicResponseBody,

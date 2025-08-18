@@ -1,4 +1,8 @@
-import { getDateToday, getOneYearFromToday, standardizeDateFormat } from '../../lib/utils/standard-date-format.mjs';
+import {
+    getDateToday,
+    getOneYearFromToday,
+    standardizeDateFormat,
+} from '../../lib/utils/standard-date-format.mjs';
 
 describe('Date formatting utilities', () => {
     it('should format a Date object to DD/MM/YYYY', () => {
@@ -18,7 +22,7 @@ describe('Date formatting utilities', () => {
         expect(() => standardizeDateFormat(null)).toThrow(TypeError);
     });
 
-    it('should return today\'s date in DD/MM/YYYY format', () => {
+    it("should return today's date in DD/MM/YYYY format", () => {
         const today = new Date();
         const expected = today.toLocaleDateString('en-GB');
         expect(getDateToday()).toBe(expected);
