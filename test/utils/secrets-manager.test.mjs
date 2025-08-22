@@ -3,12 +3,7 @@ import { jest } from '@jest/globals';
 import { configureSecrets, getSecret } from '../../lib/utils/secrets-manager.mjs';
 import { cleanUpEnv, mockSetConfigurationProperty } from '../mocks/mocks.mjs';
 
-const envVariables = [
-    'dmvic_username',
-    'dmvic_password',
-    'dmvic_clientId',
-    'dmvic_environment',
-];
+const envVariables = ['dmvic_username', 'dmvic_password', 'dmvic_clientId', 'dmvic_environment'];
 
 describe('Configure DMVIC Secrets', () => {
     beforeEach(() => {
@@ -20,26 +15,36 @@ describe('Configure DMVIC Secrets', () => {
     });
 
     it('should throw an error for missing secrets configurations', () => {
-        expect(() => configureSecrets({})).toThrow('Missing required key: "username" in secrets configuration.');
-        expect(() => configureSecrets({ username: 'test-user-name' })).toThrow('Missing required key: "password" in secrets configuration.');
-        expect(() => configureSecrets({
-            username: 'test-user-name',
-            password: 'test-password',
-        })).toThrow('Missing required key: "clientId" in secrets configuration.');
-        expect(() => configureSecrets({
-            username: 'test-user-name',
-            password: 'test-password',
-            clientId: 'test-clientId',
-        })).toThrow('Missing required key: "environment" in secrets configuration.');
+        expect(() => configureSecrets({})).toThrow(
+            'Missing required key: "username" in secrets configuration.'
+        );
+        expect(() => configureSecrets({ username: 'test-user-name' })).toThrow(
+            'Missing required key: "password" in secrets configuration.'
+        );
+        expect(() =>
+            configureSecrets({
+                username: 'test-user-name',
+                password: 'test-password',
+            })
+        ).toThrow('Missing required key: "clientId" in secrets configuration.');
+        expect(() =>
+            configureSecrets({
+                username: 'test-user-name',
+                password: 'test-password',
+                clientId: 'test-clientId',
+            })
+        ).toThrow('Missing required key: "environment" in secrets configuration.');
     });
 
     it('should persist valid secrets configuration', () => {
-        expect(() => configureSecrets({
-            username: 'test-user-name',
-            password: 'test-password',
-            clientId: 'test-clientId',
-            environment: 'test-environment',
-        })).not.toThrow();
+        expect(() =>
+            configureSecrets({
+                username: 'test-user-name',
+                password: 'test-password',
+                clientId: 'test-clientId',
+                environment: 'test-environment',
+            })
+        ).not.toThrow();
     });
 });
 

@@ -20,9 +20,9 @@ describe('Request Handler', () => {
     });
 
     it('throws if no token is provided for an authorized request', async () => {
-        await expect(
-            invoke('POST', '/endpoint', { foo: 'bar' }, null, true),
-        ).rejects.toThrow('An Auth token is required for all authenticated requests!');
+        await expect(invoke('POST', '/endpoint', { foo: 'bar' }, null, true)).rejects.toThrow(
+            'An Auth token is required for all authenticated requests!'
+        );
     });
 
     it('does not throw if not authorized', async () => {
@@ -31,9 +31,7 @@ describe('Request Handler', () => {
             headers: {},
             body: { json: async () => ({ ok: true }) },
         });
-        await expect(
-            invoke('GET', '/endpoint', {}, null, false),
-        ).resolves.toBeDefined();
+        await expect(invoke('GET', '/endpoint', {}, null, false)).resolves.toBeDefined();
     });
 
     it('sets correct headers for authorized requests', async () => {
@@ -98,19 +96,23 @@ describe('Request Handler', () => {
 
     it('throws with correct message if getClient().request throws', async () => {
         mockRequest.mockRejectedValue(new Error('Network error'));
-        await expect(
-            invoke('POST', '/endpoint', { foo: 'bar' }, 'token123', true),
-        ).rejects.toThrow('DMVIC Request error: Error: Network error');
+        await expect(invoke('POST', '/endpoint', { foo: 'bar' }, 'token123', true)).rejects.toThrow(
+            'DMVIC Request error: Error: Network error'
+        );
     });
 
     it('throws with correct message if response.json() throws', async () => {
         mockRequest.mockResolvedValue({
             statusCode: 200,
             headers: {},
-            body: { json: async () => { throw new Error('Bad JSON'); } },
+            body: {
+                json: async () => {
+                    throw new Error('Bad JSON');
+                },
+            },
         });
-        await expect(
-            invoke('POST', '/endpoint', { foo: 'bar' }, 'token123', true),
-        ).rejects.toThrow('DMVIC Request error: Error: Bad JSON');
+        await expect(invoke('POST', '/endpoint', { foo: 'bar' }, 'token123', true)).rejects.toThrow(
+            'DMVIC Request error: Error: Bad JSON'
+        );
     });
 });

@@ -19,7 +19,9 @@ describe('Cancel certificate issuance', () => {
     });
 
     it('should throw if no authToken is provided', async () => {
-        await expect(cancelCertificate(null, 'CERT123')).rejects.toThrow('Authentication token is required!');
+        await expect(cancelCertificate(null, 'CERT123')).rejects.toThrow(
+            'Authentication token is required!'
+        );
     });
 
     it('should call invoke with correct arguments and returns response', async () => {
@@ -40,7 +42,7 @@ describe('Cancel certificate issuance', () => {
             'POST',
             'https://test-api.example.com/api/t5/Integration/CancelCertificate',
             { CertificateNumber: 'C27384993', cancelreasonid: 18 },
-            'token123',
+            'token123'
         );
         expect(result).toEqual({
             responseBody: {
@@ -57,6 +59,8 @@ describe('Cancel certificate issuance', () => {
 
     it('should throw with correct message if invoke throws', async () => {
         mockInvoke.mockRejectedValue(new Error('Network error'));
-        await expect(cancelCertificate('token123', 'CERT123')).rejects.toThrow('Error fetching data: Network error');
+        await expect(cancelCertificate('token123', 'CERT123')).rejects.toThrow(
+            'Error fetching data: Network error'
+        );
     });
 });

@@ -1,9 +1,9 @@
 import { jest } from '@jest/globals';
 
 const cleanUpEnv = (keys) => {
-    keys.forEach((key) => {
+    for (const key of keys) {
         delete process.env[key];
-    });
+    }
 };
 
 const mockSetConfigurationProperty = (prop, key, value = null) => {

@@ -29,7 +29,7 @@ describe('API Endpoints Configuration', () => {
     });
 
     it('should validate the apiConfig object structure', () => {
-    // when
+        // when
         const generalEndpoints = apiConfig?.general;
 
         // then
@@ -48,7 +48,7 @@ describe('API Endpoints Configuration', () => {
     });
 
     it('should return the correct endpoints for issuance', () => {
-    // when
+        // when
         const endpoints = apiConfig.issuance;
 
         // then
@@ -61,7 +61,7 @@ describe('API Endpoints Configuration', () => {
     });
 
     it('should return the correct endpoints for preview', () => {
-    // when
+        // when
         const endpoints = apiConfig.preview;
 
         // then
@@ -74,7 +74,7 @@ describe('API Endpoints Configuration', () => {
     });
 
     it('should return the correct endpoints for validation', () => {
-    // when
+        // when
         const endpoints = apiConfig.validation;
 
         // then
@@ -87,7 +87,7 @@ describe('API Endpoints Configuration', () => {
     });
 
     it('should return the correct strings for general endpoints', () => {
-    // when
+        // when
         const generalEndpoints = apiConfig.general;
 
         expect(generalEndpoints).toEqual({

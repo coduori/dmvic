@@ -22,7 +22,9 @@ describe('checkStockStatus', () => {
     });
 
     it('should throw if no authToken is provided', async () => {
-        await expect(checkStockStatus(null, 27)).rejects.toThrow('Authentication token is required!');
+        await expect(checkStockStatus(null, 27)).rejects.toThrow(
+            'Authentication token is required!'
+        );
     });
 
     it('should call invoke with correct arguments and returns response', async () => {
@@ -34,13 +36,15 @@ describe('checkStockStatus', () => {
             'POST',
             'https://test-api.example.com/api/t5/Integration/MemberCompanyStock',
             { MemberCompanyId: 27 },
-            'token123',
+            'token123'
         );
         expect(result).toEqual({ stock: 10 });
     });
 
     it('should throw with correct message if invoke throws', async () => {
         mockInvoke.mockRejectedValue(new Error('Network error'));
-        await expect(checkStockStatus('token123', 27)).rejects.toThrow('Error fetching data: Network error');
+        await expect(checkStockStatus('token123', 27)).rejects.toThrow(
+            'Error fetching data: Network error'
+        );
     });
 });

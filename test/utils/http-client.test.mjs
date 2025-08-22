@@ -2,7 +2,6 @@ import { jest } from '@jest/globals';
 
 const mockClientInstance = {};
 const mockClientConstructor = jest.fn(() => mockClientInstance);
-// eslint-disable-next-line no-unused-vars
 const mockReadFileSync = jest.fn((path, _encoding) => `mocked-${path}`);
 
 jest.unstable_mockModule('undici', () => ({
