@@ -14,7 +14,8 @@
         "format:check": "prettier --check .",
         "test": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles",
         "test:watch": "npm run lint && npm run test -- --watch",
-        "ci": "npm run format:check && npm run lint && npm test"
+        "ci": "npm run format:check && npm run lint && npm test",
+        "snyk-scan": "snyk test"
     },
     "repository": {
         "type": "git",
