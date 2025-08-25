@@ -1,7 +1,8 @@
 name: Publish NPM Package
 
 on:
-    workflow_dispatch:
+    pull_request:
+        types: [opened, synchronize, reopened]
     push:
         branches:
             - main
@@ -19,21 +20,20 @@ jobs:
             - uses: actions/setup-node@v4
               with:
                   node-version: 20
+                  cache: 'npm' # This caches node modules for faster runs
             - run: npm ci
 
-            - name: Check formatting
-              run: npm run format:check
-
-            - name: Lint code
-              run: npm run lint
-
-            - name: Run tests
-              run: npm test
+            - name: Check formatting, Lint and Run tests
+              run: |
+                  npm run format:check
+                  npm run lint
+                  npm test
 
     release:
         name: version bump
         needs: test
         runs-on: ubuntu-latest
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push' # Ensure this only runs on main branch pushes
         steps:
             - name: Set up Release Please
               id: release
@@ -59,12 +59,14 @@ jobs:
         permissions:
             contents: read
             id-token: write
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push' # Ensure this only runs on main branch pushes
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
               with:
                   node-version: 20
                   registry-url: https://registry.npmjs.org/
+                  cache: 'npm'
             - run: npm ci
             - run: npm publish # --provenance --access public to be added when we make the package public
               env:
