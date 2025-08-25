@@ -1,4 +1,4 @@
-name: Publish NPM Package
+name: CI/CD Pipeline
 
 on:
     pull_request:
@@ -12,6 +12,27 @@ permissions:
     pull-requests: write
 
 jobs:
+    security:
+        name: Snyk Security Scan
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: 'npm'
+            - run: npm ci
+            - name: Snyk Scan
+              uses: snyk/actions/node@v4
+              env:
+                  SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+              with:
+                  args: --all-projects
+            - name: Upload Snyk scan results to GitHub Code Scanning
+              uses: github/codeql-action/upload-sarif@v3
+              with:
+                  sarif_file: snyk.sarif
+
     test:
         name: Test, Lint, Format
         runs-on: ubuntu-latest
