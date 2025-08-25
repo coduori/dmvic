@@ -15,7 +15,8 @@
         "test": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles",
         "test:watch": "npm run lint && npm run test -- --watch",
         "ci": "npm run format:check && npm run lint && npm test",
-        "snyk-scan": "snyk test"
+        "snyk-scan": "dotenv snyk test --all-projects",
+        "security": "npm run snyk-scan"
     },
     "repository": {
         "type": "git",
@@ -40,6 +41,7 @@
         "@eslint/js": "^9.33.0",
         "@jest/globals": "^30.0.5",
         "cross-env": "^10.0.0",
+        "dotenv-cli": "^10.0.0",
         "eslint": "^9.33.0",
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-import": "^2.32.0",
@@ -50,7 +52,8 @@
         "eslint-plugin-unicorn": "^60.0.0",
         "globals": "^16.3.0",
         "jest": "^30.0.5",
-        "prettier": "^3.6.2"
+        "prettier": "^3.6.2",
+        "snyk": "^1.1298.3"
     },
     "engines": {
         "node": ">=20"
