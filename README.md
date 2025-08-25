@@ -135,11 +135,11 @@ checkInsuranceCompanyStockCount();
 The stock count response is organised according to the types of motor vehicle insurance certificates.
 
 ```
-  {
-      "CertificateClassificationID": 1,
-      "ClassificationTitle": "Class A - PSV Unmarked",
-      "Stock": 100
-  },
+{
+    "CertificateClassificationID": 1,
+    "ClassificationTitle": "Class A - PSV Unmarked",
+    "Stock": 100
+},
 ```
 
 #### Member Company IDs
@@ -191,9 +191,9 @@ Opening the link on a browser automatically downloads the certificate PDF docume
 #### Example
 
 ```
-  {
-      "URL": "https://insurancedevelopment.blob.core.windows.net/immutable-cancelled-cert/49935_0137372C3723135FD26E3A643C99C5F54FF811A8.pdf?sv=2021-08-06&st=2025-05-20T05%3A53%3A32Z&se=2025-05-20T18%3A53%3A32Z&sr=b&sp=r&sig=WnfcVyCLMLPcggpTimvDQEILUt%2FZYPm4XhzsOde5VDk%3D"
-  }
+{
+    "URL": "https://insurancedevelopment.blob.core.windows.net/immutable-cancelled-cert/49935_0137372C3723135FD26E3A643C99C5F54FF811A8.pdf?sv=2021-08-06&st=2025-05-20T05%3A53%3A32Z&se=2025-05-20T18%3A53%3A32Z&sr=b&sp=r&sig=WnfcVyCLMLPcggpTimvDQEILUt%2FZYPm4XhzsOde5VDk%3D"
+}
 ```
 
 ### Cancel Certificate Issuance
@@ -221,10 +221,10 @@ cancelMotorVehicleCertificate();
 Policies cancelled after 6 hours of issuing will have the following error response:
 
 ```javascript
-    {
-      errorCode: 'ER0010',
-      errorText: 'Sorry! you can not cancel the certificate since issuance time exceeded 6 hours.'
-    }
+{
+    errorCode: 'ER0010',
+    errorText: 'Sorry! you can not cancel the certificate since issuance time exceeded 6 hours.'
+}
 
 ```
 
