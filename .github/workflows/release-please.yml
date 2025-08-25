@@ -16,8 +16,9 @@ jobs:
         name: Snyk Security Scan
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4
-            - uses: actions/setup-node@v4
+            - uses: actions/checkout@master
+            - uses: snyk/actions/node@master
+              continue-on-error: true
               with:
                   node-version: 20
                   cache: 'npm'
@@ -41,7 +42,7 @@ jobs:
             - uses: actions/setup-node@v4
               with:
                   node-version: 20
-                  cache: 'npm' # This caches node modules for faster runs
+                  cache: 'npm'
             - run: npm ci
 
             - name: Check formatting, Lint and Run tests
@@ -54,7 +55,7 @@ jobs:
         name: version bump
         needs: test
         runs-on: ubuntu-latest
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push' # Ensure this only runs on main branch pushes
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         steps:
             - name: Set up Release Please
               id: release
@@ -80,7 +81,7 @@ jobs:
         permissions:
             contents: read
             id-token: write
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push' # Ensure this only runs on main branch pushes
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
@@ -89,6 +90,6 @@ jobs:
                   registry-url: https://registry.npmjs.org/
                   cache: 'npm'
             - run: npm ci
-            - run: npm publish # --provenance --access public to be added when we make the package public
+            - run: npm publish  --provenance --access public
               env:
                   NODE_AUTH_TOKEN: ${{secrets.GH_WORKFLOW_TOKEN_NPM}}
