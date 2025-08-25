@@ -25,7 +25,7 @@ jobs:
             - name: Snyk Scan
               uses: snyk/actions/node@master
               env:
-                  SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+                  SNYK_TOKEN: ${{ secrets.GH_WORKFLOW_SNYK_TOKEN }}
             - name: Upload Snyk scan results to GitHub Code Scanning
               uses: github/codeql-action/upload-sarif@v3
 
