@@ -55,7 +55,7 @@ async function initializeDmvic() {
             username: 'your_dmvic_username',
             password: 'your_dmvic_password',
             clientid: 'your_dmvic_client_id',
-            environment: 'sandbox', // sandbox || production 
+            environment: 'sandbox', // sandbox || production
         },
         certificates: {
             sslCert: './path/to/your/dmvic/cert.pem',
