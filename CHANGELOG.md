@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.2](https://github.com/coduori/dmvic/compare/v1.6.1...v1.6.2) (2025-09-01)
+
+
+### Bug Fixes
+
+* upgrade undici from 7.10.0 to 7.13.0 ([#42](https://github.com/coduori/dmvic/issues/42)) ([1628007](https://github.com/coduori/dmvic/commit/1628007fa8d279566d3364867fa3f69096279abf))
+
 ## [1.6.1](https://github.com/coduori/dmvic/compare/v1.6.0...v1.6.1) (2025-09-01)
 
 
