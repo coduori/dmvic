@@ -38,7 +38,7 @@ describe('Get HTTP Client', () => {
                 key: 'mocked-/path/to/key',
                 cert: 'mocked-/path/to/cert',
                 requestCert: true,
-                rejectUnauthorized: false,
+                rejectUnauthorized: true,
             },
         });
         expect(client).toBe(mockClientInstance);

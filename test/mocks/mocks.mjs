@@ -14,6 +14,13 @@ const mockSetConfigurationProperty = (prop, key, value = null) => {
     }
 };
 
+const mockInMemoryCache = {
+    has: jest.fn(),
+    get: jest.fn(),
+    set: jest.fn(),
+    clear: jest.fn(),
+};
+
 const mockRequest = jest.fn(() => ({
     statusCode: 200,
     body: {
@@ -32,9 +39,8 @@ const mockGetSecret = jest.fn((key) => {
     const mockSecrets = {
         username: 'testUser',
         password: 'testPass',
-        clientId: 'testClient',
+        clientid: 'testClient',
         environment: 'test',
-        redis: JSON.stringify({ url: 'redis://localhost:6379' }),
     };
     return mockSecrets[key];
 });
@@ -71,4 +77,5 @@ export {
     mockRequestHandler,
     mockSetConfigurationProperty,
     mockSecretsManager,
+    mockInMemoryCache,
 };

@@ -43,7 +43,7 @@ To send a request to a protected DMVIC endpoint, you need to be authenticated us
 ### Initialization
 
 <div align="justify">
-Before making any requests, you need to initialize the library with your credentials and configuration. Use the `initialize()` function to set up the library:
+Before making any requests, you need to initialize the library with your credentials and configuration. Use the `initialize()` function to set up the library. For the environment config, specify `production` to connect to DMVIC's live environment; any other value will connect to DMVIC's sandbox environment.
 </div>
 
 ```javascript
@@ -54,8 +54,8 @@ async function initializeDmvic() {
         secrets: {
             username: 'your_dmvic_username',
             password: 'your_dmvic_password',
-            clientId: 'your_dmvic_client_id',
-            environment: 'staging',
+            clientid: 'your_dmvic_client_id',
+            environment: 'sandbox', // sandbox || production
         },
         certificates: {
             sslCert: './path/to/your/dmvic/cert.pem',
