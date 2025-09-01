@@ -69,6 +69,7 @@ export default [
                 'error',
                 { max: 40, skipBlankLines: true, skipComments: true },
             ],
+            'no-duplicate-imports': 'error',
         },
     },
 
@@ -102,6 +103,7 @@ export default [
                 'error',
                 { max: 200, skipBlankLines: true, skipComments: true },
             ],
+            'no-duplicate-imports': 'error',
         },
     },
 
