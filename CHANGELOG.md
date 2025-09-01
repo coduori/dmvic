@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.1](https://github.com/coduori/dmvic/compare/v1.6.0...v1.6.1) (2025-09-01)
+
+
+### Bug Fixes
+
+* switch secret management from env to in-memory-caching for efficiency and security ([#43](https://github.com/coduori/dmvic/issues/43)) ([1114a41](https://github.com/coduori/dmvic/commit/1114a411d871dfd152d24710c5271ce93b9bb8ee))
+
 ## [1.6.0](https://github.com/coduori/dmvic/compare/v1.5.0...v1.6.0) (2025-07-25)
 
 
