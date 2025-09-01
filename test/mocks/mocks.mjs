@@ -14,6 +14,13 @@ const mockSetConfigurationProperty = (prop, key, value = null) => {
     }
 };
 
+const mockInMemoryCache = {
+    has: jest.fn(),
+    get: jest.fn(),
+    set: jest.fn(),
+    clear: jest.fn(),
+};
+
 const mockRequest = jest.fn(() => ({
     statusCode: 200,
     body: {
@@ -71,4 +78,5 @@ export {
     mockRequestHandler,
     mockSetConfigurationProperty,
     mockSecretsManager,
+    mockInMemoryCache,
 };

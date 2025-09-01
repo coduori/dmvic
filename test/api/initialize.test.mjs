@@ -32,7 +32,9 @@ describe('initialize DMVIC Configurations', () => {
                     sslCert: '/path/to/test/sslCert',
                 },
             })
-        ).rejects.toThrow('Missing required key: "username" in secrets configuration.');
+        ).rejects.toThrow(
+            'Configuration errors: Missing one or more required keys: username, password, clientid, environment. Expected keys are: username, password, clientid, environment.'
+        );
         await expect(
             initialize({
                 secrets: {
@@ -43,7 +45,9 @@ describe('initialize DMVIC Configurations', () => {
                     sslCert: '/path/to/test/sslCert',
                 },
             })
-        ).rejects.toThrow('Missing required key: "password" in secrets configuration.');
+        ).rejects.toThrow(
+            'Configuration errors: Missing one or more required keys: password, clientid, environment. Expected keys are: username, password, clientid, environment.'
+        );
         await expect(
             initialize({
                 secrets: {
@@ -55,7 +59,9 @@ describe('initialize DMVIC Configurations', () => {
                     sslCert: '/path/to/test/sslCert',
                 },
             })
-        ).rejects.toThrow('Missing required key: "clientId" in secrets configuration.');
+        ).rejects.toThrow(
+            'Configuration errors: Missing one or more required keys: clientid, environment. Expected keys are: username, password, clientid, environment.'
+        );
         await expect(
             initialize({
                 secrets: {
@@ -68,7 +74,9 @@ describe('initialize DMVIC Configurations', () => {
                     sslCert: '/path/to/test/sslCert',
                 },
             })
-        ).rejects.toThrow('Missing required key: "environment" in secrets configuration.');
+        ).rejects.toThrow(
+            'Configuration errors: Missing one or more required keys: environment. Expected keys are: username, password, clientid, environment.'
+        );
     });
 
     it('should throw an error for missing certificate configurations', async () => {

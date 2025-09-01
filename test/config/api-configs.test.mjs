@@ -1,6 +1,5 @@
 import { jest } from '@jest/globals';
 
-import { mockSetConfigurationProperty } from '../mocks/mocks.mjs';
 import { apiConfig, getAPIBaseURL } from '../../lib/config/api-configs.mjs';
 
 describe('API Base URL', () => {
@@ -16,7 +15,6 @@ describe('API Base URL', () => {
     it('should return the production URL if the environment is set to production', async () => {
         // when
         jest.resetModules();
-        mockSetConfigurationProperty('secrets', 'environment', 'production');
 
         // then
         expect(getAPIBaseURL('production')).toBe('https://api.dmvic.com');

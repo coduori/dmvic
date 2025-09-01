@@ -1,39 +1,51 @@
 import { jest } from '@jest/globals';
+import { mockInMemoryCache } from '../mocks/mocks.mjs';
 
-import { configureSecrets, getSecret } from '../../lib/utils/secrets-manager.mjs';
-import { cleanUpEnv, mockSetConfigurationProperty } from '../mocks/mocks.mjs';
+jest.unstable_mockModule('../../lib/utils/cache.mjs', () => ({
+    inMemoryCache: mockInMemoryCache,
+}));
 
-const envVariables = ['dmvic_username', 'dmvic_password', 'dmvic_clientId', 'dmvic_environment'];
+let configureSecrets, getSecret;
+
+beforeAll(async () => {
+    const secretsManager = await import('../../lib/utils/secrets-manager.mjs');
+    configureSecrets = secretsManager.configureSecrets;
+    getSecret = secretsManager.getSecret;
+});
 
 describe('Configure DMVIC Secrets', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-    });
-
-    afterEach(() => {
-        cleanUpEnv(envVariables);
+        mockInMemoryCache.has.mockClear();
+        mockInMemoryCache.get.mockClear();
+        mockInMemoryCache.set.mockClear();
+        mockInMemoryCache.clear.mockClear();
     });
 
     it('should throw an error for missing secrets configurations', () => {
         expect(() => configureSecrets({})).toThrow(
-            'Missing required key: "username" in secrets configuration.'
+            'Configuration errors: Missing one or more required keys: username, password, clientid, environment. Expected keys are: username, password, clientid, environment.'
         );
         expect(() => configureSecrets({ username: 'test-user-name' })).toThrow(
-            'Missing required key: "password" in secrets configuration.'
+            'Configuration errors: Missing one or more required keys: password, clientid, environment. Expected keys are: username, password, clientid, environment.'
         );
         expect(() =>
             configureSecrets({
                 username: 'test-user-name',
                 password: 'test-password',
             })
-        ).toThrow('Missing required key: "clientId" in secrets configuration.');
+        ).toThrow(
+            'Configuration errors: Missing one or more required keys: clientid, environment. Expected keys are: username, password, clientid, environment.'
+        );
         expect(() =>
             configureSecrets({
                 username: 'test-user-name',
                 password: 'test-password',
                 clientId: 'test-clientId',
             })
-        ).toThrow('Missing required key: "environment" in secrets configuration.');
+        ).toThrow(
+            'Configuration errors: Missing one or more required keys: environment. Expected keys are: username, password, clientid, environment.'
+        );
     });
 
     it('should persist valid secrets configuration', () => {
@@ -51,53 +63,32 @@ describe('Configure DMVIC Secrets', () => {
 describe('Get Configured Secrets', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-    });
-
-    afterEach(() => {
-        cleanUpEnv(envVariables);
+        mockInMemoryCache.has.mockClear();
+        mockInMemoryCache.get.mockClear();
+        mockInMemoryCache.set.mockClear();
+        mockInMemoryCache.clear.mockClear();
     });
 
     it('should throw an error if username secret configuration is not set', () => {
         expect(() => getSecret('username')).toThrow('Secret "username" is not configured.');
     });
 
-    it('should return configured DMVIC username value', () => {
-        // when
-        const configurationValue = 'test-user-name';
-        mockSetConfigurationProperty('secrets', 'username', configurationValue);
+    it('should return a configured value without throwing an error', () => {
+        const configUsername = 'secret_username';
+        mockInMemoryCache.has.mockReturnValue(true);
+        mockInMemoryCache.get.mockReturnValueOnce(configUsername);
 
-        // then
-        expect(() => getSecret('username')).not.toThrow();
-        expect(getSecret('username')).toBe(configurationValue);
+        const result = getSecret('username');
+        expect(result).toBe(configUsername);
+
+        expect(mockInMemoryCache.has).toHaveBeenCalledWith('username');
+        expect(mockInMemoryCache.get).toHaveBeenCalledWith('username');
     });
 
-    it('should return configured DMVIC password value', () => {
-        // when
-        const configurationValue = 'test-password';
-        mockSetConfigurationProperty('secrets', 'password', configurationValue);
+    it('should throw an error when the key is not in the cache', () => {
+        mockInMemoryCache.has.mockReturnValue(false);
 
-        // then
-        expect(() => getSecret('password')).not.toThrow();
-        expect(getSecret('password')).toBe(configurationValue);
-    });
-
-    it('should return configured DMVIC clientId value', () => {
-        // when
-        const configurationValue = 'someRandomClientId234';
-        mockSetConfigurationProperty('secrets', 'clientId', configurationValue);
-
-        // then
-        expect(() => getSecret('clientId')).not.toThrow();
-        expect(getSecret('clientId')).toBe(configurationValue);
-    });
-
-    it('should return configured DMVIC environment value', () => {
-        // when
-        const configurationValue = 'staging';
-        mockSetConfigurationProperty('secrets', 'environment', configurationValue);
-
-        // then
-        expect(() => getSecret('environment')).not.toThrow();
-        expect(getSecret('environment')).toBe(configurationValue);
+        expect(() => getSecret('username')).toThrow('Secret "username" is not configured.');
+        expect(mockInMemoryCache.has).toHaveBeenCalledWith('username');
     });
 });
