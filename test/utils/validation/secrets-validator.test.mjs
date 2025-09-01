@@ -82,7 +82,7 @@ describe('Mixed Errors', () => {
     it('should throw an error when invalid keys are present', () => {
         const mixedConfig = {
             username: 'user123',
-            clientId: 'abc-xyz',
+            clientid: 'abc-xyz',
             invalidKey: 'value',
         };
         expect(() => validateSecretsConfig(mixedConfig, requiredKeys)).toThrow(

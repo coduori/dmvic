@@ -67,7 +67,7 @@ describe('initialize DMVIC Configurations', () => {
                 secrets: {
                     username: 'test-user-name',
                     password: 'test-password',
-                    clientId: 'test-clientId',
+                    clientid: 'test-clientId',
                 },
                 certificates: {
                     sslKey: '/path/to/test/sslKey',
@@ -85,7 +85,7 @@ describe('initialize DMVIC Configurations', () => {
                 secrets: {
                     username: 'test-user-name',
                     password: 'test-password',
-                    clientId: 'test-clientId',
+                    clientid: 'test-clientId',
                     environment: 'test-environment',
                 },
                 certificates: {},
@@ -97,7 +97,7 @@ describe('initialize DMVIC Configurations', () => {
                 secrets: {
                     username: 'test-user-name',
                     password: 'test-password',
-                    clientId: 'test-clientId',
+                    clientid: 'test-clientId',
                     environment: 'test-environment',
                 },
                 certificates: {
@@ -113,7 +113,7 @@ describe('initialize DMVIC Configurations', () => {
                 secrets: {
                     username: 'test-user-name',
                     password: 'test-password',
-                    clientId: 'test-clientId',
+                    clientid: 'test-clientId',
                     environment: 'test-environment',
                 },
                 certificates: {

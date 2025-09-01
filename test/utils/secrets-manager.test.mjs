@@ -41,7 +41,7 @@ describe('Configure DMVIC Secrets', () => {
             configureSecrets({
                 username: 'test-user-name',
                 password: 'test-password',
-                clientId: 'test-clientId',
+                clientid: 'test-clientId',
             })
         ).toThrow(
             'Configuration errors: Missing one or more required keys: environment. Expected keys are: username, password, clientid, environment.'
@@ -53,7 +53,7 @@ describe('Configure DMVIC Secrets', () => {
             configureSecrets({
                 username: 'test-user-name',
                 password: 'test-password',
-                clientId: 'test-clientId',
+                clientid: 'test-clientId',
                 environment: 'test-environment',
             })
         ).not.toThrow();

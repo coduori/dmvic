@@ -39,9 +39,8 @@ const mockGetSecret = jest.fn((key) => {
     const mockSecrets = {
         username: 'testUser',
         password: 'testPass',
-        clientId: 'testClient',
+        clientid: 'testClient',
         environment: 'test',
-        redis: JSON.stringify({ url: 'redis://localhost:6379' }),
     };
     return mockSecrets[key];
 });
