@@ -64,7 +64,7 @@ export default [
             'promise/catch-or-return': 'warn',
             'n/no-missing-import': 'off',
 
-            'max-lines': ['error', { max: 200, skipBlankLines: true, skipComments: true }],
+            'max-lines': ['error', { max: 100, skipBlankLines: true, skipComments: true }],
             'max-lines-per-function': [
                 'error',
                 { max: 40, skipBlankLines: true, skipComments: true },
@@ -107,5 +107,11 @@ export default [
         },
     },
 
+    {
+        files: ['eslint.config.js'],
+        rules: {
+            'max-lines': 'off',
+        },
+    },
     prettier,
 ];
