@@ -58,6 +58,8 @@ jobs:
         needs: [test, security]
         runs-on: ubuntu-latest
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        outputs:
+            release_created: ${{ steps.release.outputs.release_created }}
         steps:
             - name: Set up Release Please
               id: release
@@ -83,7 +85,7 @@ jobs:
         permissions:
             contents: read
             id-token: write
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push' && needs.release.outputs.release_created
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
