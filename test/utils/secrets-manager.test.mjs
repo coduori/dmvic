@@ -54,7 +54,7 @@ describe('Configure DMVIC Secrets', () => {
                 username: 'test-user-name',
                 password: 'test-password',
                 clientid: 'test-clientId',
-                environment: 'test-environment',
+                environment: 'sandbox',
             })
         ).not.toThrow();
     });

@@ -1,42 +1,72 @@
 import { jest } from '@jest/globals';
+import { mockInMemoryCache } from '../mocks/mocks.mjs';
 
+// Create mock client
 const mockClientInstance = {};
 const mockClientConstructor = jest.fn(() => mockClientInstance);
-const mockReadFileSync = jest.fn((path, _encoding) => `mocked-${path}`);
 
+// Mock cache first
+jest.unstable_mockModule('../../lib/utils/cache.mjs', () => ({
+    inMemoryCache: mockInMemoryCache,
+}));
+
+// Mock other dependencies
 jest.unstable_mockModule('undici', () => ({
     Client: mockClientConstructor,
 }));
-jest.unstable_mockModule('fs', () => ({
-    readFileSync: mockReadFileSync,
-}));
-const mockGetAPIBaseURL = jest.fn(() => 'https://mocked-api');
+
+const mockGetAPIBaseURL = jest.fn().mockReturnValue('https://test-api.com');
 jest.unstable_mockModule('../../lib/config/api-configs.mjs', () => ({
     getAPIBaseURL: mockGetAPIBaseURL,
 }));
 
-let { getClient } = await import('../../lib/utils/http-client.mjs');
+const mockGetSecret = jest.fn((key) => {
+    if (key === 'environment') return 'sandbox';
+    throw new Error(`Secret "${key}" is not configured.`);
+});
+jest.unstable_mockModule('../../lib/utils/secrets-manager.mjs', () => ({
+    getSecret: mockGetSecret,
+}));
 
-describe('Get HTTP Client', () => {
-    beforeEach(async () => {
+const mockGetCertificate = jest.fn((key) => {
+    if (key === 'sslKey') return 'dummy-sslKey';
+    if (key === 'sslCert') return 'dummy-sslCert';
+    throw new Error(`Dev Error::: Unexpected certificate key: ${key}`);
+});
+jest.unstable_mockModule('../../lib/utils/cert-manager.mjs', () => ({
+    getCertificate: mockGetCertificate,
+}));
+
+// Import after all mocks are defined
+let getClient;
+
+beforeAll(async () => {
+    const httpClient = await import('../../lib/utils/http-client.mjs');
+    getClient = httpClient.getClient;
+});
+
+describe('HTTP Client Module', () => {
+    beforeEach(() => {
+        // Reset all mocks
         jest.clearAllMocks();
-        jest.resetModules();
-        ({ getClient } = await import('../../lib/utils/http-client.mjs'));
+
+        // Reset client instance by using the exported reset function
+        getClient.reset();
     });
 
     it('creates a new Client with correct options on first call', () => {
-        process.env.dmvic_sslKey = '/path/to/key';
-        process.env.dmvic_sslCert = '/path/to/cert';
-
         const client = getClient();
 
-        expect(mockGetAPIBaseURL).toHaveBeenCalled();
-        expect(mockReadFileSync).toHaveBeenCalledWith('/path/to/key', 'utf8');
-        expect(mockReadFileSync).toHaveBeenCalledWith('/path/to/cert', 'utf8');
-        expect(mockClientConstructor).toHaveBeenCalledWith('https://mocked-api', {
+        expect(mockGetSecret).toHaveBeenCalledWith('environment');
+        expect(mockGetAPIBaseURL).toHaveBeenCalledWith('sandbox');
+
+        expect(mockGetCertificate).toHaveBeenCalledWith('sslKey');
+        expect(mockGetCertificate).toHaveBeenCalledWith('sslCert');
+
+        expect(mockClientConstructor).toHaveBeenCalledWith('https://test-api.com', {
             connect: {
-                key: 'mocked-/path/to/key',
-                cert: 'mocked-/path/to/cert',
+                key: 'dummy-sslKey',
+                cert: 'dummy-sslCert',
                 requestCert: true,
                 rejectUnauthorized: true,
             },
@@ -45,13 +75,29 @@ describe('Get HTTP Client', () => {
     });
 
     it('returns the same client instance on subsequent calls', () => {
-        process.env.dmvic_sslKey = '/path/to/key';
-        process.env.dmvic_sslCert = '/path/to/cert';
-
         const client1 = getClient();
         const client2 = getClient();
 
         expect(client1).toBe(client2);
         expect(mockClientConstructor).toHaveBeenCalledTimes(1);
+    });
+
+    it('throws error if getSecret fails', () => {
+        // Make getSecret throw an error for this test only
+        mockGetSecret.mockImplementationOnce(() => {
+            throw new Error('Secret not found');
+        });
+
+        expect(() => getClient()).toThrow('Secret not found');
+    });
+
+    it('throws error if getCertificate fails', () => {
+        // Make getCertificate throw an error for sslKey only
+        mockGetCertificate.mockImplementationOnce((key) => {
+            if (key === 'sslKey') throw new Error('SSL key error');
+            return 'dummy-sslCert';
+        });
+
+        expect(() => getClient()).toThrow('SSL key error');
     });
 });

@@ -1,19 +1,5 @@
 import { jest } from '@jest/globals';
 
-const cleanUpEnv = (keys) => {
-    for (const key of keys) {
-        delete process.env[key];
-    }
-};
-
-const mockSetConfigurationProperty = (prop, key, value = null) => {
-    if (prop === 'certificate') {
-        process.env[`dmvic_${key}`] = `/path/to/test/${key}`;
-    } else {
-        process.env[`dmvic_${key}`] = value;
-    }
-};
-
 const mockInMemoryCache = {
     has: jest.fn(),
     get: jest.fn(),
@@ -68,14 +54,12 @@ const mockInvoke = jest.fn();
 const mockRequestHandler = { invoke: mockInvoke };
 
 export {
-    cleanUpEnv,
     mockApiConfig,
     mockGetSecret,
     mockHttpClient,
     mockInvoke,
     mockRequest,
     mockRequestHandler,
-    mockSetConfigurationProperty,
     mockSecretsManager,
     mockInMemoryCache,
 };
