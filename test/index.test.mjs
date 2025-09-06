@@ -1,14 +1,11 @@
-
-
-
-const { 
-    authenticate, 
-    initialize, 
+const {
+    authenticate,
+    initialize,
     getCertificatePdf,
     checkStockStatus,
     cancelCertificate,
     checkInsuranceStatus,
-    verifyInsuranceCertificate
+    verifyInsuranceCertificate,
 } = await import('../lib/index.mjs');
 
 describe('index.mjs exports', () => {
