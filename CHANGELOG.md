@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.3](https://github.com/coduori/dmvic/compare/v1.6.2...v1.6.3) (2025-09-06)
+
+
+### Bug Fixes
+
+* improve config management and add validation checks for security certificates ([#46](https://github.com/coduori/dmvic/issues/46)) ([f6e4c18](https://github.com/coduori/dmvic/commit/f6e4c18a40df5f687abc5f494f1d6f706f814b5c))
+
 ## [1.6.2](https://github.com/coduori/dmvic/compare/v1.6.1...v1.6.2) (2025-09-01)
 
 
