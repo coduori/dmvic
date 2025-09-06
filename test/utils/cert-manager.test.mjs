@@ -2,12 +2,10 @@ import { jest } from '@jest/globals';
 
 import { mockInMemoryCache } from '../mocks/mocks.mjs';
 
-// Mock modules before importing the tested module
 jest.unstable_mockModule('../../lib/utils/cache.mjs', () => ({
     inMemoryCache: mockInMemoryCache,
 }));
 
-// Create mocks that will not fail validation
 const mockValidateCertConfig = jest.fn((config) => config);
 const mockValidateFilePaths = jest.fn();
 const mockValidateCertContents = jest.fn();
@@ -27,7 +25,6 @@ jest.unstable_mockModule('fs', () => ({
     existsSync: jest.fn().mockReturnValue(true),
 }));
 
-// Import after all mocks are set up
 let configureCertificates, getCertificate;
 
 beforeAll(async () => {
@@ -93,7 +90,6 @@ describe('Configure DMVIC Certificates', () => {
     });
 
     it('should persist valid configuration', () => {
-        // Use the mocks to ensure this doesn't throw
         const validConfig = {
             sslKey: '/path/to/test/sslKey',
             sslCert: '/path/to/test/sslCert',
@@ -132,7 +128,6 @@ describe('Get Configured Certificates', () => {
 
 describe('Certificate configuration trimming and persistence', () => {
     beforeEach(() => {
-        // Clear mocks and reset cache before each test
         jest.clearAllMocks();
         mockInMemoryCache.has.mockClear();
         mockInMemoryCache.get.mockClear();
@@ -167,7 +162,6 @@ describe('Certificate configuration trimming and persistence', () => {
 
 describe('Certificate files configuration and retrieval', () => {
     test('should test certificate configuration in test environment', () => {
-        // Use the mocks to ensure this doesn't throw
         expect(() => {
             configureCertificates(
                 {

@@ -42,11 +42,14 @@ describe('authenticate', () => {
     });
 
     it('should call invoke with correct arguments', async () => {
+        const username = mockSecretsManager.getSecret('username');
+        const password = mockSecretsManager.getSecret('password');
+
         await authenticate();
         expect(mockInvoke).toHaveBeenCalledWith(
             'POST',
             'https://test-api.example.com/api/T1/Account/Login',
-            { username: 'testUser', password: 'testPass' },
+            { username, password },
             null,
             false
         );

@@ -1,6 +1,5 @@
 import { jest } from '@jest/globals';
 
-// Mocks for crypto module with various implementations
 const sandboxCryptoMock = {
     X509Certificate: jest.fn().mockImplementation(() => ({
         subject: 'CN=uat-api.dmvic.com',
@@ -40,7 +39,6 @@ const invalidCertCryptoMock = {
     createPrivateKey: jest.fn().mockReturnValue({}),
 };
 
-// Default mock for file system operations
 const mockFsAccessSync = jest.fn();
 jest.unstable_mockModule('fs', () => ({
     accessSync: mockFsAccessSync,
@@ -50,11 +48,9 @@ jest.unstable_mockModule('fs', () => ({
     existsSync: jest.fn().mockReturnValue(true),
 }));
 
-// Import validateCertConfig for non-crypto dependent tests
 jest.unstable_mockModule('crypto', () => sandboxCryptoMock);
 import { validateCertConfig } from '../../../lib/utils/validation/certificates-validator.mjs';
 
-// Helper function to make tests more DRY by reusing mock setup and module imports
 async function testCertValidation(cryptoMock, testFn) {
     jest.resetModules();
     jest.unstable_mockModule('crypto', () => cryptoMock);
@@ -137,7 +133,6 @@ describe('getExpectedSubject (tested through validateCertContents)', () => {
         jest.resetModules();
     });
 
-    // We'll test this internal function through validateCertContents
     test('should correctly validate sandbox environment subject', async () => {
         await testCertValidation(sandboxCryptoMock, (validateCertContents) => {
             expect(() => {

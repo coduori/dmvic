@@ -1,16 +1,14 @@
-import { jest } from '@jest/globals';
+const {
+    authenticate,
+    initialize,
+    getCertificatePdf,
+    checkStockStatus,
+    cancelCertificate,
+    checkInsuranceStatus,
+    verifyInsuranceCertificate,
+} = await import('../lib/index.mjs');
 
-jest.unstable_mockModule('../lib/api/authenticate.mjs', () => ({
-    authenticate: jest.fn(),
-}));
-
-jest.unstable_mockModule('../lib/api/initialize.mjs', () => ({
-    initialize: jest.fn(),
-}));
-
-const { authenticate, initialize, getCertificatePdf } = await import('../lib/index.mjs');
-
-describe('index.mjs', () => {
+describe('index.mjs exports', () => {
     it('should export authenticate', () => {
         expect(authenticate).toBeDefined();
         expect(typeof authenticate).toBe('function');
@@ -24,5 +22,25 @@ describe('index.mjs', () => {
     it('should export getCertificatePdf', () => {
         expect(getCertificatePdf).toBeDefined();
         expect(typeof getCertificatePdf).toBe('function');
+    });
+
+    it('should export checkStockStatus', () => {
+        expect(checkStockStatus).toBeDefined();
+        expect(typeof checkStockStatus).toBe('function');
+    });
+
+    it('should export cancelCertificate', () => {
+        expect(cancelCertificate).toBeDefined();
+        expect(typeof cancelCertificate).toBe('function');
+    });
+
+    it('should export checkInsuranceStatus', () => {
+        expect(checkInsuranceStatus).toBeDefined();
+        expect(typeof checkInsuranceStatus).toBe('function');
+    });
+
+    it('should export verifyInsuranceCertificate', () => {
+        expect(verifyInsuranceCertificate).toBeDefined();
+        expect(typeof verifyInsuranceCertificate).toBe('function');
     });
 });

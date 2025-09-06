@@ -1,16 +1,13 @@
 import { jest } from '@jest/globals';
 import { mockInMemoryCache } from '../mocks/mocks.mjs';
 
-// Create mock client
 const mockClientInstance = {};
 const mockClientConstructor = jest.fn(() => mockClientInstance);
 
-// Mock cache first
 jest.unstable_mockModule('../../lib/utils/cache.mjs', () => ({
     inMemoryCache: mockInMemoryCache,
 }));
 
-// Mock other dependencies
 jest.unstable_mockModule('undici', () => ({
     Client: mockClientConstructor,
 }));
@@ -37,7 +34,6 @@ jest.unstable_mockModule('../../lib/utils/cert-manager.mjs', () => ({
     getCertificate: mockGetCertificate,
 }));
 
-// Import after all mocks are defined
 let getClient;
 
 beforeAll(async () => {
@@ -47,10 +43,8 @@ beforeAll(async () => {
 
 describe('HTTP Client Module', () => {
     beforeEach(() => {
-        // Reset all mocks
         jest.clearAllMocks();
 
-        // Reset client instance by using the exported reset function
         getClient.reset();
     });
 
@@ -83,7 +77,6 @@ describe('HTTP Client Module', () => {
     });
 
     it('throws error if getSecret fails', () => {
-        // Make getSecret throw an error for this test only
         mockGetSecret.mockImplementationOnce(() => {
             throw new Error('Secret not found');
         });
@@ -92,7 +85,6 @@ describe('HTTP Client Module', () => {
     });
 
     it('throws error if getCertificate fails', () => {
-        // Make getCertificate throw an error for sslKey only
         mockGetCertificate.mockImplementationOnce((key) => {
             if (key === 'sslKey') throw new Error('SSL key error');
             return 'dummy-sslCert';

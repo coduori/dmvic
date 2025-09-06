@@ -1,5 +1,8 @@
 import { jest } from '@jest/globals';
 import { mockInMemoryCache } from '../mocks/mocks.mjs';
+import { generateTestCredentials } from '../factories/test-credential-generator.mjs';
+
+const testCredentials = generateTestCredentials();
 
 jest.unstable_mockModule('../../lib/utils/cache.mjs', () => ({
     inMemoryCache: mockInMemoryCache,
@@ -26,22 +29,22 @@ describe('Configure DMVIC Secrets', () => {
         expect(() => configureSecrets({})).toThrow(
             'Configuration errors: Missing one or more required keys: username, password, clientid, environment. Expected keys are: username, password, clientid, environment.'
         );
-        expect(() => configureSecrets({ username: 'test-user-name' })).toThrow(
+        expect(() => configureSecrets({ username: testCredentials.username })).toThrow(
             'Configuration errors: Missing one or more required keys: password, clientid, environment. Expected keys are: username, password, clientid, environment.'
         );
         expect(() =>
             configureSecrets({
-                username: 'test-user-name',
-                password: 'test-password',
+                username: testCredentials.username,
+                password: testCredentials.password,
             })
         ).toThrow(
             'Configuration errors: Missing one or more required keys: clientid, environment. Expected keys are: username, password, clientid, environment.'
         );
         expect(() =>
             configureSecrets({
-                username: 'test-user-name',
-                password: 'test-password',
-                clientid: 'test-clientId',
+                username: testCredentials.username,
+                password: testCredentials.password,
+                clientid: testCredentials.clientid,
             })
         ).toThrow(
             'Configuration errors: Missing one or more required keys: environment. Expected keys are: username, password, clientid, environment.'
@@ -51,10 +54,10 @@ describe('Configure DMVIC Secrets', () => {
     it('should persist valid secrets configuration', () => {
         expect(() =>
             configureSecrets({
-                username: 'test-user-name',
-                password: 'test-password',
-                clientid: 'test-clientId',
-                environment: 'sandbox',
+                username: testCredentials.username,
+                password: testCredentials.password,
+                clientid: testCredentials.clientid,
+                environment: testCredentials.environment,
             })
         ).not.toThrow();
     });

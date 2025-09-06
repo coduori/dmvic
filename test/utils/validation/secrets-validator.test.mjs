@@ -1,14 +1,16 @@
 import { validateSecretsConfig } from '../../../lib/utils/validation/secrets-validator.mjs';
+import { generateTestCredentials } from '../../factories/test-credential-generator.mjs';
 
 const requiredKeys = ['username', 'password', 'clientid', 'environment'];
+const testCredentials = generateTestCredentials();
 
 describe('validateSecretsConfig', () => {
     it('should not throw an error for a valid configuration', () => {
         const validConfig = {
-            username: 'user123',
-            password: 'password123',
-            clientid: 'abc-xyz',
-            environment: 'dev',
+            username: testCredentials.username,
+            password: testCredentials.password,
+            clientid: testCredentials.clientid,
+            environment: testCredentials.environment,
         };
 
         expect(() => validateSecretsConfig(validConfig, requiredKeys)).not.toThrow();
@@ -44,9 +46,9 @@ describe('Invalid Input Types', () => {
 describe('Missing Keys', () => {
     it('should throw an error when one required key is missing', () => {
         const incompleteConfig = {
-            username: 'user123',
-            password: 'password123',
-            clientid: 'abc-xyz',
+            username: testCredentials.username,
+            password: testCredentials.password,
+            clientid: testCredentials.clientid,
         };
         expect(() => validateSecretsConfig(incompleteConfig, requiredKeys)).toThrow(
             'Configuration errors: Missing one or more required keys: environment. Expected keys are: username, password, clientid, environment.'
@@ -55,7 +57,7 @@ describe('Missing Keys', () => {
 
     it('should throw an error when multiple required keys are missing', () => {
         const incompleteConfig = {
-            username: 'user123',
+            username: testCredentials.username,
         };
         expect(() => validateSecretsConfig(incompleteConfig, requiredKeys)).toThrow(
             'Configuration errors: Missing one or more required keys: password, clientid, environment. Expected keys are: username, password, clientid, environment.'
@@ -66,10 +68,10 @@ describe('Missing Keys', () => {
 describe('Invalid and Extra Keys', () => {
     it('should throw an error when an invalid key is provided', () => {
         const invalidConfig = {
-            username: 'user123',
-            password: 'password123',
-            clientid: 'abc-xyz',
-            environment: 'dev',
+            username: testCredentials.username,
+            password: testCredentials.password,
+            clientid: testCredentials.clientid,
+            environment: testCredentials.environment,
             api_key: 'xyz-123',
         };
         expect(() => validateSecretsConfig(invalidConfig, requiredKeys)).toThrow(
@@ -81,8 +83,8 @@ describe('Invalid and Extra Keys', () => {
 describe('Mixed Errors', () => {
     it('should throw an error when invalid keys are present', () => {
         const mixedConfig = {
-            username: 'user123',
-            clientid: 'abc-xyz',
+            username: testCredentials.username,
+            clientid: testCredentials.clientid,
             invalidKey: 'value',
         };
         expect(() => validateSecretsConfig(mixedConfig, requiredKeys)).toThrow(

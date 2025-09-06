@@ -1,5 +1,8 @@
 import { jest } from '@jest/globals';
-// Mock the cache first
+import { generateTestCredentials } from '../factories/test-credential-generator.mjs';
+
+const testCredentials = generateTestCredentials();
+
 const mockInMemoryCache = {
     data: {},
     has: jest.fn((key) => key in mockInMemoryCache.data),
@@ -16,7 +19,6 @@ jest.unstable_mockModule('../../lib/utils/cache.mjs', () => ({
     inMemoryCache: mockInMemoryCache,
 }));
 
-// Mock validation functions
 const mockValidateCertConfig = jest.fn((config) => config);
 const mockValidateFilePaths = jest.fn();
 const mockValidateCertContents = jest.fn();
@@ -27,7 +29,6 @@ jest.unstable_mockModule('../../lib/utils/validation/certificates-validator.mjs'
     validateCertContents: mockValidateCertContents,
 }));
 
-// Mock FS operations
 const mockReadFileSync = jest.fn().mockReturnValue('mocked-cert-content');
 jest.unstable_mockModule('fs', () => ({
     readFileSync: mockReadFileSync,
@@ -36,13 +37,11 @@ jest.unstable_mockModule('fs', () => ({
     existsSync: jest.fn().mockReturnValue(true),
 }));
 
-// Mock secrets validator
 const mockValidateSecretsConfig = jest.fn();
 jest.unstable_mockModule('../../lib/utils/validation/secrets-validator.mjs', () => ({
     validateSecretsConfig: mockValidateSecretsConfig,
 }));
 
-// Import the module under test after all mocks are set up
 let initialize;
 
 beforeAll(async () => {
@@ -100,29 +99,26 @@ describe('initialize DMVIC Configurations', () => {
     });
 
     it('should throw an error for missing certificate configurations', async () => {
-        mockValidateSecretsConfig.mockImplementation(() => {}); // Don't throw for secrets
+        mockValidateSecretsConfig.mockImplementation(() => {});
 
-        // First case: both sslKey and sslCert are missing
         mockValidateCertConfig.mockImplementationOnce(() => {
             throw new Error('Configuration errors: sslKey is required; sslCert is required');
         });
 
-        // Set environment in the mock cache first to avoid "environment not configured" error
         mockInMemoryCache.data.environment = 'sandbox';
 
         await expect(
             initialize({
                 secrets: {
-                    username: 'test-user-name',
-                    password: 'test-password',
-                    clientid: 'test-clientId',
-                    environment: 'sandbox',
+                    username: testCredentials.username,
+                    password: testCredentials.password,
+                    clientid: testCredentials.clientid,
+                    environment: testCredentials.environment,
                 },
                 certificates: {},
             })
         ).rejects.toThrow('Configuration errors: sslKey is required; sslCert is required');
 
-        // Second case: sslCert is missing
         mockValidateCertConfig.mockImplementationOnce(() => {
             throw new Error('Configuration errors: sslCert is required');
         });
@@ -130,10 +126,10 @@ describe('initialize DMVIC Configurations', () => {
         await expect(
             initialize({
                 secrets: {
-                    username: 'test-user-name',
-                    password: 'test-password',
-                    clientid: 'test-clientId',
-                    environment: 'sandbox',
+                    username: testCredentials.username,
+                    password: testCredentials.password,
+                    clientid: testCredentials.clientid,
+                    environment: testCredentials.environment,
                 },
                 certificates: {
                     sslKey: '/path/to/test/sslKey.pem',
@@ -151,10 +147,10 @@ describe('initialize DMVIC Configurations', () => {
         await expect(
             initialize({
                 secrets: {
-                    username: 'test-user-name',
-                    password: 'test-password',
-                    clientid: 'test-clientId',
-                    environment: 'sandbox',
+                    username: testCredentials.username,
+                    password: testCredentials.password,
+                    clientid: testCredentials.clientid,
+                    environment: testCredentials.environment,
                 },
                 certificates: {
                     sslKey: '/path/to/test/sslKey.pem',
@@ -163,13 +159,14 @@ describe('initialize DMVIC Configurations', () => {
             })
         ).resolves.toBeUndefined();
 
-        // Check if the secrets were set in the cache
-        expect(mockInMemoryCache.set).toHaveBeenCalledWith('username', 'test-user-name');
-        expect(mockInMemoryCache.set).toHaveBeenCalledWith('password', 'test-password');
-        expect(mockInMemoryCache.set).toHaveBeenCalledWith('clientid', 'test-clientId');
-        expect(mockInMemoryCache.set).toHaveBeenCalledWith('environment', 'sandbox');
+        expect(mockInMemoryCache.set).toHaveBeenCalledWith('username', testCredentials.username);
+        expect(mockInMemoryCache.set).toHaveBeenCalledWith('password', testCredentials.password);
+        expect(mockInMemoryCache.set).toHaveBeenCalledWith('clientid', testCredentials.clientid);
+        expect(mockInMemoryCache.set).toHaveBeenCalledWith(
+            'environment',
+            testCredentials.environment
+        );
 
-        // Check if certificates content was also set
         expect(mockInMemoryCache.set).toHaveBeenCalledWith('sslKey', 'mocked-cert-content');
         expect(mockInMemoryCache.set).toHaveBeenCalledWith('sslCert', 'mocked-cert-content');
     });
