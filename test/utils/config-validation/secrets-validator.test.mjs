@@ -1,4 +1,4 @@
-import { validateSecretsConfig } from '../../../lib/utils/validation/secrets-validator.mjs';
+import { validateSecretsConfig } from '../../../lib/utils/config-validation/secrets-validator.mjs';
 import { generateTestCredentials } from '../../factories/test-credential-generator.mjs';
 
 const requiredKeys = ['username', 'password', 'clientid', 'environment'];

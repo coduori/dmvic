@@ -10,7 +10,7 @@ const generateCredential = (prefix, seed = 'dmvic-test') => {
     return `${prefix}_${hash}`;
 };
 
-export const createMockSecretsManager = (customCredentials = {}) => {
+export const createMockSecretsHandler = (customCredentials = {}) => {
     const defaultCredentials = {
         username: generateCredential('user'),
         password: generateCredential('pass'),

@@ -1,15 +1,15 @@
 import {
     createMockInMemoryCache,
     createMockHttpClient,
-    createMockSecretsManager,
+    createMockSecretsHandler,
     createMockRequestHandler,
     createMockApiConfig,
 } from '../factories/mock-factory.mjs';
 
 const mockInMemoryCache = createMockInMemoryCache();
 const mockHttpClient = createMockHttpClient();
-const mockSecretsManager = createMockSecretsManager();
-const mockGetSecret = mockSecretsManager.getSecret;
+const mockSecretsHandler = createMockSecretsHandler();
+const mockGetSecret = mockSecretsHandler.getSecret;
 const mockRequestHandler = createMockRequestHandler();
 const mockInvoke = mockRequestHandler.invoke;
 const mockApiConfig = createMockApiConfig();
@@ -22,6 +22,6 @@ export {
     mockInvoke,
     mockRequest,
     mockRequestHandler,
-    mockSecretsManager,
+    mockSecretsHandler,
     mockInMemoryCache,
 };

@@ -4,16 +4,16 @@ import {
     mockApiConfig,
     mockInvoke,
     mockRequestHandler,
-    mockSecretsManager,
+    mockSecretsHandler,
 } from '../mocks/mocks.mjs';
 
 jest.unstable_mockModule('../../lib/config/api-configs.mjs', () => mockApiConfig);
 jest.unstable_mockModule('../../lib/utils/request-handler.mjs', () => mockRequestHandler);
-jest.unstable_mockModule('../../lib/utils/secrets-manager.mjs', () => mockSecretsManager);
+jest.unstable_mockModule('../../lib/utils/secrets-handler.mjs', () => mockSecretsHandler);
 
 const { authenticate } = await import('../../lib/api/authenticate.mjs');
 const { getAPIBaseURL } = await import('../../lib/config/api-configs.mjs');
-const { getSecret } = await import('../../lib/utils/secrets-manager.mjs');
+const { getSecret } = await import('../../lib/utils/secrets-handler.mjs');
 
 describe('authenticate', () => {
     beforeEach(() => {
@@ -42,8 +42,8 @@ describe('authenticate', () => {
     });
 
     it('should call invoke with correct arguments', async () => {
-        const username = mockSecretsManager.getSecret('username');
-        const password = mockSecretsManager.getSecret('password');
+        const username = mockSecretsHandler.getSecret('username');
+        const password = mockSecretsHandler.getSecret('password');
 
         await authenticate();
         expect(mockInvoke).toHaveBeenCalledWith(

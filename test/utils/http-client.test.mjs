@@ -21,7 +21,7 @@ const mockGetSecret = jest.fn((key) => {
     if (key === 'environment') return 'sandbox';
     throw new Error(`Secret "${key}" is not configured.`);
 });
-jest.unstable_mockModule('../../lib/utils/secrets-manager.mjs', () => ({
+jest.unstable_mockModule('../../lib/utils/secrets-handler.mjs', () => ({
     getSecret: mockGetSecret,
 }));
 
@@ -30,7 +30,7 @@ const mockGetCertificate = jest.fn((key) => {
     if (key === 'sslCert') return 'dummy-sslCert';
     throw new Error(`Dev Error::: Unexpected certificate key: ${key}`);
 });
-jest.unstable_mockModule('../../lib/utils/cert-manager.mjs', () => ({
+jest.unstable_mockModule('../../lib/utils/certificates-handler.mjs', () => ({
     getCertificate: mockGetCertificate,
 }));
 

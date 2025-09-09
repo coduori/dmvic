@@ -11,7 +11,7 @@ jest.unstable_mockModule('../../lib/utils/cache.mjs', () => ({
 let configureSecrets, getSecret;
 
 beforeAll(async () => {
-    const secretsManager = await import('../../lib/utils/secrets-manager.mjs');
+    const secretsManager = await import('../../lib/utils/secrets-handler.mjs');
     configureSecrets = secretsManager.configureSecrets;
     getSecret = secretsManager.getSecret;
 });

@@ -8,7 +8,7 @@ const mockGetSecret = jest.fn(() => 'testClientId');
 jest.unstable_mockModule('../../lib/utils/http-client.mjs', () => ({
     getClient: mockGetClient,
 }));
-jest.unstable_mockModule('../../lib/utils/secrets-manager.mjs', () => ({
+jest.unstable_mockModule('../../lib/utils/secrets-handler.mjs', () => ({
     getSecret: mockGetSecret,
 }));
 
