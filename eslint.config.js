@@ -70,6 +70,7 @@ export default [
                 { max: 40, skipBlankLines: true, skipComments: true },
             ],
             'no-duplicate-imports': 'error',
+            'no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
         },
     },
 
@@ -108,7 +109,7 @@ export default [
     },
 
     {
-        files: ['eslint.config.js'],
+        files: ['**/payload-schema.mjs', 'eslint.config.js'],
         rules: {
             'max-lines': 'off',
         },
