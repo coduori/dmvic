@@ -6,7 +6,7 @@ import {
     mockRequestHandler,
     mockSecretsHandler,
 } from '../mocks/mocks.mjs';
-import { getDateToday, getOneYearFromToday } from '../../lib/utils/standard-date-format.mjs';
+import { getDateToday, getAnnualExpiry } from '../../lib/utils/standard-date-format.mjs';
 
 jest.unstable_mockModule('../../lib/utils/request-handler.mjs', () => mockRequestHandler);
 jest.unstable_mockModule('../../lib/config/api-configs.mjs', () => mockApiConfig);
@@ -72,7 +72,7 @@ describe('check vehicle insurance status', () => {
                     vehicleregistrationnumber: payload.registrationNumber,
                     chassisnumber: payload.chassisNumber,
                     policystartdate: getDateToday(),
-                    policyenddate: getOneYearFromToday(),
+                    policyenddate: getAnnualExpiry(),
                 },
                 'token123'
             );

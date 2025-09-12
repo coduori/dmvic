@@ -1,6 +1,6 @@
 import {
     getDateToday,
-    getOneYearFromToday,
+    getAnnualExpiry,
     standardizeDateFormat,
 } from '../../lib/utils/standard-date-format.mjs';
 
@@ -28,11 +28,15 @@ describe('Date formatting utilities', () => {
         expect(getDateToday()).toBe(expected);
     });
 
-    it('should return the date one year from today in DD/MM/YYYY format', () => {
+    it('should return the date 365 or 366 days from today in DD/MM/YYYY format', () => {
         const today = new Date();
-        const nextYear = new Date(today);
-        nextYear.setFullYear(today.getFullYear() + 1);
-        const expected = nextYear.toLocaleDateString('en-GB');
-        expect(getOneYearFromToday()).toBe(expected);
+        const year = today.getFullYear();
+        const nextYear = year + 1;
+        const isLeap = (nextYear % 4 === 0 && nextYear % 100 !== 0) || nextYear % 400 === 0;
+        const daysToAdd = isLeap ? 366 : 365;
+        const expectedDate = new Date(today);
+        expectedDate.setDate(expectedDate.getDate() + (daysToAdd - 1));
+        const expected = expectedDate.toLocaleDateString('en-GB');
+        expect(getAnnualExpiry()).toBe(expected);
     });
 });
