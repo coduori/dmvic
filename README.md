@@ -33,6 +33,7 @@ yarn install dmvic
 - Cancel Certificate Issuance
 - Check Insurance Status
 - Verify Insurance Certificate
+- Request Insurance Certificate
 
 ## Usage
 
@@ -110,8 +111,6 @@ All subsequent requests to DMVIC will require you to pass the token along when m
 Before requesting for a motor vehicle insurance certificate as an intermediary, the target insurance company
 should have allocated stock to your DMVIC account. This feature enables checking the stock count that has been provided by the insurance company. When the stock is 0, you cannot succesfully request for a motor vehicle certificate and thus you need to request for stock replenishment from the insurance company.
 
-> **Note:** The insurance company ID required as input in the `checkStockStatus()` function is provided by DMVIC and is not an arbitrary number. See below the list of supported companies and their matching DMVIC IDs.
-
 <div>
 
 ```javascript
@@ -141,44 +140,6 @@ The stock count response is organised according to the types of motor vehicle in
     "Stock": 100
 },
 ```
-
-#### Member Company IDs
-
-| Company Name       | DMVIC Member Company ID |
-| ------------------ | :---------------------: |
-| AIG                |           12            |
-| AMACO              |           11            |
-| APA                |           14            |
-| Britam Insurance   |           15            |
-| Cannon             |           32            |
-| CIC                |           16            |
-| Definite Insurance |           49            |
-| Directline         |           18            |
-| Fidelity Insurance |           19            |
-| First Assurance    |           20            |
-| GA Insurance       |           21            |
-| Geminia            |           22            |
-| Heritage           |           42            |
-| ICEA Lion          |           23            |
-| Kenindia           |           27            |
-| Intraafrica        |           24            |
-| Invesco            |           29            |
-| Jubilee Allianz    |           26            |
-| Kenya Alliance     |           29            |
-| Kenya Orient       |           28            |
-| Madison            |           30            |
-| Mayfair            |           31            |
-| MUA                |           35            |
-| Monarch            |           43            |
-| Old Mutual         |           45            |
-| Occidental         |           33            |
-| Pacis              |           34            |
-| Pioneer            |           36            |
-| Sanlam             |           39            |
-| Star Discover      |           47            |
-| Takaful            |           40            |
-| Trident            |           44            |
-| Xplico             |           46            |
 
 ### Get Certificate PDF document
 
@@ -328,7 +289,7 @@ preIssuanceCheck('KKA12A', 'AT211-7689809');
 
 This feature helps in verifying the validity of a motor vehicle insurance certificate.
 Vehicle insurance certificate verification is important in preventing and minimizing insurance fraud.
-It is recommended to pass either one of the registration or chassis number because if provided chasis does not match the provided vehicle registration, the response returned by DMVIC will not be accurate.
+It is recommended to pass either one of the registration or chassis number because if both are provided and the chasis does not match the provided vehicle registration, the response returned by DMVIC will not be accurate.
 
 #### Example
 
@@ -449,6 +410,48 @@ checkInsuranceCertificateValidity('KKA12A', 'AT211-7689809', 'B12984443');
     "APIRequestNumber": "UAT-OIC9582",
     "DMVICRefNo": null
 }
+```
+
+### Request Insurance Certificate
+
+This is the core feature for DMVIC. It request requests for a motor vehicle certificate from DMVIC. When calling this endpoint in production, ensure the provided data is accurate and necessary payments have been made to avoid legal complications. Ensure the insurer has accorded the necessary stock to request for the certificate. You can check your stock levels using the check stock feature.
+
+#### Example
+
+```javascript
+import { requestClassACertificate } from 'dmvic';
+
+import { getDMVICAuthToken } from './authenticate.mjs';
+import { initializeDMVIC } from './initialize.mjs';
+
+async function main() {
+    await initializeDMVIC();
+
+    const authToken = await getDMVICAuthToken();
+    const response = await requestClassACertificate(authToken, {
+        insurer: 'MONARCH',
+        coverType: 'COMP'
+        policyHolderFullName: 'John Doe',
+        policyNumber: 'MON/TEST/COMP/001',
+        commencingDate: '01/01/2026',
+        expiringDate: '31/12/2026',
+        vehicleChassisNumber: '1G6SD5P98FV489725',
+        vehicleEngineNumber: 'C8N-725-H8J-9842',
+        vehicleValue: 1500000,
+        vehicleYearOfManufacture: 2020,
+        vehicleBodyType: 'SUV',
+        certificateType: 1,
+        passengerCount: 5000,
+        recipientPhoneNumber: '712345678',
+        recipientEmail: 'iconcept24@gmail.com',
+        vehicleMake: 'rrr',
+        vehicleModel: 'eee',
+        policyHolderKRAPIN: 'P123456789A',
+        vehicleRegistrationNumber: 'K7YY9CKELC',
+    });
+}
+
+main();
 ```
 
 ## License
