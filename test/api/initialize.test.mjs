@@ -114,6 +114,7 @@ describe('initialize DMVIC Configurations', () => {
                     password: testCredentials.password,
                     clientid: testCredentials.clientid,
                     environment: testCredentials.environment,
+                    includeoptionaldata: testCredentials.includeoptionaldata,
                 },
                 certificates: {},
             })
@@ -130,6 +131,7 @@ describe('initialize DMVIC Configurations', () => {
                     password: testCredentials.password,
                     clientid: testCredentials.clientid,
                     environment: testCredentials.environment,
+                    includeoptionaldata: testCredentials.includeoptionaldata,
                 },
                 certificates: {
                     sslKey: '/path/to/test/sslKey.pem',
@@ -151,6 +153,7 @@ describe('initialize DMVIC Configurations', () => {
                     password: testCredentials.password,
                     clientid: testCredentials.clientid,
                     environment: testCredentials.environment,
+                    includeoptionaldata: testCredentials.includeoptionaldata,
                 },
                 certificates: {
                     sslKey: '/path/to/test/sslKey.pem',
