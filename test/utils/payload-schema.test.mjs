@@ -6,6 +6,7 @@ import {
     CERTIFICATE_TYPE_OPTIONS,
     CLASS_A_CERTIFICATE_TYPE_OPTIONS,
     CLASS_D_CERTIFICATE_TYPE_OPTIONS,
+    COVER_TYPE_OPTIONS,
     INSURERS,
     MOTOR_CLASS_OPTIONS,
     MOTOR_CLASS_OPTIONS_WITH_CERTIFICATE_TYPE,
@@ -192,9 +193,39 @@ describe('Certificate Issuance Payload Schema', () => {
     });
 
     describe('coverType field validation', () => {
-        it('should throw ValidationError for nullish values', () => {});
-        it('should throw ValidationError when field is missing', () => {});
-        it('should accept only valid coverType enum values', () => {});
+        it.each(nullishValues)(
+            'should throw ValidationError for nullish values: %s',
+            (description, nullishValue) => {
+                const payload = getCertificateRequestPayload();
+
+                expect(() =>
+                    certificateIssuanceSchema.validateSync({ ...payload, coverType: nullishValue })
+                ).toThrow();
+            }
+        );
+        it('should throw ValidationError when field is missing', () => {
+            const payload = getCertificateRequestPayload();
+            delete payload.coverType;
+
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
+        it.each(Object.keys(COVER_TYPE_OPTIONS))(
+            'should accept valid coverType enum values: %s',
+            (coverType) => {
+                const payload = getCertificateRequestPayload({ coverType });
+
+                expect(() => certificateIssuanceSchema.validateSync(payload)).not.toThrow();
+            }
+        );
+        it.each(['comp', 'tpo', 'tptf', 'test', 12, new Date(), {}, []])(
+            'should reject invalid enum values: %s',
+            (invalidValue) => {
+                const payload = getCertificateRequestPayload();
+                payload.coverType = invalidValue;
+
+                expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+            }
+        );
     });
 
     describe('policyHolderFullName field validation', () => {
