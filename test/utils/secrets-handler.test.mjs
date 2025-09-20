@@ -49,7 +49,7 @@ describe('Configure DMVIC Secrets', () => {
         ).toThrow(
             'Configuration errors: Missing one or more required keys: environment, includeoptionaldata. Expected keys are: username, password, clientid, environment, includeoptionaldata.'
         );
-                expect(() =>
+        expect(() =>
             configureSecrets({
                 username: testCredentials.username,
                 password: testCredentials.password,

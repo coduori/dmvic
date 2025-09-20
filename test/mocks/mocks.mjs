@@ -4,6 +4,7 @@ import {
     createMockSecretsHandler,
     createMockRequestHandler,
     createMockApiConfig,
+    createMockPayloadSchema,
 } from '../factories/mock-factory.mjs';
 
 const mockInMemoryCache = createMockInMemoryCache();
@@ -14,6 +15,7 @@ const mockRequestHandler = createMockRequestHandler();
 const mockInvoke = mockRequestHandler.invoke;
 const mockApiConfig = createMockApiConfig();
 const mockRequest = mockHttpClient.__mockRequest;
+const mockPayloadSchema = createMockPayloadSchema();
 
 export {
     mockApiConfig,
@@ -24,4 +26,5 @@ export {
     mockRequestHandler,
     mockSecretsHandler,
     mockInMemoryCache,
+    mockPayloadSchema,
 };

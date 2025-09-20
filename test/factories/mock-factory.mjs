@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
 import crypto from 'crypto';
+import { object, string, number, date } from 'yup';
 
 const generateCredential = (prefix, seed = 'dmvic-test') => {
     const hash = crypto
@@ -16,6 +17,7 @@ export const createMockSecretsHandler = (customCredentials = {}) => {
         password: generateCredential('pass'),
         clientid: generateCredential('client'),
         environment: 'test',
+        includeoptionaldata: false,
     };
 
     const credentials = { ...defaultCredentials, ...customCredentials };
@@ -73,3 +75,12 @@ export const createMockApiConfig = () => ({
     },
     getAPIBaseURL: jest.fn((environment) => `https://${environment}-api.example.com`),
 });
+
+export const createMockPayloadSchema = () => {
+    return object({
+        insurer: string().required().oneOf(['AIG', 'Jubilee', 'Britam']),
+        passengerCount: number().min(1).max(50).notRequired(),
+        policyHolderFullName: string().required().trim().min(1).max(50),
+        commencingDate: date().required(),
+    });
+};
