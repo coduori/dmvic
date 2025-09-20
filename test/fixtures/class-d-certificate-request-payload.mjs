@@ -4,7 +4,7 @@ import {
     MOTOR_CLASS_OPTIONS,
     CLASS_D_CERTIFICATE_TYPE_OPTIONS_COMMERCIAL,
     CLASS_D_CERTIFICATE_TYPE_OPTIONS_WITH_PASSENGERS,
-    CERTIFICATE_TYPE_OPTIONS,
+    CLASS_D_CERTIFICATE_TYPE_OPTIONS,
 } from '../../lib/utils/constants.mjs';
 import { getBaseRequestPayload } from './base-payload.mjs';
 
@@ -14,7 +14,7 @@ const basePayload = getBaseRequestPayload({ motorClass: MOTOR_CLASS_OPTIONS.CLAS
 
 const getClassDCertificateRequestPayload = (overrides = {}) => {
     if (!('certificateType' in overrides)) {
-        overrides.certificateType = chance.pickone(Object.keys(CERTIFICATE_TYPE_OPTIONS));
+        overrides.certificateType = chance.pickone(Object.keys(CLASS_D_CERTIFICATE_TYPE_OPTIONS));
     }
 
     const coverType = overrides.coverType || basePayload.coverType;

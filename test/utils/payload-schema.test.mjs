@@ -1,8 +1,20 @@
 import { describe } from '@jest/globals';
+import Chance from 'chance';
 
 import { certificateIssuanceSchema } from '../../lib/utils/payload-schema.mjs';
-import { INSURERS, MOTOR_CLASS_OPTIONS } from '../../lib/utils/constants.mjs';
+import {
+    CERTIFICATE_TYPE_OPTIONS,
+    CLASS_A_CERTIFICATE_TYPE_OPTIONS,
+    CLASS_D_CERTIFICATE_TYPE_OPTIONS,
+    INSURERS,
+    MOTOR_CLASS_OPTIONS,
+    MOTOR_CLASS_OPTIONS_WITH_CERTIFICATE_TYPE,
+} from '../../lib/utils/constants.mjs';
 import { getCertificateRequestPayload } from '../fixtures/certificate-request-payload.mjs';
+import { getClassBCertificateRequestPayload } from '../fixtures/class-b-certificate-request-payload.mjs';
+import { getClassCCertificateRequestPayload } from '../fixtures/class-c-certificate-request-payload.mjs';
+import { getClassACertificateRequestPayload } from '../fixtures/class-a-certificate-request-payload.mjs';
+import { getClassDCertificateRequestPayload } from '../fixtures/class-d-certificate-request-payload.mjs';
 
 const nullishValues = [
     ['missing (undefined)', undefined],
@@ -12,6 +24,8 @@ const nullishValues = [
     ['zero', 0],
     ['false', false],
 ];
+
+const chance = new Chance();
 
 // eslint-disable-next-line max-lines-per-function
 describe('Certificate Issuance Payload Schema', () => {
@@ -90,19 +104,91 @@ describe('Certificate Issuance Payload Schema', () => {
             }
         );
         it('should throw ValidationError for missing certificateType if it is required', () => {
-            const classAPayload = getCertificateRequestPayload();
-            classAPayload.certificateType = undefined;
+            const payload = getCertificateRequestPayload({
+                motorClass: chance.pickone(
+                    Object.values(MOTOR_CLASS_OPTIONS_WITH_CERTIFICATE_TYPE)
+                ),
+            });
+            payload.certificateType = undefined;
+
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
+        it.each(Object.keys(CERTIFICATE_TYPE_OPTIONS))(
+            'should accept only valid certificateType enum values',
+            (validCertificateType) => {
+                const selectedMotorClass = chance.pickone(
+                    Object.values(MOTOR_CLASS_OPTIONS_WITH_CERTIFICATE_TYPE)
+                );
+                const payload = getCertificateRequestPayload({
+                    motorClass: selectedMotorClass,
+                    certificateType: validCertificateType,
+                });
+
+                expect(() => certificateIssuanceSchema.validateSync(payload).not.toThrow());
+            }
+        );
+        it('should be allowed for class A and D only', () => {
+            const classBPayload = getClassBCertificateRequestPayload();
+            const classCPayload = getClassCCertificateRequestPayload();
+            const certificateType = chance.pickone(Object.keys(CERTIFICATE_TYPE_OPTIONS));
+
+            expect(() =>
+                certificateIssuanceSchema.validateSync({ ...classBPayload, certificateType })
+            ).toThrow();
+            expect(() =>
+                certificateIssuanceSchema.validateSync({ ...classCPayload, certificateType })
+            ).toThrow();
+        });
+        it.each(Object.keys(CLASS_D_CERTIFICATE_TYPE_OPTIONS))(
+            `should reject enum values that don't belong to class A: %s`,
+            (invalidCertificateType) => {
+                const classAPayload = getClassACertificateRequestPayload();
+
+                expect(() =>
+                    certificateIssuanceSchema.validateSync({
+                        ...classAPayload,
+                        certificateType: invalidCertificateType,
+                    })
+                ).toThrow();
+            }
+        );
+        it.each(Object.keys(CLASS_A_CERTIFICATE_TYPE_OPTIONS))(
+            `should reject enum values that don't belong to class D`,
+            (invalidCertificateType) => {
+                const classDPayload = getClassDCertificateRequestPayload();
+
+                expect(() =>
+                    certificateIssuanceSchema.validateSync({
+                        ...classDPayload,
+                        certificateType: invalidCertificateType,
+                    })
+                ).toThrow();
+            }
+        );
+        it('should be required when motorClass is A', () => {
+            const classAPayload = getClassACertificateRequestPayload();
+            delete classAPayload.certificateType;
 
             expect(() => certificateIssuanceSchema.validateSync(classAPayload)).toThrow();
         });
-        it('should accept only valid certificateType enum values', () => {});
-        it('should be allowed for class A and D only', () => {});
-        it(`should reject enum values that don't belong to class A`, () => {});
-        it(`should reject enum values that don't belong to class D`, () => {});
-        it('should be required when motorClass is A', () => {});
-        it('should be required when motorClass is D', () => {});
-        it('should not be required when motorClass is B', () => {});
-        it('should not be required when motorClass is C', () => {});
+        it('should be required when motorClass is D', () => {
+            const classDPayload = getClassDCertificateRequestPayload();
+            delete classDPayload.certificateType;
+
+            expect(() => certificateIssuanceSchema.validateSync(classDPayload)).toThrow();
+        });
+        it('should not be required when motorClass is B', () => {
+            const classBPayload = getClassBCertificateRequestPayload();
+            classBPayload.certificateType = chance.pickone(Object.keys(CERTIFICATE_TYPE_OPTIONS));
+
+            expect(() => certificateIssuanceSchema.validateSync(classBPayload)).toThrow();
+        });
+        it('should not be required when motorClass is C', () => {
+            const classCPayload = getClassCCertificateRequestPayload();
+            classCPayload.certificateType = chance.pickone(Object.keys(CERTIFICATE_TYPE_OPTIONS));
+
+            expect(() => certificateIssuanceSchema.validateSync(classCPayload)).toThrow();
+        });
     });
 
     describe('coverType field validation', () => {
