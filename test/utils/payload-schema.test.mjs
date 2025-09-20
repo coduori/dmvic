@@ -230,8 +230,22 @@ describe('Certificate Issuance Payload Schema', () => {
 
     describe('policyHolderFullName field validation', () => {
         it('should throw ValidationError when field is missing', () => {});
-        it('should throw ValidationError for nullish values', () => {});
-        it('should reject values longer than 50 characters', () => {});
+        it.each(nullishValues)(
+            'should throw ValidationError for nullish values: %s',
+            (description, nullishValue) => {
+                const payload = getCertificateRequestPayload();
+                payload.policyHolderFullName = nullishValue;
+
+                expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+            }
+        );
+        it('should reject values longer than 50 characters', () => {
+            const payload = getCertificateRequestPayload();
+            const stringLength = chance.integer({ min: 51, max: 1000 });
+            payload.policyHolderFullName = chance.string({ length: stringLength});
+
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
     });
 
     describe('policyNumber field validation', () => {
