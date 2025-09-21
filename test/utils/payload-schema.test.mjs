@@ -16,6 +16,9 @@ import { getClassBCertificateRequestPayload } from '../fixtures/class-b-certific
 import { getClassCCertificateRequestPayload } from '../fixtures/class-c-certificate-request-payload.mjs';
 import { getClassACertificateRequestPayload } from '../fixtures/class-a-certificate-request-payload.mjs';
 import { getClassDCertificateRequestPayload } from '../fixtures/class-d-certificate-request-payload.mjs';
+import { getAnnualExpiry } from '../../lib/utils/standard-date-format.mjs';
+
+const chance = new Chance();
 
 const nullishValues = [
     ['missing (undefined)', undefined],
@@ -25,8 +28,6 @@ const nullishValues = [
     ['zero', 0],
     ['false', false],
 ];
-
-const chance = new Chance();
 
 // eslint-disable-next-line max-lines-per-function
 describe('Certificate Issuance Payload Schema', () => {
@@ -242,25 +243,100 @@ describe('Certificate Issuance Payload Schema', () => {
         it('should reject values longer than 50 characters', () => {
             const payload = getCertificateRequestPayload();
             const stringLength = chance.integer({ min: 51, max: 1000 });
-            payload.policyHolderFullName = chance.string({ length: stringLength});
 
+            payload.policyHolderFullName = chance.string({ length: stringLength });
             expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
         });
     });
 
     describe('policyNumber field validation', () => {
-        it('should throw ValidationError when field is missing', () => {});
-        it('should throw ValidationError for nullish values', () => {});
-        it('should reject values longer than 50 characters', () => {});
+        it('should throw ValidationError when field is missing', () => {
+            const payload = getCertificateRequestPayload();
+            delete payload.policyNumber;
+
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
+        it.each(nullishValues)(
+            'should throw ValidationError for nullish values: %s',
+            (description, nullishValue) => {
+                const payload = getCertificateRequestPayload();
+                payload.policyNumber = nullishValue;
+
+                expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+            }
+        );
+        it('should reject values longer than 50 characters', () => {
+            const stringLength = chance.integer({ min: 51, max: 1000 });
+            const payload = getCertificateRequestPayload();
+            payload.policyNumber = chance.string({ length: stringLength });
+        });
     });
 
     describe('commencingDate field validation', () => {
-        it('should throw ValidationError when field is missing', () => {});
-        it('should throw ValidationError for nullish values', () => {});
-        it('should only accept dates in valid formats', () => {});
-        it('should accept popular date formats', () => {});
-        it('should reject dates before current date', () => {});
-        it('should reject dates more than 1 year from current date', () => {});
+        it('should throw ValidationError when field is missing', () => {
+            const payload = getCertificateRequestPayload();
+            delete payload.commencingDate;
+
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
+        it.each(nullishValues)(
+            'should throw ValidationError for nullish values: %s',
+            (description, nullishValue) => {
+                const payload = getCertificateRequestPayload();
+                payload.commencingDate = nullishValue;
+
+                expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+            }
+        );
+        it('should accept ISO 8601 date format', () => {
+            const payload = getCertificateRequestPayload();
+            payload.commencingDate = new Date(payload.commencingDate).toISOString();
+            expect(() => certificateIssuanceSchema.validateSync(payload)).not.toThrow();
+        });
+
+        it('should accept RFC 1123 date format', () => {
+            const payload = getCertificateRequestPayload();
+            payload.commencingDate = new Date(payload.commencingDate).toUTCString();
+            expect(() => certificateIssuanceSchema.validateSync(payload)).not.toThrow();
+        });
+
+        it('should reject Unix Timestamp date format', () => {
+            const payload = getCertificateRequestPayload();
+            payload.commencingDate = new Date(payload.commencingDate).getTime();
+
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+            expect(() =>
+                certificateIssuanceSchema.validateSync({
+                    ...payload,
+                    commencingDate: new Date(payload.commencingDate).getTime().toString(),
+                })
+            ).toThrow();
+        });
+
+        it('should reject dates before current date', () => {
+            const payload = getCertificateRequestPayload();
+            const currentCommencingDate = new Date(payload.commencingDate);
+            const daysToSubtract = chance.integer({ min: 1 });
+            payload.commencingDate = currentCommencingDate.setDate(
+                currentCommencingDate.getDate() - daysToSubtract
+            );
+
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
+        it('should reject dates more than 1 year from current date', () => {
+            const currentDate = new Date();
+            const daysToAdd = chance.integer({ min: 366, max: 1000 });
+            const oneYearAfter = new Date(currentDate);
+            const oneYearAfterCurrentDate = new Date(
+                oneYearAfter.setDate(oneYearAfter.getDate() + daysToAdd)
+            );
+
+            const payload = getCertificateRequestPayload();
+            payload.commencingDate = oneYearAfterCurrentDate;
+            payload.expiringDate = getAnnualExpiry(oneYearAfterCurrentDate);
+
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
     });
 
     describe('expiringDate field validation', () => {
