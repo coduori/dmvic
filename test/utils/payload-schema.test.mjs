@@ -13,6 +13,9 @@ import {
     MOTOR_CLASS_OPTIONS,
     MOTOR_CLASS_OPTIONS_WITH_CERTIFICATE_TYPE,
     MOTOR_CLASS_OPTIONS_WITH_PASSENGERS,
+    VALUATION_COVER_TYPES_OPTION,
+    KRA_PIN_REGEX,
+    VEHICLE_TYPE_OPTIONS,
 } from '../../lib/utils/constants.mjs';
 import { getCertificateRequestPayload } from '../fixtures/certificate-request-payload.mjs';
 import { getClassBCertificateRequestPayload } from '../fixtures/class-b-certificate-request-payload.mjs';
@@ -22,6 +25,35 @@ import { getClassDCertificateRequestPayload } from '../fixtures/class-d-certific
 import { getAnnualExpiry } from '../../lib/utils/standard-date-format.mjs';
 
 const chance = new Chance();
+
+chance.mixin({
+    nonConformingKRAPIN: () => {
+        let invalidKRAPIN;
+        const regex = KRA_PIN_REGEX;
+
+        do {
+            invalidKRAPIN = chance.string({
+                length: 11,
+                pool: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+            });
+        } while (regex.test(invalidKRAPIN));
+
+        return invalidKRAPIN;
+    },
+    policyHolderKRAPIN: (options = {}) => {
+        const { head = 'A', digitLength = 9 } = options;
+
+        const allLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+            .split('')
+            .filter((letter) => letter !== 'I' && letter !== 'O');
+
+        const last = chance.pickone(allLetters);
+
+        const digits = chance.string({ length: digitLength, pool: '0123456789' });
+
+        return `${head}${digits}${last}`;
+    },
+});
 
 const nullishValues = [
     ['missing (undefined)', undefined],
@@ -853,65 +885,375 @@ describe('Certificate Issuance Payload Schema', () => {
     });
 
     describe('vehicleValue field validation', () => {
-        it('should throw ValidationError for nullish values', () => {});
-        it('should only accept numbers greater than 0', () => {});
-        it('should be required when coverType is COMP or TPTF', () => {});
-        it('should be rejected when coverType is TPO', () => {});
+        it.each(nullishValues)(
+            'should throw ValidationError for nullish values: %s',
+            (description, nullishValue) => {
+                const payload = getCertificateRequestPayload({
+                    coverType: chance.pickone(Object.keys(VALUATION_COVER_TYPES_OPTION)),
+                });
+
+                expect(() =>
+                    certificateIssuanceSchema.validateSync({
+                        ...payload,
+                        vehicleValue: nullishValue,
+                    })
+                ).toThrow();
+            }
+        );
+        it('should only accept numbers greater than 0', () => {
+            const payload = getCertificateRequestPayload({
+                coverType: chance.pickone(Object.keys(VALUATION_COVER_TYPES_OPTION)),
+            });
+            payload.vehicleValue = chance.integer({ min: -100, max: -1 });
+
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
+        it.each(Object.keys(VALUATION_COVER_TYPES_OPTION))(
+            'should be required when coverType is %s',
+            (valuationCoverTypeOption) => {
+                const payload = getCertificateRequestPayload({
+                    coverType: valuationCoverTypeOption,
+                });
+
+                expect(payload).toHaveProperty('vehicleValue');
+                expect(payload.coverType).toBe(valuationCoverTypeOption);
+
+                delete payload.vehicleValue;
+                expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+            }
+        );
+        it('should be rejected when coverType is TPO', () => {
+            const payload = getCertificateRequestPayload({
+                coverType: 'TPO',
+            });
+            payload.vehicleValue = chance.integer({ min: 100000, max: 10000000 });
+
+            expect(payload).toHaveProperty('vehicleValue');
+            expect(payload).toHaveProperty('coverType');
+            expect(payload.coverType).toBe('TPO');
+            expect(payload.vehicleValue).toBeDefined();
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
     });
 
     describe('recipientPhoneNumber field validation', () => {
-        it('should throw ValidationError for nullish values', () => {});
-        it('should throw ValidationError when field is missing', () => {});
-        it('should only accept values with exactly 9 digits', () => {});
-        it('should reject phone numbers starting with 0', () => {});
-        it('should reject phone numbers with less than 9 digits', () => {});
-        it('should reject phone numbers with more than 9 digits', () => {});
-        it('should reject phone numbers with non-numeric characters', () => {});
+        it.each(nullishValues)(
+            'should throw ValidationError for nullish values: %s',
+            (description, nullishValue) => {
+                const payload = getCertificateRequestPayload();
+
+                expect(() =>
+                    certificateIssuanceSchema.validateSync({
+                        ...payload,
+                        recipientPhoneNumber: nullishValue,
+                    })
+                ).toThrow();
+            }
+        );
+        it('should throw ValidationError when field is missing', () => {
+            const payload = getCertificateRequestPayload();
+            delete payload.recipientPhoneNumber;
+
+            expect(payload).not.toHaveProperty('recipientPhoneNumber');
+            expect(() => certificateIssuanceSchema.validateSync()).toThrow();
+        });
+        it.each([
+            ['less than 9 digits', chance.integer({ min: 0, max: 99999999 })],
+            ['more than 9 digits', chance.integer({ min: 900000000, max: 999999999999 })],
+        ])(
+            'should reject phone numbers with more than 9 digitss: %s',
+            (description, invalidPhoneNumber) => {
+                const payload = getCertificateRequestPayload();
+                payload.recipientPhoneNumber = invalidPhoneNumber;
+
+                expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+            }
+        );
+
+        it('should accept values with exactly 9 digits', () => {
+            const payload = getCertificateRequestPayload();
+
+            expect(payload).toHaveProperty('recipientPhoneNumber');
+            expect(payload.recipientPhoneNumber.toString().length).toBe(9);
+        });
+        it('should reject phone numbers with non-numeric characters', () => {
+            const payload = getCertificateRequestPayload();
+            payload.recipientPhoneNumber = 123456.78;
+
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
     });
 
     describe('vehicleBodyType field validation', () => {
-        it('should throw ValidationError for nullish values', () => {});
-        it('should not throw ValidationError when field is missing', () => {});
-        it('should reject values longer than 50 characters', () => {});
+        it.each(nullishValues.filter(([_, value]) => value !== undefined))(
+            'should throw ValidationError for nullish values: %s',
+            (description, nullishValue) => {
+                const payload = getCertificateRequestPayload();
+
+                expect(() =>
+                    certificateIssuanceSchema.validateSync({
+                        ...payload,
+                        vehicleBodyType: nullishValue,
+                    })
+                ).toThrow();
+            }
+        );
+        it('should not throw ValidationError when field is missing', () => {
+            const payload = getCertificateRequestPayload();
+            delete payload.vehicleBodyType;
+
+            expect(payload).not.toHaveProperty('vehicleBodyType');
+            expect(() => certificateIssuanceSchema.validateSync(payload)).not.toThrow();
+        });
+        it('should reject values longer than 50 characters', () => {
+            const payload = getCertificateRequestPayload();
+            payload.vehicleBodyType = chance.string({
+                length: chance.integer({ min: 51, max: 100 }),
+            });
+
+            expect(payload).toHaveProperty('vehicleBodyType');
+            expect(payload.vehicleBodyType.toString().length).toBeGreaterThan(50);
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
     });
 
     describe('policyHolderKRAPIN field validation', () => {
-        it('should throw ValidationError for nullish values', () => {});
-        it('should not throw ValidationError when field is missing', () => {});
-        it('should conform to KRA PIN format requirements', () => {});
-        it('should accept valid KRA PIN format (A123456789B)', () => {});
-        it('should reject KRA PIN without leading A', () => {});
-        it('should reject KRA PIN without trailing letter', () => {});
-        it('should reject KRA PIN with wrong number of digits', () => {});
+        it.each(nullishValues.filter(([_, value]) => value !== undefined))(
+            'should throw ValidationError for nullish values: %s',
+            (description, nullishValue) => {
+                const payload = getCertificateRequestPayload();
+
+                expect(() =>
+                    certificateIssuanceSchema.validateSync({
+                        ...payload,
+                        policyHolderKRAPIN: nullishValue,
+                    })
+                ).toThrow();
+            }
+        );
+
+        it('should not throw ValidationError when field is missing', () => {
+            const payload = getCertificateRequestPayload();
+            delete payload.policyHolderKRAPIN;
+
+            expect(payload).not.toHaveProperty('policyHolderKRAPIN');
+            expect(() => certificateIssuanceSchema.validateSync(payload)).not.toThrow();
+        });
+
+        it('should accept valid KRA PIN format (A123456789B)', () => {
+            const payload = getCertificateRequestPayload();
+            payload.policyHolderKRAPIN = chance.policyHolderKRAPIN();
+
+            expect(payload).toHaveProperty('policyHolderKRAPIN');
+            expect(() => certificateIssuanceSchema.validateSync(payload)).not.toThrow();
+        });
+
+        it('should reject KRA PIN without leading A', () => {
+            const payload = getCertificateRequestPayload();
+            payload.policyHolderKRAPIN = chance.policyHolderKRAPIN({ head: 'B' });
+
+            expect(payload).toHaveProperty('policyHolderKRAPIN');
+            expect(payload.policyHolderKRAPIN.startsWith('B')).toBe(true);
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
+        it('should reject KRA PIN without trailing letter', () => {
+            const payload = getCertificateRequestPayload();
+            payload.policyHolderKRAPIN = chance.policyHolderKRAPIN().slice(0, -1);
+
+            expect(payload).toHaveProperty('policyHolderKRAPIN');
+            expect(payload.policyHolderKRAPIN.toString().length).toBe(10);
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
+        it('should reject KRA PIN with wrong number of digits', () => {
+            const payload = getCertificateRequestPayload();
+            payload.policyHolderKRAPIN = chance.nonConformingKRAPIN();
+            expect(payload).toHaveProperty('policyHolderKRAPIN');
+
+            expect(KRA_PIN_REGEX.test(payload.policyHolderKRAPIN)).toBe(false);
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
     });
 
     describe('policyHolderHudumaNumber field validation', () => {
-        it('should throw ValidationError for nullish values', () => {});
-        it('should not throw ValidationError when field is missing', () => {});
-        it('should only accept values between 4 and 50 characters', () => {});
+        it.each(nullishValues.filter(([_, value]) => value !== undefined))(
+            'should throw ValidationError for nullish values: %s',
+            (description, nullishValue) => {
+                const payload = getCertificateRequestPayload();
+
+                expect(() =>
+                    certificateIssuanceSchema.validateSync({
+                        ...payload,
+                        policyHolderHudumaNumber: nullishValue,
+                    })
+                ).toThrow();
+            }
+        );
+        it('should not throw ValidationError when field is missing', () => {
+            const payload = getCertificateRequestPayload();
+            delete payload.policyHolderHudumaNumber;
+
+            expect(payload).not.toHaveProperty('policyHolderHudumaNumber');
+            expect(() => certificateIssuanceSchema.validateSync(payload)).not.toThrow();
+        });
+        it.each([
+            ['less than 4 characters', chance.integer({ min: 1, max: 3 })],
+            ['more than 50 characters', chance.integer({ min: 51, max: 100 })],
+        ])(
+            'should only accept values between 4 and 50 characters: %s',
+            (description, characterLength) => {
+                const payload = getCertificateRequestPayload();
+                payload.policyHolderHudumaNumber = generateAphanumericString(characterLength);
+                expect(payload).toHaveProperty('policyHolderHudumaNumber');
+                expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+            }
+        );
     });
 
     describe('vehicleTonnage field validation', () => {
-        it('should throw ValidationError for nullish values', () => {});
-        it('should be required for class B and D only', () => {});
-        it('should be required for COMMERCIAL_MOTOR_CYCLE vehicle type when certificateType is D', () => {});
-        it('should reject values less than 1', () => {});
-        it('should reject values greater than 31', () => {});
-        it('should accept values between 1 and 31', () => {});
-        it('should be forbidden when not required for motorClass/certificateType combination', () => {});
+        it.each(nullishValues.filter(([_, value]) => value !== undefined))(
+            'should throw ValidationError for nullish values: %s',
+            (description, nullishValue) => {
+                const payload = getClassBCertificateRequestPayload();
+                payload.vehicleTonnage = nullishValue;
+
+                expect(payload).toHaveProperty('vehicleTonnage');
+                expect(payload.vehicleTonnage).toBe(nullishValue);
+                expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+            }
+        );
+        it('should be required for class B', () => {
+            const payload = getClassBCertificateRequestPayload();
+            expect(() => certificateIssuanceSchema.validateSync(payload)).not.toThrow();
+
+            delete payload.vehicleTonnage;
+
+            expect(payload).not.toHaveProperty('vehicleTonnage');
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
+        it('should be required for class D with COMMERCIAL_MOTOR_CYCLE certificateType', () => {
+            const payload = getClassDCertificateRequestPayload({
+                certificateType: 'COMMERCIAL_MOTOR_CYCLE',
+            });
+
+            expect(payload).toHaveProperty('certificateType');
+            expect(payload.certificateType).toBe('COMMERCIAL_MOTOR_CYCLE');
+            expect(() => certificateIssuanceSchema.validateSync(payload)).not.toThrow();
+
+            delete payload.certificateType;
+
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
+        it.each([
+            ['less than 1', chance.integer({ min: -20, max: 0 })],
+            ['more than 31', chance.integer({ min: 32, max: 100 })],
+        ])('should reject values %s - %s', (description, invalidVehicleTonnage) => {
+            const payload = getClassBCertificateRequestPayload();
+            payload.vehicleTonnage = invalidVehicleTonnage;
+
+            expect(payload).toHaveProperty('vehicleTonnage');
+            expect(payload.vehicleTonnage).toBe(invalidVehicleTonnage);
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
+
+        it('should accept values between 1 and 31', () => {
+            const payload = getClassBCertificateRequestPayload({
+                vehicleTonnage: chance.integer({ min: 1, max: 31 }),
+            });
+            expect(payload).toHaveProperty('vehicleTonnage');
+            expect(payload.vehicleTonnage).toBeGreaterThan(1);
+            expect(payload.vehicleTonnage).toBeLessThan(31);
+            expect(() => certificateIssuanceSchema.validateSync(payload)).not.toThrow();
+        });
+        it('should be forbidden when not required for motorClass/certificateType combination', () => {
+            const classAPayload = getClassACertificateRequestPayload();
+            classAPayload.vehicleTonnage = chance.integer({ min: 1, max: 31 });
+
+            expect(classAPayload).toHaveProperty('vehicleTonnage');
+            expect(classAPayload.vehicleTonnage).toBeGreaterThanOrEqual(1);
+            expect(classAPayload.vehicleTonnage).toBeLessThanOrEqual(31);
+            expect(() => certificateIssuanceSchema.validateSync(classAPayload)).toThrow();
+
+            const classCPayload = getClassCCertificateRequestPayload();
+            classCPayload.vehicleTonnage = chance.integer({ min: 1, max: 31 });
+
+            expect(classCPayload).toHaveProperty('vehicleTonnage');
+            expect(classCPayload.vehicleTonnage).toBeGreaterThan(1);
+            expect(classCPayload.vehicleTonnage).toBeLessThan(31);
+            expect(() => certificateIssuanceSchema.validateSync(classCPayload)).toThrow();
+
+            const classDPayload = getClassDCertificateRequestPayload({
+                certificateType: chance.pickone(
+                    Object.keys(CLASS_D_CERTIFICATE_TYPE_OPTIONS).filter(
+                        (value) => value !== 'COMMERCIAL_MOTOR_CYCLE'
+                    )
+                ),
+            });
+            classDPayload.vehicleTonnage = chance.integer({ min: 1, max: 31 });
+
+            expect(classDPayload).toHaveProperty('vehicleTonnage');
+            expect(classDPayload).toHaveProperty('certificateType');
+            expect(classDPayload.certificateType).not.toBe('COMMERCIAL_MOTOR_CYCLE');
+            expect(classDPayload.vehicleTonnage).toBeGreaterThan(1);
+            expect(classDPayload.vehicleTonnage).toBeLessThan(31);
+            expect(() => certificateIssuanceSchema.validateSync(classDPayload)).toThrow();
+        });
     });
 
     describe('vehicleType field validation', () => {
-        it('should throw ValidationError for nullish values', () => {});
-        it('should accept only valid vehicleType enum values', () => {});
-        it('should be allowed for class B vehicles only', () => {});
-        it('should be required when motorClass is B', () => {});
-        it('should be forbidden when motorClass is A, C or D', () => {});
+        it.each(nullishValues.filter(([_, value]) => value !== undefined))(
+            'should throw ValidationError for nullish values: %s',
+            (description, nullishValue) => {
+                const payload = getClassBCertificateRequestPayload();
+                payload.vehicleType = nullishValue;
+
+                expect(payload).toHaveProperty('vehicleType');
+                expect(payload.vehicleType).toBe(nullishValue);
+                expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+            }
+        );
+        it.each(Object.keys(VEHICLE_TYPE_OPTIONS))(
+            'should accept valid vehicleType enum values: %s',
+            (vehicleType) => {
+                const classBPayload = getClassBCertificateRequestPayload({ vehicleType });
+                expect(classBPayload).toHaveProperty('vehicleType');
+                expect(classBPayload.vehicleType).toBe(vehicleType);
+                expect(() => certificateIssuanceSchema.validateSync(classBPayload)).not.toThrow();
+            }
+        );
+        it('should be allowed for class B vehicles', () => {
+            const payload = getClassBCertificateRequestPayload();
+
+            expect(payload).toHaveProperty('vehicleType');
+            expect(Object.keys(VEHICLE_TYPE_OPTIONS)).toContain(payload.vehicleType);
+            expect(() => certificateIssuanceSchema.validateSync(payload)).not.toThrow();
+        });
+        it('should be required when motorClass is B', () => {
+            const classBPayload = getClassBCertificateRequestPayload();
+            expect(classBPayload).toHaveProperty('vehicleType');
+
+            delete classBPayload.vehicleType;
+
+            expect(() => certificateIssuanceSchema.validateSync(classBPayload)).toThrow();
+        });
+        it.each(['A', 'C', 'D'])('should be forbidden when motorClass is %s', (motorClass) => {
+            const payload = getCertificateRequestPayload({ motorClass });
+            payload.vehicleType = chance.pickone(Object.keys(VEHICLE_TYPE_OPTIONS));
+
+            expect(payload).toHaveProperty('vehicleType');
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
     });
 
     describe('cross-field validation', () => {
-        it('should require either vehicleEngineNumber or vehicleRegistrationNumber', () => {});
-        it('should reject when neither vehicleEngineNumber nor vehicleRegistrationNumber provided', () => {});
-        it('should reject when both are provided but one is invalid length', () => {});
+        it('should reject when neither vehicleEngineNumber nor vehicleRegistrationNumber provided', () => {
+            const payload = getCertificateRequestPayload();
+            payload.vehicleRegistrationNumber && delete payload.vehicleRegistrationNumber;
+            payload.vehicleEngineNumber && delete payload.vehicleEngineNumber;
+
+            expect(payload).not.toHaveProperty('vehicleRegistrationNumber');
+            expect(payload).not.toHaveProperty('vehicleEngineNumber');
+
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
     });
 });
