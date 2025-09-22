@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { describe } from '@jest/globals';
 import Chance from 'chance';
 
@@ -6,10 +7,12 @@ import {
     CERTIFICATE_TYPE_OPTIONS,
     CLASS_A_CERTIFICATE_TYPE_OPTIONS,
     CLASS_D_CERTIFICATE_TYPE_OPTIONS,
+    CLASS_D_CERTIFICATE_TYPE_OPTIONS_WITH_PASSENGERS,
     COVER_TYPE_OPTIONS,
     INSURERS,
     MOTOR_CLASS_OPTIONS,
     MOTOR_CLASS_OPTIONS_WITH_CERTIFICATE_TYPE,
+    MOTOR_CLASS_OPTIONS_WITH_PASSENGERS,
 } from '../../lib/utils/constants.mjs';
 import { getCertificateRequestPayload } from '../fixtures/certificate-request-payload.mjs';
 import { getClassBCertificateRequestPayload } from '../fixtures/class-b-certificate-request-payload.mjs';
@@ -28,6 +31,12 @@ const nullishValues = [
     ['zero', 0],
     ['false', false],
 ];
+
+const generateAphanumericString = (stringLength) =>
+    chance.string({
+        length: stringLength || chance.integer({ min: 4, max: 15 }),
+        pool: 'ABCDEFGH12345678',
+    });
 
 // eslint-disable-next-line max-lines-per-function
 describe('Certificate Issuance Payload Schema', () => {
@@ -315,10 +324,10 @@ describe('Certificate Issuance Payload Schema', () => {
 
         it('should reject dates before current date', () => {
             const payload = getCertificateRequestPayload();
-            const currentCommencingDate = new Date(payload.commencingDate);
             const daysToSubtract = chance.integer({ min: 1 });
-            payload.commencingDate = currentCommencingDate.setDate(
-                currentCommencingDate.getDate() - daysToSubtract
+            const newCommencingDate = new Date();
+            payload.commencingDate = newCommencingDate.setDate(
+                newCommencingDate.getDate() - daysToSubtract
             );
 
             expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
@@ -340,72 +349,514 @@ describe('Certificate Issuance Payload Schema', () => {
     });
 
     describe('expiringDate field validation', () => {
-        it('should throw ValidationError when field is missing', () => {});
-        it('should throw ValidationError for nullish values', () => {});
-        it('should only accept dates in valid formats', () => {});
-        it('should accept popular date formats', () => {});
-        it('should reject dates before commencing date', () => {});
-        it('should reject dates more than 1 year from commencing date', () => {});
+        it('should throw ValidationError when field is missing', () => {
+            const payload = getCertificateRequestPayload();
+            delete payload.expiringDate;
+
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
+        it.each(nullishValues)(
+            'should throw ValidationError for nullish values: %s',
+            (description, nullishValue) => {
+                const payload = getCertificateRequestPayload();
+                payload.expiringDate = nullishValue;
+
+                expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+            }
+        );
+        it('should accept ISO 8601 date format', () => {
+            const payload = getCertificateRequestPayload();
+            payload.expiringDate = new Date(payload.expiringDate).toISOString();
+            expect(() => certificateIssuanceSchema.validateSync(payload)).not.toThrow();
+        });
+
+        it('should accept RFC 1123 date format', () => {
+            const payload = getCertificateRequestPayload();
+            payload.expiringDate = new Date(payload.expiringDate).toUTCString();
+            expect(() => certificateIssuanceSchema.validateSync(payload)).not.toThrow();
+        });
+
+        it('should reject Unix Timestamp date format', () => {
+            const payload = getCertificateRequestPayload();
+            payload.expiringDate = new Date(payload.expiringDate).getTime();
+
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+            expect(() =>
+                certificateIssuanceSchema.validateSync({
+                    ...payload,
+                    expiringDate: new Date(payload.expiringDate).getTime().toString(),
+                })
+            ).toThrow();
+        });
+        it('should reject dates before commencing date', () => {
+            const payload = getCertificateRequestPayload();
+            const currentCommencingDate = new Date(payload.commencingDate);
+            const daysToSubtract = chance.integer({ min: 1 });
+            payload.expiringDate = currentCommencingDate.setDate(
+                currentCommencingDate.getDate() - daysToSubtract
+            );
+
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
+        it('should reject dates more than 1 year from commencing date', () => {
+            const payload = getCertificateRequestPayload();
+
+            const currentCommencingDate = new Date(payload.commencingDate);
+            const daysToAdd = chance.integer({ min: 366, max: 1000 });
+            const oneYearAfter = new Date(currentCommencingDate);
+            const oneYearAfterCommencingDate = new Date(
+                oneYearAfter.setDate(oneYearAfter.getDate() + daysToAdd)
+            );
+
+            payload.commencingDate = oneYearAfterCommencingDate;
+            payload.expiringDate = getAnnualExpiry(oneYearAfterCommencingDate);
+
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
     });
 
     describe('passengerCount field validation', () => {
-        it('should throw ValidationError for nullish values', () => {});
-        it('should only accept numbers between 1 and 200', () => {});
-        it('should be required for class A, B and D only', () => {});
-        it('should be required for PRIVATE_MOTOR_CYCLE and PSV_MOTOR_CYCLE vehicle types for class D vehicles', () => {});
-        it('should not be required when motorClass is not A, B, or D', () => {});
-        it('should be forbidden for certain certificateType combinations', () => {});
+        it.each(nullishValues)(
+            'should throw ValidationError for nullish values: %s',
+            (description, nullishValue) => {
+                const payload = getCertificateRequestPayload({
+                    motorClass: chance.pickone(MOTOR_CLASS_OPTIONS_WITH_PASSENGERS),
+                });
+
+                if (payload.motorClass === MOTOR_CLASS_OPTIONS.CLASS_D) {
+                    payload.certificateType = chance.pickone(
+                        Object.keys(CLASS_D_CERTIFICATE_TYPE_OPTIONS_WITH_PASSENGERS)
+                    );
+                }
+
+                expect(() =>
+                    certificateIssuanceSchema.validateSync({
+                        ...payload,
+                        passengerCount: nullishValue,
+                    })
+                ).toThrow();
+            }
+        );
+        it('should only accept numbers between 1 and 200', () => {
+            const pick = chance.bool();
+            const passengerCount = pick
+                ? chance.integer({ min: -1000, max: 0 })
+                : chance.integer({ min: 201, max: 1000 });
+            const payload = getCertificateRequestPayload({
+                motorClass: chance.pickone(MOTOR_CLASS_OPTIONS_WITH_PASSENGERS),
+            });
+            if (payload.motorClass === MOTOR_CLASS_OPTIONS.CLASS_D) {
+                payload.certificateType = chance.pickone(
+                    Object.keys(CLASS_D_CERTIFICATE_TYPE_OPTIONS_WITH_PASSENGERS)
+                );
+            }
+            expect(() =>
+                certificateIssuanceSchema.validateSync({ ...payload, passengerCount })
+            ).toThrow();
+        });
+        it.each(MOTOR_CLASS_OPTIONS_WITH_PASSENGERS)(
+            'should be required for class %s',
+            (motorClassOption) => {
+                const payload = getCertificateRequestPayload({ motorClass: motorClassOption });
+                if (payload.motorClass === MOTOR_CLASS_OPTIONS.CLASS_D) {
+                    payload.certificateType = chance.pickone(
+                        Object.keys(CLASS_D_CERTIFICATE_TYPE_OPTIONS_WITH_PASSENGERS)
+                    );
+                }
+
+                expect(() => certificateIssuanceSchema.validateSync(payload)).not.toThrow(
+                    `${motorClassOption}:::${payload.certificateType}`
+                );
+
+                delete payload.passengerCount;
+                expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+            }
+        );
+        it.each(Object.keys(CLASS_D_CERTIFICATE_TYPE_OPTIONS_WITH_PASSENGERS))(
+            'should be required for %s certificate types for class D vehicles',
+            (certificateType) => {
+                const payload = getCertificateRequestPayload({
+                    motorClass: MOTOR_CLASS_OPTIONS.CLASS_D,
+                    certificateType,
+                });
+                expect(() => certificateIssuanceSchema.validateSync(payload)).not.toThrow();
+
+                delete payload.certificateType;
+                expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+            }
+        );
+        it('should reject passengerCount for class C vehicles', () => {
+            const payload = getCertificateRequestPayload({
+                motorClass: MOTOR_CLASS_OPTIONS.CLASS_C,
+            });
+            payload.passengerCount = chance.integer({ min: 1, max: 200 });
+
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
+
+        it.each(
+            Object.keys(CLASS_D_CERTIFICATE_TYPE_OPTIONS).filter(
+                (certificateType) =>
+                    !Object.keys(CLASS_D_CERTIFICATE_TYPE_OPTIONS_WITH_PASSENGERS).includes(
+                        certificateType
+                    )
+            )
+        )(
+            'should reject passengerCount for class D vehicles with %s certificateType',
+            (certificateType) => {
+                const payload = getCertificateRequestPayload({
+                    motorClass: MOTOR_CLASS_OPTIONS.CLASS_D,
+                    certificateType,
+                });
+                payload.passengerCount = chance.integer({ min: 1, max: 200 });
+
+                expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+            }
+        );
     });
 
     describe('recipientEmail field validation', () => {
-        it('should throw ValidationError for nullish values', () => {});
-        it('should throw ValidationError when field is missing', () => {});
-        it('should only accept only valid email address formats', () => {});
-        it('should reject emails longer than 100 characters', () => {});
+        it.each(nullishValues)(
+            'should throw ValidationError for nullish values: %s',
+            (description, nullishValue) => {
+                const payload = getCertificateRequestPayload();
+
+                expect(() =>
+                    certificateIssuanceSchema.validateSync({
+                        ...payload,
+                        recipientEmail: nullishValue,
+                    })
+                ).toThrow();
+            }
+        );
+        it('should throw ValidationError when field is missing', () => {
+            const payload = getCertificateRequestPayload();
+            delete payload.recipientEmail;
+
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
+        it.each([
+            ['simple email', 'simple@example.com'],
+            ['dot in username', 'john.doe@example.com'],
+            ['subdomain in domain', 'user@sub.example.com'],
+            ['multi-level domain', 'user123@example.co.uk'],
+            ['numbers in username', 'user123@example.org'],
+            ['numbers in domain', 'user@domain123.com'],
+            ['underscore in username', 'first_last@example.io'],
+            ['dash in username', 'user-name@example.com'],
+            ['single character username', 'u@example.com'],
+            ['mixed case letters', 'MixedCaseUser@Example.COM'],
+            ['long tld', 'username@example.travel'],
+            ['longer tld', 'user@example.museum'],
+            ['username with multiple parts', 'user.name.test@example.net'],
+            ['valid short domain', 'me@x.co'],
+            ['valid 2-letter tld', 'user@example.de'],
+        ])('should accept valid email address formats: %s', (description, validEmailFormat) => {
+            const payload = getCertificateRequestPayload();
+            payload.recipientEmail = validEmailFormat;
+
+            expect(() => certificateIssuanceSchema.validateSync(payload)).not.toThrow();
+        });
+        it.each([
+            ['Domains with invalid chars', 'user@exa%mple.com'],
+            ['underscore not allowed in domain', 'user@exam_ple.com'],
+            ['leading dot in username', '.username@example.com'],
+            ['trailing dot in username', 'username.@example.com'],
+            ['+ sign in username', 'username+dmvic@example.com'],
+            ['leading dash in username', '-dmvic@example.com'],
+            ['trailing dash in username', 'dmvic-@example.com'],
+            ['consecutive dots in username', 'user..name@example.com'],
+            ['consecutive dots in domain name', 'user.name@example..com'],
+            ['invalid symbols in username', 'user!@example.com'],
+            ['white space in username', 'user name@example.com'],
+            ['white space in domain name', 'username@examp le.com'],
+            ['missing top level domain', 'user@example'],
+            ['incomplete top level domain', 'user@example.'],
+            ['trailing dot in top level domain', 'user@example.com.'],
+            ['missing domain', 'user@'],
+            ['missing username', '@example.com'],
+            ['consecutive @ symbols', 'email@@example.com'],
+            ['multiple @ symbols', 'first@last@example.com'],
+            ['missing @ symbol', 'email.example.com'],
+            ['plain string', 'emailexamplecom'],
+        ])('should reject invalid email address formats: %s', (description, invalidEmailFormat) => {
+            const payload = getCertificateRequestPayload();
+            payload.recipientEmail = invalidEmailFormat;
+
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
+        it('should reject emails longer than 100 characters', () => {
+            const characterLength = chance.integer({ min: 101, max: 200 });
+            const recipientEmail = chance.email({ length: characterLength });
+            const payload = getCertificateRequestPayload();
+
+            expect(() =>
+                certificateIssuanceSchema.validateSync({ ...payload, recipientEmail })
+            ).toThrow();
+        });
     });
 
     describe('vehicleYearOfManufacture field validation', () => {
-        it('should throw ValidationError for nullish values', () => {});
-        it('should not throw ValidationError when field is missing', () => {});
-        it('should only accept years from 1900 to current year inclusive', () => {});
+        it.each(nullishValues)(
+            'should throw ValidationError for nullish values: %s',
+            (description, nullishValue) => {
+                const payload = getCertificateRequestPayload();
+
+                expect(payload).toHaveProperty('vehicleYearOfManufacture');
+                expect(() =>
+                    certificateIssuanceSchema.validateSync({
+                        payload,
+                        vehicleYearOfManufacture: nullishValue,
+                    })
+                ).toThrow();
+            }
+        );
+        it('should not throw ValidationError when field is missing', () => {
+            const payload = getCertificateRequestPayload();
+            delete payload.vehicleYearOfManufacture;
+
+            expect(payload).not.toHaveProperty('vehicleYearOfManufacture');
+            expect(() => certificateIssuanceSchema.validateSync(payload)).not.toThrow();
+        });
+        it('should only accept years from 1900 to current year inclusive', () => {
+            const pick = chance.bool();
+            const currentYear = new Date().getFullYear();
+            const yom = pick
+                ? chance.integer({ min: 0, max: 1899 })
+                : chance.integer({ min: currentYear + 1, max: currentYear + 30 });
+            const payload = getCertificateRequestPayload();
+            payload.vehicleYearOfManufacture = yom;
+
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
     });
 
     describe('vehicleRegistrationNumber field validation', () => {
-        it('should throw ValidationError for nullish values', () => {});
-        it('should be required only when vehicleEngineNumber is not provided', () => {});
-        it('should only accept values between 4 and 15 characters', () => {});
-        it('should throw ValidationError when both vehicleEngineNumber and vehicleRegistrationNumber are provided', () => {});
+        it.each(nullishValues)(
+            'should throw ValidationError for nullish values: %s',
+            (description, nullishValue) => {
+                const payload = getCertificateRequestPayload();
+
+                expect(() =>
+                    certificateIssuanceSchema.validateSync({
+                        ...payload,
+                        vehicleRegistrationNumber: nullishValue,
+                    })
+                ).toThrow();
+            }
+        );
+        it('should be required when vehicleEngineNumber is not provided', () => {
+            const payload = getCertificateRequestPayload();
+            delete payload.vehicleRegistrationNumber;
+            delete payload.vehicleEngineNumber;
+
+            expect(payload).not.toHaveProperty('vehicleRegistrationNumber');
+            expect(payload).not.toHaveProperty('vehicleEngineNumber');
+
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
+        it('should be rejected when vehicleEngineNumber is provided', () => {
+            const payload = getCertificateRequestPayload();
+            payload.vehicleEngineNumber = generateAphanumericString();
+            payload.vehicleRegistrationNumber && delete payload.vehicleRegistrationNumber;
+
+            expect(payload).toHaveProperty('vehicleEngineNumber');
+            expect(payload).not.toHaveProperty('vehicleRegistrationNumber');
+        });
+        it.each([[], {}, 10, 0.3, false, new Date(), null, undefined])(
+            'should accept string values only: %s',
+            (nonStringValue) => {
+                const payload = getCertificateRequestPayload();
+
+                expect(() =>
+                    certificateIssuanceSchema.validateSync({
+                        ...payload,
+                        vehicleRegistrationNumber: nonStringValue,
+                    })
+                ).toThrow();
+            }
+        );
+        it('should only accept values between 4 and 15 characters', () => {
+            const pick = chance.bool();
+            const characterCount = pick
+                ? chance.integer({ min: 1, max: 3 })
+                : chance.integer({ min: 16, max: 100 });
+            const vehicleRegistrationNumber = chance.string({
+                length: characterCount,
+                pool: 'ABCDEFGHJKLMNOPQRSTUVWXYZ',
+            });
+            const payload = getCertificateRequestPayload();
+
+            expect(() =>
+                certificateIssuanceSchema.validateSync({ ...payload, vehicleRegistrationNumber })
+            ).toThrow();
+        });
     });
 
     describe('vehicleEngineNumber field validation', () => {
-        it('should throw ValidationError for nullish values', () => {});
-        it('should be required only when vehicleRegistrationNumber is not provided', () => {});
-        it('should only accept values between 4 and 15 characters', () => {});
-        it('should throw ValidationError when both vehicleEngineNumber and vehicleRegistrationNumber are provided', () => {});
+        it.each(nullishValues)(
+            'should throw ValidationError for nullish values: %s',
+            (description, nullishValue) => {
+                const payload = getCertificateRequestPayload();
+
+                payload.vehicleRegistrationNumber && delete payload.vehicleRegistrationNumber;
+
+                expect(payload).not.toHaveProperty('vehicleRegistrationNumber');
+                expect(() =>
+                    certificateIssuanceSchema.validateSync({
+                        ...payload,
+                        vehicleEngineNumber: nullishValue,
+                    })
+                ).toThrow();
+            }
+        );
+        it('should be required only when vehicleRegistrationNumber is not provided', () => {
+            const payload = getCertificateRequestPayload();
+            payload.vehicleRegistrationNumber && delete payload.vehicleRegistrationNumber;
+
+            expect(payload).not.toHaveProperty('vehicleRegistrationNumber');
+            expect(payload).not.toHaveProperty('vehicleEngineNumber');
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+
+            payload.vehicleEngineNumber = generateAphanumericString();
+            expect(payload).toHaveProperty('vehicleEngineNumber');
+            expect(() => certificateIssuanceSchema.validateSync(payload)).not.toThrow();
+        });
+        it.each([
+            ['less than 4 characters', chance.integer({ min: 1, max: 3 })],
+            ['more than 15 characters', chance.integer({ min: 16, max: 100 })],
+        ])(
+            'should only accept values between 4 and 15 characters: %s',
+            (description, characterLength) => {
+                const vehicleEngineNumber = generateAphanumericString(characterLength);
+                const payload = getCertificateRequestPayload();
+                payload.vehicleRegistrationNumber && delete payload.vehicleRegistrationNumber;
+
+                expect(payload).not.toHaveProperty('vehicleRegistrationNumber');
+                expect(() =>
+                    certificateIssuanceSchema.validateSync({ ...payload, vehicleEngineNumber })
+                ).toThrow();
+            }
+        );
     });
 
     describe('vehicleChassisNumber field validation', () => {
-        it('should throw ValidationError for nullish values', () => {});
-        it('should throw ValidationError when field is missing', () => {});
-        it('should only accept dashes, numbers and letters only', () => {});
+        it.each(nullishValues)(
+            'should throw ValidationError for nullish values',
+            (description, nullishValue) => {
+                const payload = getCertificateRequestPayload();
+
+                expect(() =>
+                    certificateIssuanceSchema.validateSync({
+                        ...payload,
+                        vehicleChassisNumber: nullishValue,
+                    })
+                ).toThrow();
+            }
+        );
+        it('should throw ValidationError when field is missing', () => {
+            const payload = getCertificateRequestPayload();
+            payload.vehicleChassisNumber && delete payload.vehicleChassisNumber;
+
+            expect(payload).not.toHaveProperty('vehicleChassisNumber');
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
+        it.each([
+            'CHASSIS NUMBER',
+            'CHASSIS_NUMBER',
+            ' CHASSIS_NUMBER',
+            'CHASSIS_NUMBER ',
+            'CHASSIS--NUMBER',
+            '---CHASSIS',
+            'NUMBER---',
+            '-CHASSIS',
+            'CHASSIS-',
+            'CHASSIS@123',
+            'CHASSIS#123',
+            '123%CHASSIS',
+            '',
+            ' ',
+            '-',
+            '--',
+            'CHA$SIS-NUMBER',
+            'NUM*BER-123',
+        ])('should only accept dashes, numbers and letters: %s', (invalidChassisNumber) => {
+            const payload = getCertificateRequestPayload();
+
+            expect(() =>
+                certificateIssuanceSchema.validateSync({
+                    ...payload,
+                    vehicleChassisNumber: invalidChassisNumber,
+                })
+            ).toThrow();
+        });
     });
 
     describe('vehicleMake field validation', () => {
-        it('should throw ValidationError for nullish values', () => {});
-        it('should not throw ValidationError when field is missing', () => {});
-        it('should reject strings longer than 50 characters', () => {});
+        it.each(nullishValues.filter(([_, value]) => value !== undefined))(
+            'should throw ValidationError for nullish values: %s',
+            (description, nullishValue) => {
+                const payload = getCertificateRequestPayload();
+
+                expect(() =>
+                    certificateIssuanceSchema.validateSync({
+                        ...payload,
+                        vehicleMake: nullishValue,
+                    })
+                ).toThrow();
+            }
+        );
+        it('should accept missing vehicleMake field', () => {
+            const payload = getCertificateRequestPayload();
+            payload.vehicleMake && delete payload.vehicleMake;
+
+            expect(payload).not.toHaveProperty('vehicleMake');
+            expect(() => certificateIssuanceSchema.validateSync(payload)).not.toThrow();
+        });
+        it('should reject strings longer than 50 characters', () => {
+            const payload = getCertificateRequestPayload();
+            payload.vehicleMake = generateAphanumericString(chance.integer({ min: 51, max: 100 }));
+
+            expect(payload.vehicleMake.length).toBeGreaterThan(50);
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
     });
 
     describe('vehicleModel field validation', () => {
-        it('should throw ValidationError for nullish values', () => {});
-        it('should not throw ValidationError when field is missing', () => {});
-        it('should reject strings longer than 50 characters', () => {});
+        it.each(nullishValues.filter(([_, value]) => value !== undefined))(
+            'should throw ValidationError for nullish values: %s',
+            (description, nullishValue) => {
+                const payload = getCertificateRequestPayload();
+
+                expect(() =>
+                    certificateIssuanceSchema.validateSync({
+                        ...payload,
+                        vehicleMake: nullishValue,
+                    })
+                ).toThrow();
+            }
+        );
+        it('should accept missing vehicleMake field', () => {
+            const payload = getCertificateRequestPayload();
+            payload.vehicleMake && delete payload.vehicleMake;
+
+            expect(payload).not.toHaveProperty('vehicleMake');
+            expect(() => certificateIssuanceSchema.validateSync(payload)).not.toThrow();
+        });
+        it('should reject strings longer than 50 characters', () => {
+            const payload = getCertificateRequestPayload();
+            payload.vehicleMake = generateAphanumericString(chance.integer({ min: 51, max: 100 }));
+
+            expect(payload.vehicleMake.length).toBeGreaterThan(50);
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
+        });
     });
 
     describe('vehicleValue field validation', () => {
         it('should throw ValidationError for nullish values', () => {});
         it('should only accept numbers greater than 0', () => {});
-        it('should be required only when coverType is COMP or TPTF', () => {});
+        it('should be required when coverType is COMP or TPTF', () => {});
+        it('should be rejected when coverType is TPO', () => {});
     });
 
     describe('recipientPhoneNumber field validation', () => {
