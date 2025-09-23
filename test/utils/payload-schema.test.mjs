@@ -1177,8 +1177,8 @@ describe('Certificate Issuance Payload Schema', () => {
             classCPayload.vehicleTonnage = chance.integer({ min: 1, max: 31 });
 
             expect(classCPayload).toHaveProperty('vehicleTonnage');
-            expect(classCPayload.vehicleTonnage).toBeGreaterThan(1);
-            expect(classCPayload.vehicleTonnage).toBeLessThan(31);
+            expect(classCPayload.vehicleTonnage).toBeGreaterThanOrEqual(1);
+            expect(classCPayload.vehicleTonnage).toBeLessThanOrEqual(31);
             expect(() => certificateIssuanceSchema.validateSync(classCPayload)).toThrow();
 
             const classDPayload = getClassDCertificateRequestPayload({
@@ -1193,8 +1193,8 @@ describe('Certificate Issuance Payload Schema', () => {
             expect(classDPayload).toHaveProperty('vehicleTonnage');
             expect(classDPayload).toHaveProperty('certificateType');
             expect(classDPayload.certificateType).not.toBe('COMMERCIAL_MOTOR_CYCLE');
-            expect(classDPayload.vehicleTonnage).toBeGreaterThan(1);
-            expect(classDPayload.vehicleTonnage).toBeLessThan(31);
+            expect(classDPayload.vehicleTonnage).toBeGreaterThanOrEqual(1);
+            expect(classDPayload.vehicleTonnage).toBeLessThanOrEqual(31);
             expect(() => certificateIssuanceSchema.validateSync(classDPayload)).toThrow();
         });
     });

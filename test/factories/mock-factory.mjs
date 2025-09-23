@@ -72,6 +72,12 @@ export const createMockApiConfig = () => ({
             validateDoubleInsurance: '/api/t5/Integration/ValidateDoubleInsurance',
             validateInsuranceCertificate: '/api/t5/Integration/ValidateInsurance',
         },
+        issuance: {
+            typeA: '/api/V5/IntermediaryIntegration/IssuanceTypeACertificate',
+            typeB: '/api/V5/IntermediaryIntegration/IssuanceTypeBCertificate',
+            typeC: '/api/V5/IntermediaryIntegration/IssuanceTypeCCertificate',
+            typeD: '/api/V5/IntermediaryIntegration/IssuanceTypeDCertificate',
+        },
     },
     getAPIBaseURL: jest.fn((environment) => `https://${environment}-api.example.com`),
 });
