@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import { describe } from '@jest/globals';
 import Chance from 'chance';
 
@@ -70,7 +69,6 @@ const generateAphanumericString = (stringLength) =>
         pool: 'ABCDEFGH12345678',
     });
 
-// eslint-disable-next-line max-lines-per-function
 describe('Certificate Issuance Payload Schema', () => {
     it('should not throw for a valid payload', () => {
         const validPayload = getCertificateRequestPayload();
