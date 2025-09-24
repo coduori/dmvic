@@ -5,6 +5,7 @@ import {
     MOTOR_CLASS_OPTIONS,
 } from '../../lib/utils/constants.mjs';
 import { getBaseRequestPayload } from './base-payload.mjs';
+import { cryptoPickOne } from '../random-pick.mjs';
 
 const chance = new Chance();
 
@@ -12,7 +13,7 @@ const basePayload = getBaseRequestPayload({ motorClass: MOTOR_CLASS_OPTIONS.CLAS
 
 const getClassACertificateRequestPayload = (overrides = {}) => {
     const {
-        certificateType = chance.pickone(Object.keys(CLASS_A_CERTIFICATE_TYPE_OPTIONS)),
+        certificateType = cryptoPickOne(Object.keys(CLASS_A_CERTIFICATE_TYPE_OPTIONS)),
         passengerCount = chance.integer({ min: 1, max: 200 }),
     } = overrides;
     const coverType = overrides.coverType || basePayload.coverType;

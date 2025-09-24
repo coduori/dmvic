@@ -1,12 +1,9 @@
-import Chance from 'chance';
-
 import { MOTOR_CLASS_OPTIONS } from '../../lib/utils/constants.mjs';
 import { getClassACertificateRequestPayload } from './class-a-certificate-request-payload.mjs';
 import { getClassBCertificateRequestPayload } from './class-b-certificate-request-payload.mjs';
 import { getClassCCertificateRequestPayload } from './class-c-certificate-request-payload.mjs';
 import { getClassDCertificateRequestPayload } from './class-d-certificate-request-payload.mjs';
-
-const chance = new Chance();
+import { cryptoPickOne } from '../random-pick.mjs';
 
 const PAYLOAD_GENERATORS = {
     A: getClassACertificateRequestPayload,
@@ -16,7 +13,7 @@ const PAYLOAD_GENERATORS = {
 };
 
 const getCertificateRequestPayload = (overrides = {}) => {
-    const motorClass = overrides.motorClass || chance.pickone(Object.values(MOTOR_CLASS_OPTIONS));
+    const motorClass = overrides.motorClass || cryptoPickOne(Object.values(MOTOR_CLASS_OPTIONS));
     const payloadGenerator = PAYLOAD_GENERATORS[motorClass];
     const generatedPayload = payloadGenerator({ ...overrides, motorClass });
     return {

@@ -1,6 +1,7 @@
 import { describe } from '@jest/globals';
 import Chance from 'chance';
 
+import { cryptoPickOne } from '../random-pick.mjs';
 import { certificateIssuanceSchema } from '../../lib/utils/payload-schema.mjs';
 import {
     CERTIFICATE_TYPE_OPTIONS,
@@ -46,7 +47,7 @@ chance.mixin({
             .split('')
             .filter((letter) => letter !== 'I' && letter !== 'O');
 
-        const last = chance.pickone(allLetters);
+        const last = cryptoPickOne(allLetters);
 
         const digits = chance.string({ length: digitLength, pool: '0123456789' });
 
@@ -146,7 +147,7 @@ describe('Certificate Issuance Payload Schema', () => {
         );
         it('should throw ValidationError for missing certificateType if it is required', () => {
             const payload = getCertificateRequestPayload({
-                motorClass: chance.pickone(
+                motorClass: cryptoPickOne(
                     Object.values(MOTOR_CLASS_OPTIONS_WITH_CERTIFICATE_TYPE)
                 ),
             });
@@ -157,7 +158,7 @@ describe('Certificate Issuance Payload Schema', () => {
         it.each(Object.keys(CERTIFICATE_TYPE_OPTIONS))(
             'should accept only valid certificateType enum values',
             (validCertificateType) => {
-                const selectedMotorClass = chance.pickone(
+                const selectedMotorClass = cryptoPickOne(
                     Object.values(MOTOR_CLASS_OPTIONS_WITH_CERTIFICATE_TYPE)
                 );
                 const payload = getCertificateRequestPayload({
@@ -171,7 +172,7 @@ describe('Certificate Issuance Payload Schema', () => {
         it('should be allowed for class A and D only', () => {
             const classBPayload = getClassBCertificateRequestPayload();
             const classCPayload = getClassCCertificateRequestPayload();
-            const certificateType = chance.pickone(Object.keys(CERTIFICATE_TYPE_OPTIONS));
+            const certificateType = cryptoPickOne(Object.keys(CERTIFICATE_TYPE_OPTIONS));
 
             expect(() =>
                 certificateIssuanceSchema.validateSync({ ...classBPayload, certificateType })
@@ -220,13 +221,13 @@ describe('Certificate Issuance Payload Schema', () => {
         });
         it('should not be required when motorClass is B', () => {
             const classBPayload = getClassBCertificateRequestPayload();
-            classBPayload.certificateType = chance.pickone(Object.keys(CERTIFICATE_TYPE_OPTIONS));
+            classBPayload.certificateType = cryptoPickOne(Object.keys(CERTIFICATE_TYPE_OPTIONS));
 
             expect(() => certificateIssuanceSchema.validateSync(classBPayload)).toThrow();
         });
         it('should not be required when motorClass is C', () => {
             const classCPayload = getClassCCertificateRequestPayload();
-            classCPayload.certificateType = chance.pickone(Object.keys(CERTIFICATE_TYPE_OPTIONS));
+            classCPayload.certificateType = cryptoPickOne(Object.keys(CERTIFICATE_TYPE_OPTIONS));
 
             expect(() => certificateIssuanceSchema.validateSync(classCPayload)).toThrow();
         });
@@ -450,11 +451,11 @@ describe('Certificate Issuance Payload Schema', () => {
             'should throw ValidationError for nullish values: %s',
             (description, nullishValue) => {
                 const payload = getCertificateRequestPayload({
-                    motorClass: chance.pickone(MOTOR_CLASS_OPTIONS_WITH_PASSENGERS),
+                    motorClass: cryptoPickOne(MOTOR_CLASS_OPTIONS_WITH_PASSENGERS),
                 });
 
                 if (payload.motorClass === MOTOR_CLASS_OPTIONS.CLASS_D) {
-                    payload.certificateType = chance.pickone(
+                    payload.certificateType = cryptoPickOne(
                         Object.keys(CLASS_D_CERTIFICATE_TYPE_OPTIONS_WITH_PASSENGERS)
                     );
                 }
@@ -473,10 +474,10 @@ describe('Certificate Issuance Payload Schema', () => {
                 ? chance.integer({ min: -1000, max: 0 })
                 : chance.integer({ min: 201, max: 1000 });
             const payload = getCertificateRequestPayload({
-                motorClass: chance.pickone(MOTOR_CLASS_OPTIONS_WITH_PASSENGERS),
+                motorClass: cryptoPickOne(MOTOR_CLASS_OPTIONS_WITH_PASSENGERS),
             });
             if (payload.motorClass === MOTOR_CLASS_OPTIONS.CLASS_D) {
-                payload.certificateType = chance.pickone(
+                payload.certificateType = cryptoPickOne(
                     Object.keys(CLASS_D_CERTIFICATE_TYPE_OPTIONS_WITH_PASSENGERS)
                 );
             }
@@ -489,7 +490,7 @@ describe('Certificate Issuance Payload Schema', () => {
             (motorClassOption) => {
                 const payload = getCertificateRequestPayload({ motorClass: motorClassOption });
                 if (payload.motorClass === MOTOR_CLASS_OPTIONS.CLASS_D) {
-                    payload.certificateType = chance.pickone(
+                    payload.certificateType = cryptoPickOne(
                         Object.keys(CLASS_D_CERTIFICATE_TYPE_OPTIONS_WITH_PASSENGERS)
                     );
                 }
@@ -887,7 +888,7 @@ describe('Certificate Issuance Payload Schema', () => {
             'should throw ValidationError for nullish values: %s',
             (description, nullishValue) => {
                 const payload = getCertificateRequestPayload({
-                    coverType: chance.pickone(Object.keys(VALUATION_COVER_TYPES_OPTION)),
+                    coverType: cryptoPickOne(Object.keys(VALUATION_COVER_TYPES_OPTION)),
                 });
 
                 expect(() =>
@@ -900,7 +901,7 @@ describe('Certificate Issuance Payload Schema', () => {
         );
         it('should only accept numbers greater than 0', () => {
             const payload = getCertificateRequestPayload({
-                coverType: chance.pickone(Object.keys(VALUATION_COVER_TYPES_OPTION)),
+                coverType: cryptoPickOne(Object.keys(VALUATION_COVER_TYPES_OPTION)),
             });
             payload.vehicleValue = chance.integer({ min: -100, max: -1 });
 
@@ -1180,7 +1181,7 @@ describe('Certificate Issuance Payload Schema', () => {
             expect(() => certificateIssuanceSchema.validateSync(classCPayload)).toThrow();
 
             const classDPayload = getClassDCertificateRequestPayload({
-                certificateType: chance.pickone(
+                certificateType: cryptoPickOne(
                     Object.keys(CLASS_D_CERTIFICATE_TYPE_OPTIONS).filter(
                         (value) => value !== 'COMMERCIAL_MOTOR_CYCLE'
                     )
@@ -1235,7 +1236,7 @@ describe('Certificate Issuance Payload Schema', () => {
         });
         it.each(['A', 'C', 'D'])('should be forbidden when motorClass is %s', (motorClass) => {
             const payload = getCertificateRequestPayload({ motorClass });
-            payload.vehicleType = chance.pickone(Object.keys(VEHICLE_TYPE_OPTIONS));
+            payload.vehicleType = cryptoPickOne(Object.keys(VEHICLE_TYPE_OPTIONS));
 
             expect(payload).toHaveProperty('vehicleType');
             expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();

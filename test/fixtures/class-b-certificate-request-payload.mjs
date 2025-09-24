@@ -5,6 +5,7 @@ import {
     VEHICLE_TYPE_OPTIONS,
 } from '../../lib/utils/constants.mjs';
 import { getBaseRequestPayload } from './base-payload.mjs';
+import { cryptoPickOne } from '../random-pick.mjs';
 
 const chance = new Chance();
 
@@ -14,7 +15,7 @@ const getClassBCertificateRequestPayload = (overrides = {}) => {
     const {
         passengerCount = chance.integer({ min: 1, max: 200 }),
         vehicleTonnage = chance.integer({ min: 1, max: 31 }),
-        vehicleType = chance.pickone(Object.keys(VEHICLE_TYPE_OPTIONS)),
+        vehicleType = cryptoPickOne(Object.keys(VEHICLE_TYPE_OPTIONS)),
     } = overrides;
     const coverType = overrides.coverType || basePayload.coverType;
     if (Object.keys(VALUATION_COVER_TYPES_OPTION).includes(coverType)) {

@@ -7,6 +7,7 @@ import {
     CLASS_D_CERTIFICATE_TYPE_OPTIONS,
 } from '../../lib/utils/constants.mjs';
 import { getBaseRequestPayload } from './base-payload.mjs';
+import { cryptoPickOne } from '../random-pick.mjs';
 
 const chance = new Chance();
 
@@ -14,7 +15,7 @@ const basePayload = getBaseRequestPayload({ motorClass: MOTOR_CLASS_OPTIONS.CLAS
 
 const getClassDCertificateRequestPayload = (overrides = {}) => {
     if (!('certificateType' in overrides)) {
-        overrides.certificateType = chance.pickone(Object.keys(CLASS_D_CERTIFICATE_TYPE_OPTIONS));
+        overrides.certificateType = cryptoPickOne(Object.keys(CLASS_D_CERTIFICATE_TYPE_OPTIONS));
     }
 
     const coverType = overrides.coverType || basePayload.coverType;

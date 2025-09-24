@@ -2,6 +2,7 @@ import Chance from 'chance';
 
 import { getISOAnnualExpiry } from '../../lib/utils/standard-date-format.mjs';
 import { INSURERS, COVER_TYPE_OPTIONS, MOTOR_CLASS_OPTIONS } from '../../lib/utils/constants.mjs';
+import { cryptoPickOne } from '../random-pick.mjs';
 
 const chance = new Chance();
 
@@ -20,22 +21,22 @@ chance.mixin({
             .split('')
             .filter((l) => l !== 'I' && l !== 'O');
 
-        const second = chance.pickone(secondLetterOptions);
+        const second = cryptoPickOne(secondLetterOptions);
 
-        const third = chance.pickone(allLetters);
-        const last = chance.pickone(allLetters);
+        const third = cryptoPickOne(allLetters);
+        const last = cryptoPickOne(allLetters);
 
         const digits = chance.string({ length: 3, pool: '0123456789' });
 
         return `K${second}${third} ${digits}${last}`;
     },
-    vehicleMake: () => chance.pickone(Object.keys(vehicleMakes)),
+    vehicleMake: () => cryptoPickOne(Object.keys(vehicleMakes)),
     vehicleModel: (vehicleMake) => {
         const validMake =
             vehicleMake && vehicleMakes[vehicleMake]
                 ? vehicleMake
-                : chance.pickone(Object.keys(vehicleMakes));
-        return chance.pickone(vehicleMakes[validMake]);
+                : cryptoPickOne(Object.keys(vehicleMakes));
+        return cryptoPickOne(vehicleMakes[validMake]);
     },
 });
 
@@ -51,9 +52,9 @@ const generateValidCommencingDate = () => {
 // eslint-disable-next-line max-lines-per-function
 const getBaseRequestPayload = (overrides = {}) => {
     let {
-        insurer = chance.pickone(Object.keys(INSURERS)),
+        insurer = cryptoPickOne(Object.keys(INSURERS)),
         motorClass,
-        coverType = chance.pickone(Object.keys(COVER_TYPE_OPTIONS)),
+        coverType = cryptoPickOne(Object.keys(COVER_TYPE_OPTIONS)),
         policyHolderFullName = chance.name(),
         policyNumber = `TEST/POLICY/NUMBER/${chance.integer({ min: 1000, max: 9999 })}`,
         commencingDate = generateValidCommencingDate(),
@@ -74,7 +75,7 @@ const getBaseRequestPayload = (overrides = {}) => {
     } = overrides;
 
     if (!('motorClass' in overrides)) {
-        motorClass = chance.pickone(Object.values(MOTOR_CLASS_OPTIONS));
+        motorClass = cryptoPickOne(Object.values(MOTOR_CLASS_OPTIONS));
     }
     return {
         insurer,
