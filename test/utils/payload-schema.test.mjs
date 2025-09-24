@@ -1157,8 +1157,8 @@ describe('Certificate Issuance Payload Schema', () => {
                 vehicleTonnage: chance.integer({ min: 1, max: 31 }),
             });
             expect(payload).toHaveProperty('vehicleTonnage');
-            expect(payload.vehicleTonnage).toBeGreaterThan(1);
-            expect(payload.vehicleTonnage).toBeLessThan(31);
+            expect(payload.vehicleTonnage).toBeGreaterThanOrEqual(1);
+            expect(payload.vehicleTonnage).toBeLessThanOrEqual(31);
             expect(() => certificateIssuanceSchema.validateSync(payload)).not.toThrow();
         });
         it('should be forbidden when not required for motorClass/certificateType combination', () => {
