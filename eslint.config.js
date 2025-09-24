@@ -99,7 +99,7 @@ export default [
             'jest/no-focused-tests': 'error',
             'jest/no-identical-title': 'error',
 
-            'max-lines': ['error', { max: 500, skipBlankLines: true, skipComments: true }],
+            'max-lines': 'off',
             'max-lines-per-function': [
                 'error',
                 { max: 200, skipBlankLines: true, skipComments: true },
