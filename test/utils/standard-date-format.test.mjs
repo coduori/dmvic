@@ -28,15 +28,12 @@ describe('Date formatting utilities', () => {
         expect(getDateToday()).toBe(expected);
     });
 
-    it('should return the date 365 or 366 days from today in DD/MM/YYYY format', () => {
-        const today = new Date();
-        const year = today.getFullYear();
-        const nextYear = year + 1;
-        const isLeap = (nextYear % 4 === 0 && nextYear % 100 !== 0) || nextYear % 400 === 0;
-        const daysToAdd = isLeap ? 366 : 365;
-        const expectedDate = new Date(today);
-        expectedDate.setDate(expectedDate.getDate() + (daysToAdd - 1));
-        const expected = expectedDate.toLocaleDateString('en-GB');
-        expect(getAnnualExpiry()).toBe(expected);
+    it.each([
+        ['2020-03-01', '28/02/2021'],
+        ['2019-03-01', '29/02/2020'],
+        ['2019-01-01', '31/12/2019'],
+        ['2020-02-29', '28/02/2021'],
+    ])('should expire %s on %s', (currentDate, expiryDate) => {
+        expect(getAnnualExpiry(new Date(currentDate))).toBe(expiryDate);
     });
 });

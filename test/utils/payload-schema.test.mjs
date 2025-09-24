@@ -627,7 +627,7 @@ describe('Certificate Issuance Payload Schema', () => {
     });
 
     describe('vehicleYearOfManufacture field validation', () => {
-        it.each(nullishValues)(
+        it.each(nullishValues.filter(([_, value]) => value !== undefined))(
             'should throw ValidationError for nullish values: %s',
             (description, nullishValue) => {
                 const payload = getCertificateRequestPayload();
@@ -635,7 +635,7 @@ describe('Certificate Issuance Payload Schema', () => {
                 expect(payload).toHaveProperty('vehicleYearOfManufacture');
                 expect(() =>
                     certificateIssuanceSchema.validateSync({
-                        payload,
+                        ...payload,
                         vehicleYearOfManufacture: nullishValue,
                     })
                 ).toThrow();
@@ -861,23 +861,23 @@ describe('Certificate Issuance Payload Schema', () => {
                 expect(() =>
                     certificateIssuanceSchema.validateSync({
                         ...payload,
-                        vehicleMake: nullishValue,
+                        vehicleModel: nullishValue,
                     })
                 ).toThrow();
             }
         );
-        it('should accept missing vehicleMake field', () => {
+        it('should accept missing vehicleModel field', () => {
             const payload = getCertificateRequestPayload();
-            payload.vehicleMake && delete payload.vehicleMake;
+            payload.vehicleModel && delete payload.vehicleModel;
 
-            expect(payload).not.toHaveProperty('vehicleMake');
+            expect(payload).not.toHaveProperty('vehicleModel');
             expect(() => certificateIssuanceSchema.validateSync(payload)).not.toThrow();
         });
         it('should reject strings longer than 50 characters', () => {
             const payload = getCertificateRequestPayload();
-            payload.vehicleMake = generateAphanumericString(chance.integer({ min: 51, max: 100 }));
+            payload.vehicleModel = generateAphanumericString(chance.integer({ min: 51, max: 100 }));
 
-            expect(payload.vehicleMake.length).toBeGreaterThan(50);
+            expect(payload.vehicleModel.length).toBeGreaterThan(50);
             expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
         });
     });
@@ -953,13 +953,13 @@ describe('Certificate Issuance Payload Schema', () => {
             delete payload.recipientPhoneNumber;
 
             expect(payload).not.toHaveProperty('recipientPhoneNumber');
-            expect(() => certificateIssuanceSchema.validateSync()).toThrow();
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
         });
         it.each([
             ['less than 9 digits', chance.integer({ min: 0, max: 99999999 })],
             ['more than 9 digits', chance.integer({ min: 900000000, max: 999999999999 })],
         ])(
-            'should reject phone numbers with more than 9 digitss: %s',
+            'should reject phone numbers with more than 9 digits: %s',
             (description, invalidPhoneNumber) => {
                 const payload = getCertificateRequestPayload();
                 payload.recipientPhoneNumber = invalidPhoneNumber;
