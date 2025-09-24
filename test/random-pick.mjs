@@ -8,6 +8,4 @@ function cryptoPickOne(arr) {
     return arr[idx];
 }
 
-export {
-    cryptoPickOne
-};
+export { cryptoPickOne };

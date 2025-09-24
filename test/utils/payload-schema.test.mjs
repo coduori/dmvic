@@ -147,9 +147,7 @@ describe('Certificate Issuance Payload Schema', () => {
         );
         it('should throw ValidationError for missing certificateType if it is required', () => {
             const payload = getCertificateRequestPayload({
-                motorClass: cryptoPickOne(
-                    Object.values(MOTOR_CLASS_OPTIONS_WITH_CERTIFICATE_TYPE)
-                ),
+                motorClass: cryptoPickOne(Object.values(MOTOR_CLASS_OPTIONS_WITH_CERTIFICATE_TYPE)),
             });
             payload.certificateType = undefined;
 
