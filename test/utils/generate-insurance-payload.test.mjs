@@ -228,6 +228,7 @@ describe('generate insurance payload', () => {
             expect(generatedPayload.Chassisnumber).toBe(payload.vehicleChassisNumber);
             expect(generatedPayload.Phonenumber).toBe(payload.recipientPhoneNumber);
             expect(generatedPayload.Registrationnumber).toBe(payload.vehicleRegistrationNumber);
+            expect(generatedPayload.Licensedtocarry).toBe(payload.passengerCount);
 
             if (payload.vehicleTonnage) {
                 expect(generatedPayload.Tonnage).toBe(payload.vehicleTonnage);
@@ -294,6 +295,11 @@ describe('generate insurance payload', () => {
                 expect(generatedPayload).not.toHaveProperty('SumInsured');
             }
 
+            if (payload.passengerCount) {
+                expect(generatedPayload).toHaveProperty('Licensedtocarry');
+            } else {
+                expect(generatedPayload).not.toHaveProperty('Licensedtocarry');
+            }
             if (withOptionalData) {
                 expect(generatedPayload).toHaveProperty('HudumaNumber');
                 expect(generatedPayload).toHaveProperty('Yearofmanufacture');
