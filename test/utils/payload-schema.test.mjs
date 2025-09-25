@@ -314,6 +314,8 @@ describe('Certificate Issuance Payload Schema', () => {
             const stringLength = chance.integer({ min: 51, max: 1000 });
             const payload = getCertificateRequestPayload();
             payload.policyNumber = chance.string({ length: stringLength });
+
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
         });
     });
 
