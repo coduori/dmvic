@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/coduori/dmvic/compare/v1.6.3...v1.7.0) (2025-09-25)
+
+
+### Features
+
+* implement requestInsuranceCertificate API ([#50](https://github.com/coduori/dmvic/issues/50)) ([3846d3c](https://github.com/coduori/dmvic/commit/3846d3c2dfa42d6ed5c7c232fde71e94d07f6558))
+
 ## [1.6.3](https://github.com/coduori/dmvic/compare/v1.6.2...v1.6.3) (2025-09-06)
 
 
