@@ -153,20 +153,27 @@ describe('Certificate Issuance Payload Schema', () => {
 
             expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
         });
-        it.each(Object.keys(CERTIFICATE_TYPE_OPTIONS))(
-            'should accept only valid certificateType enum values',
+
+        it.each(Object.keys(CLASS_A_CERTIFICATE_TYPE_OPTIONS))(
+            'should accept valid class A certificateType enum values: %s',
             (validCertificateType) => {
-                const selectedMotorClass = cryptoPickOne(
-                    Object.values(MOTOR_CLASS_OPTIONS_WITH_CERTIFICATE_TYPE)
-                );
-                const payload = getCertificateRequestPayload({
-                    motorClass: selectedMotorClass,
+                const payload = getClassACertificateRequestPayload({
                     certificateType: validCertificateType,
                 });
-
-                expect(() => certificateIssuanceSchema.validateSync(payload).not.toThrow());
+                expect(() => certificateIssuanceSchema.validateSync(payload)).not.toThrow();
             }
         );
+
+        it.each(Object.keys(CLASS_D_CERTIFICATE_TYPE_OPTIONS))(
+            'should accept valid class D certificateType enum values: %s',
+            (validCertificateType) => {
+                const payload = getClassDCertificateRequestPayload({
+                    certificateType: validCertificateType,
+                });
+                expect(() => certificateIssuanceSchema.validateSync(payload)).not.toThrow();
+            }
+        );
+
         it('should be allowed for class A and D only', () => {
             const classBPayload = getClassBCertificateRequestPayload();
             const classCPayload = getClassCCertificateRequestPayload();
