@@ -1,6 +1,6 @@
 {
     "name": "dmvic",
-    "version": "1.6.3",
+    "version": "1.7.0",
     "description": "A DMVIC NPM package to manage DMVIC certificate requests",
     "main": "lib/index.mjs",
     "type": "module",
