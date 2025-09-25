@@ -23,7 +23,7 @@ const mockValidateCertConfig = jest.fn((config) => config);
 const mockValidateFilePaths = jest.fn();
 const mockValidateCertContents = jest.fn();
 
-jest.unstable_mockModule('../../lib/utils/validation/certificates-validator.mjs', () => ({
+jest.unstable_mockModule('../../lib/utils/config-validation/certificates-validator.mjs', () => ({
     validateCertConfig: mockValidateCertConfig,
     validateFilePaths: mockValidateFilePaths,
     validateCertContents: mockValidateCertContents,
@@ -38,7 +38,7 @@ jest.unstable_mockModule('fs', () => ({
 }));
 
 const mockValidateSecretsConfig = jest.fn();
-jest.unstable_mockModule('../../lib/utils/validation/secrets-validator.mjs', () => ({
+jest.unstable_mockModule('../../lib/utils/config-validation/secrets-validator.mjs', () => ({
     validateSecretsConfig: mockValidateSecretsConfig,
 }));
 
@@ -114,6 +114,7 @@ describe('initialize DMVIC Configurations', () => {
                     password: testCredentials.password,
                     clientid: testCredentials.clientid,
                     environment: testCredentials.environment,
+                    includeoptionaldata: testCredentials.includeoptionaldata,
                 },
                 certificates: {},
             })
@@ -130,6 +131,7 @@ describe('initialize DMVIC Configurations', () => {
                     password: testCredentials.password,
                     clientid: testCredentials.clientid,
                     environment: testCredentials.environment,
+                    includeoptionaldata: testCredentials.includeoptionaldata,
                 },
                 certificates: {
                     sslKey: '/path/to/test/sslKey.pem',
@@ -151,6 +153,7 @@ describe('initialize DMVIC Configurations', () => {
                     password: testCredentials.password,
                     clientid: testCredentials.clientid,
                     environment: testCredentials.environment,
+                    includeoptionaldata: testCredentials.includeoptionaldata,
                 },
                 certificates: {
                     sslKey: '/path/to/test/sslKey.pem',

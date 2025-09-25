@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
 import crypto from 'crypto';
+import { object, string, number, date } from 'yup';
 
 const generateCredential = (prefix, seed = 'dmvic-test') => {
     const hash = crypto
@@ -10,12 +11,13 @@ const generateCredential = (prefix, seed = 'dmvic-test') => {
     return `${prefix}_${hash}`;
 };
 
-export const createMockSecretsManager = (customCredentials = {}) => {
+export const createMockSecretsHandler = (customCredentials = {}) => {
     const defaultCredentials = {
         username: generateCredential('user'),
         password: generateCredential('pass'),
         clientid: generateCredential('client'),
         environment: 'test',
+        includeoptionaldata: false,
     };
 
     const credentials = { ...defaultCredentials, ...customCredentials };
@@ -70,6 +72,21 @@ export const createMockApiConfig = () => ({
             validateDoubleInsurance: '/api/t5/Integration/ValidateDoubleInsurance',
             validateInsuranceCertificate: '/api/t5/Integration/ValidateInsurance',
         },
+        issuance: {
+            typeA: '/api/V5/IntermediaryIntegration/IssuanceTypeACertificate',
+            typeB: '/api/V5/IntermediaryIntegration/IssuanceTypeBCertificate',
+            typeC: '/api/V5/IntermediaryIntegration/IssuanceTypeCCertificate',
+            typeD: '/api/V5/IntermediaryIntegration/IssuanceTypeDCertificate',
+        },
     },
     getAPIBaseURL: jest.fn((environment) => `https://${environment}-api.example.com`),
 });
+
+export const createMockPayloadSchema = () => {
+    return object({
+        insurer: string().required().oneOf(['AIG', 'Jubilee', 'Britam']),
+        passengerCount: number().min(1).max(50).notRequired(),
+        policyHolderFullName: string().required().trim().min(1).max(50),
+        commencingDate: date().required(),
+    });
+};

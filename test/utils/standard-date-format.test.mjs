@@ -1,6 +1,6 @@
 import {
     getDateToday,
-    getOneYearFromToday,
+    getAnnualExpiry,
     standardizeDateFormat,
 } from '../../lib/utils/standard-date-format.mjs';
 
@@ -28,11 +28,12 @@ describe('Date formatting utilities', () => {
         expect(getDateToday()).toBe(expected);
     });
 
-    it('should return the date one year from today in DD/MM/YYYY format', () => {
-        const today = new Date();
-        const nextYear = new Date(today);
-        nextYear.setFullYear(today.getFullYear() + 1);
-        const expected = nextYear.toLocaleDateString('en-GB');
-        expect(getOneYearFromToday()).toBe(expected);
+    it.each([
+        ['2020-03-01', '28/02/2021'],
+        ['2019-03-01', '29/02/2020'],
+        ['2019-01-01', '31/12/2019'],
+        ['2020-02-29', '28/02/2021'],
+    ])('should expire %s on %s', (currentDate, expiryDate) => {
+        expect(getAnnualExpiry(new Date(currentDate))).toBe(expiryDate);
     });
 });

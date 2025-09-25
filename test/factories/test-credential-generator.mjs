@@ -15,5 +15,6 @@ export const generateTestCredentials = (seed = 'dmvic-test') => {
         password: generateValue('password'),
         clientid: generateValue('clientid'),
         environment: 'sandbox',
+        includeoptionaldata: false,
     };
 };

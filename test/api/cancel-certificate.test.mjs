@@ -4,12 +4,12 @@ import {
     mockApiConfig,
     mockInvoke,
     mockRequestHandler,
-    mockSecretsManager,
+    mockSecretsHandler,
 } from '../mocks/mocks.mjs';
 
 jest.unstable_mockModule('../../lib/utils/request-handler.mjs', () => mockRequestHandler);
 jest.unstable_mockModule('../../lib/config/api-configs.mjs', () => mockApiConfig);
-jest.unstable_mockModule('../../lib/utils/secrets-manager.mjs', () => mockSecretsManager);
+jest.unstable_mockModule('../../lib/utils/secrets-handler.mjs', () => mockSecretsHandler);
 
 const { cancelCertificate } = await import('../../lib/api/cancel-certificate.mjs');
 

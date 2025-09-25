@@ -70,6 +70,7 @@ export default [
                 { max: 40, skipBlankLines: true, skipComments: true },
             ],
             'no-duplicate-imports': 'error',
+            'no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
         },
     },
 
@@ -98,17 +99,14 @@ export default [
             'jest/no-focused-tests': 'error',
             'jest/no-identical-title': 'error',
 
-            'max-lines': ['error', { max: 500, skipBlankLines: true, skipComments: true }],
-            'max-lines-per-function': [
-                'error',
-                { max: 200, skipBlankLines: true, skipComments: true },
-            ],
+            'max-lines': 'off',
+            'max-lines-per-function': 'off',
             'no-duplicate-imports': 'error',
         },
     },
 
     {
-        files: ['eslint.config.js'],
+        files: ['**/payload-schema.mjs', 'eslint.config.js'],
         rules: {
             'max-lines': 'off',
         },

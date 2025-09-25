@@ -10,7 +10,7 @@ const mockValidateCertConfig = jest.fn((config) => config);
 const mockValidateFilePaths = jest.fn();
 const mockValidateCertContents = jest.fn();
 
-jest.unstable_mockModule('../../lib/utils/validation/certificates-validator.mjs', () => ({
+jest.unstable_mockModule('../../lib/utils/config-validation/certificates-validator.mjs', () => ({
     validateCertConfig: mockValidateCertConfig,
     validateFilePaths: mockValidateFilePaths,
     validateCertContents: mockValidateCertContents,
@@ -28,9 +28,9 @@ jest.unstable_mockModule('fs', () => ({
 let configureCertificates, getCertificate;
 
 beforeAll(async () => {
-    const certManager = await import('../../lib/utils/cert-manager.mjs');
-    configureCertificates = certManager.configureCertificates;
-    getCertificate = certManager.getCertificate;
+    const certificatesHandler = await import('../../lib/utils/certificates-handler.mjs');
+    configureCertificates = certificatesHandler.configureCertificates;
+    getCertificate = certificatesHandler.getCertificate;
 });
 
 describe('Configure DMVIC Certificates', () => {

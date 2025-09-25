@@ -49,13 +49,13 @@ jest.unstable_mockModule('fs', () => ({
 }));
 
 jest.unstable_mockModule('crypto', () => sandboxCryptoMock);
-import { validateCertConfig } from '../../../lib/utils/validation/certificates-validator.mjs';
+import { validateCertConfig } from '../../../lib/utils/config-validation/certificates-validator.mjs';
 
 async function testCertValidation(cryptoMock, testFn) {
     jest.resetModules();
     jest.unstable_mockModule('crypto', () => cryptoMock);
     const { validateCertContents } = await import(
-        '../../../lib/utils/validation/certificates-validator.mjs'
+        '../../../lib/utils/config-validation/certificates-validator.mjs'
     );
     testFn(validateCertContents);
 }
