@@ -18,7 +18,7 @@ export default {
 
     // Support for ESM
     preset: 'ts-jest/presets/default-esm',
-    extensionsToTreatAsEsm: ['.mts'],
+    extensionsToTreatAsEsm: ['.mts', '.ts'],
 
     // A map from regular expressions to paths to transformers
     transform: {
