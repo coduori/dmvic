@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.2](https://github.com/coduori/dmvic/compare/v1.7.1...v1.7.2) (2025-09-28)
+
+
+### Bug Fixes
+
+* update cancel certificate function signature to take an enum of cancellation reasons ([#55](https://github.com/coduori/dmvic/issues/55)) ([3cf1af0](https://github.com/coduori/dmvic/commit/3cf1af0926be39f1b567784c425599cc482173f4))
+
 ## [1.7.1](https://github.com/coduori/dmvic/compare/v1.7.0...v1.7.1) (2025-09-28)
 
 
