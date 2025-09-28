@@ -131,6 +131,7 @@ async function checkInsuranceCompanyStockCount(insurer) {
 }
 checkInsuranceCompanyStockCount();
 ```
+
 The options used for the insurer property can be found in the [supported insurers](#supported-insurers) section.
 The stock count response is organised according to the types of motor vehicle insurance certificates.
 

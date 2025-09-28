@@ -39,7 +39,7 @@ describe('checkStockStatus', () => {
         'should throw if provided insurer is not supported: %s - %s',
         async (description, unsupportedInsurer) => {
             await expect(checkStockStatus('valid-auth-token', unsupportedInsurer)).rejects.toThrow(
-                `${unsupportedInsurer} is not a supported insurer`
+                new RegExp(`${unsupportedInsurer} is not a supported insurer`)
             );
         }
     );
