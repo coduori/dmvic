@@ -47,7 +47,7 @@ describe('Cancel certificate issuance', () => {
         async (cancellationReason) => {
             await expect(
                 cancelCertificate('token123', 'C27384993', cancellationReason)
-            ).resolves.not.toThrow();
+            ).resolves.toBeDefined();
         }
     );
 
