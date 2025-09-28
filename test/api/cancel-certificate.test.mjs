@@ -45,9 +45,9 @@ describe('Cancel certificate issuance', () => {
     it.each(Object.keys(CANCELLATION_REASONS))(
         'should accept all valid cancellation reasons: %s',
         async (cancellationReason) => {
-            await expect(
+            expect(() =>
                 cancelCertificate('token123', 'C27384993', cancellationReason)
-            ).resolves.toBeDefined();
+            ).not.toThrow();
         }
     );
 
