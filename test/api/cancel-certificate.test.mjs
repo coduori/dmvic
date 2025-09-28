@@ -78,7 +78,7 @@ describe('Cancel certificate issuance', () => {
             },
             'token123'
         );
-        await expect(result).toEqual({
+        expect(result).toEqual({
             responseBody: {
                 Inputs: `{"certificatenumber":"C27384993","cancelreasonid":${CANCELLATION_REASONS[cancellationReason]}}`,
                 callbackObj: { TransactionReferenceNumber: 'UAT-XAA0552' },
