@@ -34,10 +34,11 @@ describe('Cancel certificate issuance', () => {
         ['invalid data type', true],
     ])(
         'should throw if provided reason is not supported: %s - %s',
-        async (description, unsupportedReasons) => {
+        async (description, unsupportedReason) => {
+            const errorString = `${unsupportedReason} is not a valid reason.`;
             await expect(() =>
-                cancelCertificate('valid-auth-token', 'CERT123', unsupportedReasons)
-            ).rejects.toThrow(new RegExp(`${unsupportedReasons} is not a valid reason.`));
+                cancelCertificate('valid-auth-token', 'CERT123', unsupportedReason)
+            ).rejects.toThrow(new RegExp(errorString));
         }
     );
 
@@ -77,7 +78,7 @@ describe('Cancel certificate issuance', () => {
             },
             'token123'
         );
-        await expect(result).toEqual({
+        expect(result).toEqual({
             responseBody: {
                 Inputs: `{"certificatenumber":"C27384993","cancelreasonid":${CANCELLATION_REASONS[cancellationReason]}}`,
                 callbackObj: { TransactionReferenceNumber: 'UAT-XAA0552' },
