@@ -24,10 +24,25 @@ describe('checkStockStatus', () => {
     });
 
     it('should throw if no authToken is provided', async () => {
-        await expect(checkStockStatus(null, 27)).rejects.toThrow(
+        const insurer = cryptoPickOne(Object.keys(INSURERS));
+        await expect(checkStockStatus(null, insurer)).rejects.toThrow(
             'Authentication token is required!'
         );
     });
+
+    it.each([
+        ['empty string', ''],
+        ['whitespace string', ' '],
+        ['invalid string', 'UNSUPPORTED_INSURER'],
+        ['invalid data type', true],
+    ])(
+        'should throw if provided insurer is not supported: %s - %s',
+        async (description, unsupportedInsurer) => {
+            await expect(checkStockStatus('valid-auth-token', unsupportedInsurer)).rejects.toThrow(
+                `${unsupportedInsurer} is not a supported insurer`
+            );
+        }
+    );
 
     it.each(Object.keys(INSURERS))(
         'should call invoke with correct arguments and returns response: %s',
