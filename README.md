@@ -123,15 +123,15 @@ const redisClient = redis.createClient({
 });
 await redisClient.connect();
 
-async function checkInsuranceCompanyStockCount(insuranceCompanyId) {
+async function checkInsuranceCompanyStockCount(insurer) {
     // retrieve the token from your cache
     const authToken = await redisClient.get('dmvic:auth:token');
 
-    return checkStockStatus(authToken, insuranceCompanyId);
+    return checkStockStatus(authToken, insurer);
 }
 checkInsuranceCompanyStockCount();
 ```
-
+The options used for the insurer property can be found in the [supported insurers](#supported-insurers) section.
 The stock count response is organised according to the types of motor vehicle insurance certificates.
 
 ```
@@ -490,7 +490,7 @@ The payload structure varies depending on the motor vehicle class. Some fields a
 
 #### Field Values and Options
 
-##### Supported Insurers
+##### Supported Insurers {#supported-insurers}
 
 ```
 AIG, AMACO, APA, BRITAM_INSURANCE, CANNON, CIC, DEFINITE_INSURANCE,
