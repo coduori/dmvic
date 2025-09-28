@@ -38,7 +38,7 @@ describe('Cancel certificate issuance', () => {
             const errorString = `${unsupportedReason} is not a valid reason.`;
             await expect(() =>
                 cancelCertificate('valid-auth-token', 'CERT123', unsupportedReason)
-            ).rejects.toThrow(new RegExp(errorString));
+            ).rejects.toThrow(new RegExp('^' + errorString + '.*'));
         }
     );
 
