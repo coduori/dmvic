@@ -170,7 +170,10 @@ This feature facilitates cancellation of a motor vehicle certificate. DMVIC allo
 ```javascript
 import { cancelCertificate } from 'dmvic';
 
-async function cancelMotorVehicleCertificate(certificateNumber, cancellationReason) {
+async function cancelMotorVehicleCertificate(
+    certificateNumber,
+    cancellationReason = 'INSURED_REQUESTED'
+) {
     // retrieve the token from your cache
     const authToken = await redisClient.get('dmvic:auth:token');
 
@@ -178,7 +181,9 @@ async function cancelMotorVehicleCertificate(certificateNumber, cancellationReas
 }
 cancelMotorVehicleCertificate();
 ```
+
 #### Cancellation Reasons
+
 ```
     INSURED_REQUESTED, AMEND_PASSENGER_COUNT, CHANGE_SCOPE_OF_COVER, POLICY_NOT_TAKEN_UP, VEHICLE_SOLD,
     AMEND_INSURED_DETAILS, AMEND_VEHICLE_DETAILS, SUSPECTED_FRAUD, NON_PAYMENT, MISSING_KYC, GOVERNMENT_REQUEST,
