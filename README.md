@@ -35,6 +35,10 @@ yarn install dmvic
 - Verify Insurance Certificate
 - Request Insurance Certificate
 
+## TypeScript Support
+
+This library is fully typed and provides excellent IntelliSense support for TypeScript projects. All interfaces, enums, and function signatures are available as type definitions.
+
 ## Usage
 
 <div align="justify">
@@ -341,7 +345,7 @@ checkInsuranceCertificateValidity('KKA12A', 'AT211-7689809', 'B12984443');
     "callbackObj": {
         "ValidateInsurance": {
             "CertificateNumber": "B12984443",
-            "InsurancePolicyNumber": "first_assurance/commercial/4",
+            "InsurancePolicyNumber": "definite/commercial/4",
             "ValidFrom": "12/07/2025 00:00",
             "ValidTill": "11/06/2026 23:59",
             "Registrationnumber": "KSY777Y",

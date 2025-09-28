@@ -47,11 +47,17 @@ jobs:
                   cache: 'npm'
             - run: npm ci
 
-            - name: Check formatting, Lint and Run tests
-              run: |
-                  npm run format:check
-                  npm run lint
-                  npm test
+            - name: Check code formatting
+              run: npm run format:check
+
+            - name: Lint code
+              run: npm run lint
+
+            - name: Type check
+              run: npm run type-check
+
+            - name: Run tests
+              run: npm test
 
     release:
         name: version bump
