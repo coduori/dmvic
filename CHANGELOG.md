@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.1](https://github.com/coduori/dmvic/compare/v1.7.0...v1.7.1) (2025-09-28)
+
+
+### Bug Fixes
+
+* update checkStockStatus to use insurer identifier from INSU… ([#52](https://github.com/coduori/dmvic/issues/52)) ([951d398](https://github.com/coduori/dmvic/commit/951d3983bea3e6d0f6337009a8e847f302a4fc76))
+
 ## [1.7.0](https://github.com/coduori/dmvic/compare/v1.6.3...v1.7.0) (2025-09-25)
 
 
