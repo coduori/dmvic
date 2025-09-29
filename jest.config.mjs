@@ -4,8 +4,8 @@ export default {
     // Automatically clear mock calls and instances between every test
     clearMocks: true,
 
-    // The directory where Jest should output its coverage files
-    coverageDirectory: 'coverage',
+    // Disable coverage collection
+    collectCoverage: false,
 
     // An array of file extensions your modules use
     moduleFileExtensions: ['js', 'mjs', 'json', 'jsx', 'ts', 'mts', 'tsx', 'node'],
@@ -18,7 +18,7 @@ export default {
 
     // Support for ESM
     preset: 'ts-jest/presets/default-esm',
-    extensionsToTreatAsEsm: ['.mts', '.ts'],
+    extensionsToTreatAsEsm: ['.mts'],
 
     // A map from regular expressions to paths to transformers
     transform: {

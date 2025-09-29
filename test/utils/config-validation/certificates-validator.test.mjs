@@ -61,40 +61,49 @@ async function testCertValidation(cryptoMock, testFn) {
 }
 
 describe('validateCertConfig', () => {
-    test('should not throw error for a valid certificate configuration', () => {
+    it('should not throw error for a valid certificate configuration', () => {
         const validConfig = { sslKey: '/path/to/sslKey', sslCert: '/path/to/sslCert' };
         expect(() => validateCertConfig(validConfig)).not.toThrow();
     });
 
-    test('should throw an error if sslKey is missing', () => {
+    it('should throw an error if sslKey is missing', () => {
         const configMissingSslKey = { sslCert: '/path/to/sslCert' };
         expect(() => validateCertConfig(configMissingSslKey)).toThrow(
             'Configuration errors: sslKey is required'
         );
     });
 
-    test('should throw an error if sslCert is missing', () => {
+    it('should throw an error if sslCert is missing', () => {
         const configMissingSslCert = { sslKey: '/path/to/sslKey' };
         expect(() => validateCertConfig(configMissingSslCert)).toThrow(
             'Configuration errors: sslCert is required'
         );
     });
 
-    test('should throw a combined error if both sslKey and sslCert are missing', () => {
+    it('should throw a combined error if both sslKey and sslCert are missing', () => {
         expect(() => validateCertConfig({})).toThrow(
             'Configuration errors: sslKey is required; sslCert is required'
+        );
+    });
+
+    it('should throw an error if the ssl key and ssl cert are identical', () => {
+        const identicalCertAndKey = { sslKey: '/path/to/sslKey',
+            sslCert: '/path/to/sslKey'
+         };
+                expect(() => validateCertConfig(identicalCertAndKey)).toThrow(
+            'Configuration errors: SSL key and SSL cert paths cannot be identical'
         );
     });
 });
 
 describe('Additional edge cases for validateCertConfig', () => {
-    test('should throw an error if configuration is null', () => {
+    it('should throw an error if configuration is null', () => {
         expect(() => validateCertConfig(null)).toThrow(
             'Invalid certificate configuration. Expected a plain object.'
         );
     });
 
-    test('should throw an error if configuration is not an object', () => {
+    it('should throw an error if configuration is not an object', () => {
         expect(() => validateCertConfig('invalid')).toThrow(
             'Invalid certificate configuration. Expected a plain object.'
         );
@@ -102,25 +111,25 @@ describe('Additional edge cases for validateCertConfig', () => {
 });
 
 describe('Edge cases for certificate config values', () => {
-    test('should throw an error if sslKey is an empty string', () => {
+    it('should throw an error if sslKey is an empty string', () => {
         expect(() => validateCertConfig({ sslKey: '', sslCert: '/path/to/sslCert' })).toThrow(
             'Configuration errors: sslKey is required'
         );
     });
 
-    test('should throw an error if sslCert is an empty string', () => {
+    it('should throw an error if sslCert is an empty string', () => {
         expect(() => validateCertConfig({ sslKey: '/path/to/sslKey', sslCert: '' })).toThrow(
             'Configuration errors: sslCert is required'
         );
     });
 
-    test('should throw a combined error if both sslKey and sslCert are empty', () => {
+    it('should throw a combined error if both sslKey and sslCert are empty', () => {
         expect(() => validateCertConfig({ sslKey: '', sslCert: '' })).toThrow(
             'Configuration errors: sslKey is required; sslCert is required'
         );
     });
 
-    test('should throw an error if extra keys are provided along with valid keys', () => {
+    it('should throw an error if extra keys are provided along with valid keys', () => {
         const config = { sslKey: '/path/to/sslKey', sslCert: '/path/to/sslCert', extra: 'ignored' };
         expect(() => validateCertConfig(config)).toThrow(
             'Configuration errors: Invalid certificate configuration. Unexpected key(s): extra'
@@ -133,7 +142,7 @@ describe('getExpectedSubject (tested through validateCertContents)', () => {
         jest.resetModules();
     });
 
-    test('should correctly validate sandbox environment subject', async () => {
+    it('should correctly validate sandbox environment subject', async () => {
         await testCertValidation(sandboxCryptoMock, (validateCertContents) => {
             expect(() => {
                 validateCertContents({ sslCert: 'dummy content', sslKey: 'dummy key' }, 'sandbox');
@@ -141,7 +150,7 @@ describe('getExpectedSubject (tested through validateCertContents)', () => {
         });
     });
 
-    test('should correctly validate production environment subject', async () => {
+    it('should correctly validate production environment subject', async () => {
         await testCertValidation(productionCryptoMock, (validateCertContents) => {
             expect(() => {
                 validateCertContents(
@@ -152,7 +161,7 @@ describe('getExpectedSubject (tested through validateCertContents)', () => {
         });
     });
 
-    test('should throw error for unknown environment', async () => {
+    it('should throw error for unknown environment', async () => {
         await testCertValidation(sandboxCryptoMock, (validateCertContents) => {
             expect(() => {
                 validateCertContents(
@@ -171,7 +180,7 @@ describe('validateCertContents', () => {
         jest.resetModules();
     });
 
-    test('should validate certificate with matching subject for sandbox', async () => {
+    it('should validate certificate with matching subject for sandbox', async () => {
         await testCertValidation(sandboxCryptoMock, (validateCertContents) => {
             expect(() => {
                 validateCertContents({ sslCert: 'dummy content', sslKey: 'dummy key' }, 'sandbox');
@@ -179,7 +188,7 @@ describe('validateCertContents', () => {
         });
     });
 
-    test('should validate certificate with matching subject for production', async () => {
+    it('should validate certificate with matching subject for production', async () => {
         await testCertValidation(productionCryptoMock, (validateCertContents) => {
             expect(() => {
                 validateCertContents(
@@ -190,7 +199,7 @@ describe('validateCertContents', () => {
         });
     });
 
-    test('should throw when certificate subject does not match expected', async () => {
+    it('should throw when certificate subject does not match expected', async () => {
         await testCertValidation(wrongSubjectCryptoMock, (validateCertContents) => {
             expect(() => {
                 validateCertContents(
@@ -203,7 +212,7 @@ describe('validateCertContents', () => {
         });
     });
 
-    test('should throw when private key does not match certificate', async () => {
+    it('should throw when private key does not match certificate', async () => {
         await testCertValidation(keyMismatchCryptoMock, (validateCertContents) => {
             expect(() => {
                 validateCertContents({ sslCert: 'dummy content', sslKey: 'dummy key' }, 'sandbox');
@@ -213,7 +222,7 @@ describe('validateCertContents', () => {
         });
     });
 
-    test('should throw when certificate instantiation fails', async () => {
+    it('should throw when certificate instantiation fails', async () => {
         await testCertValidation(invalidCertCryptoMock, (validateCertContents) => {
             expect(() => {
                 validateCertContents(
@@ -224,7 +233,7 @@ describe('validateCertContents', () => {
         });
     });
 
-    test('should throw with unknown environment', async () => {
+    it('should throw with unknown environment', async () => {
         await testCertValidation(sandboxCryptoMock, (validateCertContents) => {
             expect(() => {
                 validateCertContents(
