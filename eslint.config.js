@@ -1,5 +1,7 @@
 import js from '@eslint/js';
 import prettier from 'eslint-config-prettier';
+import tseslint from '@typescript-eslint/eslint-plugin';
+import tsparser from '@typescript-eslint/parser';
 
 import pluginImport from 'eslint-plugin-import';
 import pluginUnicorn from 'eslint-plugin-unicorn';
@@ -36,41 +38,61 @@ export default [
             n: pluginN,
         },
         rules: {
+            // Core rules
             'no-console': 'error',
             'no-prototype-builtins': 'error',
+            'no-duplicate-imports': 'error',
+            'no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
 
+            // Unicorn rules
             'unicorn/prefer-module': 'error',
             'unicorn/no-array-for-each': 'error',
 
-            'security/detect-object-injection': 'off',
+            // Security rules
             'security/detect-buffer-noassert': 'warn',
             'security/detect-child-process': 'error',
             'security/detect-disable-mustache-escape': 'error',
             'security/detect-eval-with-expression': 'error',
             'security/detect-new-buffer': 'warn',
-            'security/detect-no-csrf-before-method-override': 'off',
             'security/detect-non-literal-fs-filename': 'warn',
             'security/detect-non-literal-require': 'warn',
             'security/detect-possible-timing-attacks': 'warn',
             'security/detect-pseudoRandomBytes': 'warn',
             'security/detect-unsafe-regex': 'warn',
 
-            'import/no-dynamic-require': 'off',
+            // Import rules
             'import/first': 'error',
             'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
-            'import/no-unresolved': 'off',
 
-            'promise/always-return': 'off',
+            // Promise rules
             'promise/catch-or-return': 'warn',
-            'n/no-missing-import': 'off',
 
+            // Code length limits
             'max-lines': ['error', { max: 100, skipBlankLines: true, skipComments: true }],
             'max-lines-per-function': [
                 'error',
                 { max: 40, skipBlankLines: true, skipComments: true },
             ],
+        },
+    },
+
+    // TypeScript declaration files
+    {
+        files: ['**/*.d.ts'],
+        languageOptions: {
+            parser: tsparser,
+            ecmaVersion: 2022,
+            sourceType: 'module',
+        },
+        plugins: {
+            '@typescript-eslint': tseslint,
+        },
+        rules: {
             'no-duplicate-imports': 'error',
-            'no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+            'prefer-const': 'error',
+            '@typescript-eslint/prefer-as-const': 'error',
+
+            'no-unused-vars': 'off',
         },
     },
 
