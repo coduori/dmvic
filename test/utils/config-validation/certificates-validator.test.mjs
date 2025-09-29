@@ -87,10 +87,8 @@ describe('validateCertConfig', () => {
     });
 
     it('should throw an error if the ssl key and ssl cert are identical', () => {
-        const identicalCertAndKey = { sslKey: '/path/to/sslKey',
-            sslCert: '/path/to/sslKey'
-         };
-                expect(() => validateCertConfig(identicalCertAndKey)).toThrow(
+        const identicalCertAndKey = { sslKey: '/path/to/sslKey', sslCert: '/path/to/sslKey' };
+        expect(() => validateCertConfig(identicalCertAndKey)).toThrow(
             'Configuration errors: SSL key and SSL cert paths cannot be identical'
         );
     });
