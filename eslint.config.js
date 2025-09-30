@@ -124,6 +124,7 @@ export default [
 
             'max-lines': 'off',
             'max-lines-per-function': 'off',
+            'import/no-duplicates': 'error',
         },
     },
 
