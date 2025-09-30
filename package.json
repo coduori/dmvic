@@ -9,7 +9,7 @@
         ".": "./lib/index.mjs"
     },
     "scripts": {
-        "type-check": "tsc --noEmit",
+        "type:check": "tsc --noEmit",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "format": "prettier --write .",
@@ -17,8 +17,8 @@
         "test": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles",
         "test:watch": "npm run lint && npm run test -- --watch",
         "ci": "npm run format:check && npm run lint && npm run type-check && npm test",
-        "snyk-scan": "dotenv snyk test --all-projects",
-        "security": "npm run snyk-scan"
+        "snyk:scan": "dotenv snyk test --all-projects",
+        "security": "npm run snyk:scan"
     },
     "repository": {
         "type": "git",
