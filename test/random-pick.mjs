@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 
 function cryptoPickOne(arr) {
     if (!Array.isArray(arr) || arr.length === 0) {

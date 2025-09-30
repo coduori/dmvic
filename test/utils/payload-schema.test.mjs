@@ -980,7 +980,7 @@ describe('Certificate Issuance Payload Schema', () => {
             const payload = getCertificateRequestPayload();
 
             expect(payload).toHaveProperty('recipientPhoneNumber');
-            expect(payload.recipientPhoneNumber.toString().length).toBe(9);
+            expect(payload.recipientPhoneNumber.toString()).toHaveLength(9);
         });
         it('should reject phone numbers with non-numeric characters', () => {
             const payload = getCertificateRequestPayload();
@@ -1067,7 +1067,7 @@ describe('Certificate Issuance Payload Schema', () => {
             payload.policyHolderKRAPIN = chance.policyHolderKRAPIN().slice(0, -1);
 
             expect(payload).toHaveProperty('policyHolderKRAPIN');
-            expect(payload.policyHolderKRAPIN.toString().length).toBe(10);
+            expect(payload.policyHolderKRAPIN).toHaveLength(10);
             expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow();
         });
         it('should reject KRA PIN with wrong number of digits', () => {

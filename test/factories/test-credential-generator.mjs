@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 
 export const generateTestCredentials = (seed = 'dmvic-test') => {
     const generateValue = (prefix) => {

@@ -1,15 +1,15 @@
 import js from '@eslint/js';
-import prettier from 'eslint-config-prettier';
 import tseslint from '@typescript-eslint/eslint-plugin';
 import tsparser from '@typescript-eslint/parser';
-
+import prettier from 'eslint-config-prettier';
 import pluginImport from 'eslint-plugin-import';
-import pluginUnicorn from 'eslint-plugin-unicorn';
-import pluginSecurity from 'eslint-plugin-security';
 import pluginJest from 'eslint-plugin-jest';
-import pluginPromise from 'eslint-plugin-promise';
 import pluginN from 'eslint-plugin-n';
-
+import pluginPromise from 'eslint-plugin-promise';
+import pluginSecurity from 'eslint-plugin-security';
+import simpleImportSort from 'eslint-plugin-simple-import-sort';
+import sonarjs from 'eslint-plugin-sonarjs';
+import pluginUnicorn from 'eslint-plugin-unicorn';
 import globals from 'globals';
 
 export default [
@@ -21,6 +21,7 @@ export default [
 
     {
         files: ['**/*.js', '**/*.mjs'],
+        ignores: ['eslint.config.js', '**/*.test.js', '**/*.test.mjs'],
         languageOptions: {
             ecmaVersion: 2022,
             sourceType: 'module',
@@ -33,9 +34,10 @@ export default [
             import: pluginImport,
             unicorn: pluginUnicorn,
             security: pluginSecurity,
-            jest: pluginJest,
             promise: pluginPromise,
             n: pluginN,
+            sort: simpleImportSort,
+            sonar: sonarjs,
         },
         rules: {
             // Core rules
@@ -47,6 +49,8 @@ export default [
             // Unicorn rules
             'unicorn/prefer-module': 'error',
             'unicorn/no-array-for-each': 'error',
+            'unicorn/prefer-node-protocol': 'error',
+            'unicorn/prefer-top-level-await': 'error',
 
             // Security rules
             'security/detect-buffer-noassert': 'warn',
@@ -55,9 +59,6 @@ export default [
             'security/detect-eval-with-expression': 'error',
             'security/detect-new-buffer': 'warn',
             'security/detect-non-literal-fs-filename': 'warn',
-            'security/detect-non-literal-require': 'warn',
-            'security/detect-possible-timing-attacks': 'warn',
-            'security/detect-pseudoRandomBytes': 'warn',
             'security/detect-unsafe-regex': 'warn',
 
             // Import rules
@@ -66,6 +67,19 @@ export default [
 
             // Promise rules
             'promise/catch-or-return': 'warn',
+
+            // sort
+            'sort/imports': 'error',
+            'sort/exports': 'error',
+
+            // sonar
+            'sonar/cognitive-complexity': ['error', 10],
+            'sonar/no-hardcoded-secrets': 'error',
+            'sonar/no-hardcoded-passwords': 'error',
+            'sonar/confidential-information-logging': 'error',
+            'sonar/no-identical-functions': 'error',
+            'sonar/no-identical-expressions': 'error',
+            'sonar/function-return-type': 'warn',
 
             // Code length limits
             'max-lines': ['error', { max: 100, skipBlankLines: true, skipComments: true }],
@@ -99,6 +113,7 @@ export default [
     {
         files: ['**/*.test.js', '**/*.test.mjs'],
         plugins: {
+            import: pluginImport,
             jest: pluginJest,
         },
         languageOptions: {
@@ -120,10 +135,12 @@ export default [
             'jest/no-disabled-tests': 'error',
             'jest/no-focused-tests': 'error',
             'jest/no-identical-title': 'error',
+            'jest/prefer-to-have-length': 'error',
+            'jest/valid-expect': 'error',
 
             'max-lines': 'off',
             'max-lines-per-function': 'off',
-            'no-duplicate-imports': 'error',
+            'import/no-duplicates': 'error',
         },
     },
 

@@ -56,40 +56,40 @@ describe('request insurance certificate', () => {
     });
 
     describe('should pass authentication token', () => {
-        it('should throw an error if authentication is not provided', () => {
-            expect(requestInsuranceCertificate()).rejects.toThrow(
+        it('should throw an error if authentication is not provided', async () => {
+            await expect(requestInsuranceCertificate()).rejects.toThrow(
                 'Authentication token is required!'
             );
         });
 
-        it('should throw error if authentication token is null', () => {
-            expect(requestInsuranceCertificate(null)).rejects.toThrow(
+        it('should throw error if authentication token is null', async () => {
+            await expect(requestInsuranceCertificate(null)).rejects.toThrow(
                 'Authentication token is required!'
             );
         });
 
-        it('should throw error if authentication token is empty string', () => {
-            expect(requestInsuranceCertificate('')).rejects.toThrow(
+        it('should throw error if authentication token is empty string', async () => {
+            await expect(requestInsuranceCertificate('')).rejects.toThrow(
                 'Authentication token is required!'
             );
         });
     });
 
     describe('should provide a valid motor class option', () => {
-        it('should throw error if motor class is invalid', () => {
-            expect(requestInsuranceCertificate('valid-token', {}, 'INVALID_CLASS')).rejects.toThrow(
-                /Invalid motor class!/
-            );
+        it('should throw error if motor class is invalid', async () => {
+            await expect(
+                requestInsuranceCertificate('valid-token', {}, 'INVALID_CLASS')
+            ).rejects.toThrow(/Invalid motor class!/);
         });
-        it('should throw error if motor class is not provided', () => {
-            expect(requestInsuranceCertificate('valid-token', {})).rejects.toThrow(
+        it('should throw error if motor class is not provided', async () => {
+            await expect(requestInsuranceCertificate('valid-token', {})).rejects.toThrow(
                 /Invalid motor class!/
             );
         });
     });
 
     describe('should provide a valid payload', () => {
-        it('should throw validation error when payload validation fails', () => {
+        it('should throw validation error when payload validation fails', async () => {
             const payload = getCertificateRequestPayload();
             const validationError = new Error('Validation failed');
             validationError.errors = ['Field is required', 'Invalid format'];
@@ -98,7 +98,7 @@ describe('request insurance certificate', () => {
                 throw validationError;
             });
 
-            expect(
+            await expect(
                 requestInsuranceCertificate('valid-token', payload, payload.motorClass)
             ).rejects.toThrow('Validation failed');
             expect(mockValidatePayload).toHaveBeenCalledTimes(1);

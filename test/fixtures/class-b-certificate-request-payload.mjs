@@ -1,11 +1,12 @@
 import Chance from 'chance';
+
 import {
-    VALUATION_COVER_TYPES_OPTION,
     MOTOR_CLASS_OPTIONS,
+    VALUATION_COVER_TYPES_OPTION,
     VEHICLE_TYPE_OPTIONS,
 } from '../../lib/utils/constants.mjs';
-import { getBaseRequestPayload } from './base-payload.mjs';
 import { cryptoPickOne } from '../random-pick.mjs';
+import { getBaseRequestPayload } from './base-payload.mjs';
 
 const chance = new Chance();
 
