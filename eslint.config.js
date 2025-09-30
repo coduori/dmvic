@@ -8,6 +8,7 @@ import pluginN from 'eslint-plugin-n';
 import pluginPromise from 'eslint-plugin-promise';
 import pluginSecurity from 'eslint-plugin-security';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
+import sonarjs from 'eslint-plugin-sonarjs';
 import pluginUnicorn from 'eslint-plugin-unicorn';
 import globals from 'globals';
 
@@ -20,7 +21,7 @@ export default [
 
     {
         files: ['**/*.js', '**/*.mjs'],
-        ignores: ['**/*.test.js', '**/*.test.mjs'],
+        ignores: ['eslint.config.js', '**/*.test.js', '**/*.test.mjs'],
         languageOptions: {
             ecmaVersion: 2022,
             sourceType: 'module',
@@ -36,6 +37,7 @@ export default [
             promise: pluginPromise,
             n: pluginN,
             sort: simpleImportSort,
+            sonar: sonarjs,
         },
         rules: {
             // Core rules
@@ -69,6 +71,15 @@ export default [
             // sort
             'sort/imports': 'error',
             'sort/exports': 'error',
+
+            // sonar
+            'sonar/cognitive-complexity': ['error', 10],
+            'sonar/no-hardcoded-secrets': 'error',
+            'sonar/no-hardcoded-passwords': 'error',
+            'sonar/confidential-information-logging': 'error',
+            'sonar/no-identical-functions': 'error',
+            'sonar/no-identical-expressions': 'error',
+            'sonar/function-return-type': 'warn',
 
             // Code length limits
             'max-lines': ['error', { max: 100, skipBlankLines: true, skipComments: true }],

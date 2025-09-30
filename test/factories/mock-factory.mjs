@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 
 import { jest } from '@jest/globals';
-import { date,number, object, string } from 'yup';
+import { date, number, object, string } from 'yup';
 
 const generateCredential = (prefix, seed = 'dmvic-test') => {
     const hash = crypto
