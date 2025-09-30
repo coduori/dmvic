@@ -1,7 +1,7 @@
 import Chance from 'chance';
 
+import { COVER_TYPE_OPTIONS, INSURERS, MOTOR_CLASS_OPTIONS } from '../../lib/utils/constants.mjs';
 import { getISOAnnualExpiry } from '../../lib/utils/standard-date-format.mjs';
-import { INSURERS, COVER_TYPE_OPTIONS, MOTOR_CLASS_OPTIONS } from '../../lib/utils/constants.mjs';
 import { cryptoPickOne } from '../random-pick.mjs';
 
 const chance = new Chance();

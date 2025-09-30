@@ -1,13 +1,13 @@
 import js from '@eslint/js';
-import prettier from 'eslint-config-prettier';
 import tseslint from '@typescript-eslint/eslint-plugin';
 import tsparser from '@typescript-eslint/parser';
-
+import prettier from 'eslint-config-prettier';
 import pluginImport from 'eslint-plugin-import';
 import pluginJest from 'eslint-plugin-jest';
 import pluginN from 'eslint-plugin-n';
 import pluginPromise from 'eslint-plugin-promise';
 import pluginSecurity from 'eslint-plugin-security';
+import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import pluginUnicorn from 'eslint-plugin-unicorn';
 import globals from 'globals';
 
@@ -35,6 +35,7 @@ export default [
             security: pluginSecurity,
             promise: pluginPromise,
             n: pluginN,
+            sort: simpleImportSort,
         },
         rules: {
             // Core rules
@@ -64,6 +65,10 @@ export default [
 
             // Promise rules
             'promise/catch-or-return': 'warn',
+
+            // sort
+            'sort/imports': 'error',
+            'sort/exports': 'error',
 
             // Code length limits
             'max-lines': ['error', { max: 100, skipBlankLines: true, skipComments: true }],
