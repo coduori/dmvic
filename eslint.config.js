@@ -4,12 +4,11 @@ import tseslint from '@typescript-eslint/eslint-plugin';
 import tsparser from '@typescript-eslint/parser';
 
 import pluginImport from 'eslint-plugin-import';
-import pluginUnicorn from 'eslint-plugin-unicorn';
-import pluginSecurity from 'eslint-plugin-security';
 import pluginJest from 'eslint-plugin-jest';
-import pluginPromise from 'eslint-plugin-promise';
 import pluginN from 'eslint-plugin-n';
-
+import pluginPromise from 'eslint-plugin-promise';
+import pluginSecurity from 'eslint-plugin-security';
+import pluginUnicorn from 'eslint-plugin-unicorn';
 import globals from 'globals';
 
 export default [
@@ -21,6 +20,7 @@ export default [
 
     {
         files: ['**/*.js', '**/*.mjs'],
+        ignores: ['**/*.test.js', '**/*.test.mjs'],
         languageOptions: {
             ecmaVersion: 2022,
             sourceType: 'module',
@@ -33,7 +33,6 @@ export default [
             import: pluginImport,
             unicorn: pluginUnicorn,
             security: pluginSecurity,
-            jest: pluginJest,
             promise: pluginPromise,
             n: pluginN,
         },
@@ -47,6 +46,8 @@ export default [
             // Unicorn rules
             'unicorn/prefer-module': 'error',
             'unicorn/no-array-for-each': 'error',
+            'unicorn/prefer-node-protocol': 'error',
+            'unicorn/prefer-top-level-await': 'error',
 
             // Security rules
             'security/detect-buffer-noassert': 'warn',
@@ -55,9 +56,6 @@ export default [
             'security/detect-eval-with-expression': 'error',
             'security/detect-new-buffer': 'warn',
             'security/detect-non-literal-fs-filename': 'warn',
-            'security/detect-non-literal-require': 'warn',
-            'security/detect-possible-timing-attacks': 'warn',
-            'security/detect-pseudoRandomBytes': 'warn',
             'security/detect-unsafe-regex': 'warn',
 
             // Import rules
@@ -99,6 +97,7 @@ export default [
     {
         files: ['**/*.test.js', '**/*.test.mjs'],
         plugins: {
+            import: pluginImport,
             jest: pluginJest,
         },
         languageOptions: {
@@ -123,7 +122,6 @@ export default [
 
             'max-lines': 'off',
             'max-lines-per-function': 'off',
-            'no-duplicate-imports': 'error',
         },
     },
 
