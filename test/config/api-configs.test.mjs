@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 
-import { apiConfig, getAPIBaseURL } from '../../lib/config/api-configs.mjs';
+import { apiConfig, getApiBaseUrl } from '../../lib/config/api-configs.mjs';
 
 describe('API Base URL', () => {
     beforeEach(() => {
@@ -9,7 +9,7 @@ describe('API Base URL', () => {
 
     it('should return DMVIC UAT URL if the environment is not set', async () => {
         // then
-        expect(getAPIBaseURL()).toBe('https://uat-api.dmvic.com');
+        expect(getApiBaseUrl()).toBe('https://uat-api.dmvic.com');
     });
 
     it('should return the production URL if the environment is set to production', async () => {
@@ -17,7 +17,7 @@ describe('API Base URL', () => {
         jest.resetModules();
 
         // then
-        expect(getAPIBaseURL('production')).toBe('https://api.dmvic.com');
+        expect(getApiBaseUrl('production')).toBe('https://api.dmvic.com');
     });
 });
 

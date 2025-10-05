@@ -12,7 +12,7 @@ const mockHttpClient = createMockHttpClient();
 const mockSecretsHandler = createMockSecretsHandler();
 const mockGetSecret = mockSecretsHandler.getSecret;
 const mockRequestHandler = createMockRequestHandler();
-const mockInvoke = mockRequestHandler.invoke;
+const mockSendHttpRequest = mockRequestHandler.sendHttpRequest;
 const mockApiConfig = createMockApiConfig();
 const mockRequest = mockHttpClient.__mockRequest;
 const mockPayloadSchema = createMockPayloadSchema();
@@ -22,9 +22,9 @@ export {
     mockGetSecret,
     mockHttpClient,
     mockInMemoryCache,
-    mockInvoke,
     mockPayloadSchema,
     mockRequest,
     mockRequestHandler,
     mockSecretsHandler,
+    mockSendHttpRequest,
 };

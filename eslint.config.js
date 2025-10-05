@@ -43,7 +43,7 @@ export default [
             // Core rules
             'no-console': 'error',
             'no-prototype-builtins': 'error',
-            'no-duplicate-imports': 'error',
+            'import/no-duplicates': 'error',
             'no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
 
             // Unicorn rules
@@ -75,11 +75,13 @@ export default [
             // sonar
             'sonar/cognitive-complexity': ['error', 10],
             'sonar/no-hardcoded-secrets': 'error',
-            'sonar/no-hardcoded-passwords': 'error',
             'sonar/confidential-information-logging': 'error',
             'sonar/no-identical-functions': 'error',
             'sonar/no-identical-expressions': 'error',
-            'sonar/function-return-type': 'warn',
+            'sonar/function-return-type': 'error',
+            'sonar/no-redundant-boolean': 'error',
+            'sonar/no-identical-conditions': 'error',
+            'sonar/no-collection-size-mischeck': 'error',
 
             // Code length limits
             'max-lines': ['error', { max: 100, skipBlankLines: true, skipComments: true }],
@@ -99,12 +101,13 @@ export default [
             sourceType: 'module',
         },
         plugins: {
-            '@typescript-eslint': tseslint,
+            types: tseslint,
+            import: pluginImport,
         },
         rules: {
-            'no-duplicate-imports': 'error',
+            'import/no-duplicates': 'error',
             'prefer-const': 'error',
-            '@typescript-eslint/prefer-as-const': 'error',
+            'types/prefer-as-const': 'error',
 
             'no-unused-vars': 'off',
         },

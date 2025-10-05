@@ -14,7 +14,7 @@ jest.unstable_mockModule('undici', () => ({
 
 const mockGetAPIBaseURL = jest.fn().mockReturnValue('https://test-api.com');
 jest.unstable_mockModule('../../lib/config/api-configs.mjs', () => ({
-    getAPIBaseURL: mockGetAPIBaseURL,
+    getApiBaseUrl: mockGetAPIBaseURL,
 }));
 
 const mockGetSecret = jest.fn((key) => {

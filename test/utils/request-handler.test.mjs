@@ -12,7 +12,7 @@ jest.unstable_mockModule('../../lib/utils/secrets-handler.mjs', () => ({
     getSecret: mockGetSecret,
 }));
 
-const { invoke } = await import('../../lib/utils/request-handler.mjs');
+const { sendHttpRequest } = await import('../../lib/utils/request-handler.mjs');
 
 describe('Request Handler', () => {
     beforeEach(() => {
@@ -20,9 +20,9 @@ describe('Request Handler', () => {
     });
 
     it('throws if no token is provided for an authorized request', async () => {
-        await expect(invoke('POST', '/endpoint', { foo: 'bar' }, null, true)).rejects.toThrow(
-            'An Auth token is required for all authenticated requests!'
-        );
+        await expect(
+            sendHttpRequest('POST', '/endpoint', { foo: 'bar' }, null, true)
+        ).rejects.toThrow('An Auth token is required for all authenticated requests!');
     });
 
     it('does not throw if not authorized', async () => {
@@ -31,7 +31,7 @@ describe('Request Handler', () => {
             headers: {},
             body: { json: async () => ({ ok: true }) },
         });
-        await expect(invoke('GET', '/endpoint', {}, null, false)).resolves.toBeDefined();
+        await expect(sendHttpRequest('GET', '/endpoint', {}, null, false)).resolves.toBeDefined();
     });
 
     it('sets correct headers for authorized requests', async () => {
@@ -40,7 +40,7 @@ describe('Request Handler', () => {
             headers: {},
             body: { json: async () => ({ ok: true }) },
         });
-        await invoke('POST', '/endpoint', { foo: 'bar' }, 'token123', true);
+        await sendHttpRequest('POST', '/endpoint', { foo: 'bar' }, 'token123', true);
 
         const call = mockRequest.mock.calls[0][0];
         expect(call.headers.authorization).toBe('Bearer token123');
@@ -55,7 +55,7 @@ describe('Request Handler', () => {
             headers: {},
             body: { json: async () => ({ ok: true }) },
         });
-        await invoke('GET', '/endpoint', {}, null, false);
+        await sendHttpRequest('GET', '/endpoint', {}, null, false);
 
         const call = mockRequest.mock.calls[0][0];
         expect(call.headers.authorization).toBeUndefined();
@@ -67,7 +67,7 @@ describe('Request Handler', () => {
             headers: { foo: 'bar' },
             body: { json: async () => ({ ok: true }) },
         });
-        await invoke('POST', '/endpoint', { foo: 'bar' }, 'token123', true);
+        await sendHttpRequest('POST', '/endpoint', { foo: 'bar' }, 'token123', true);
 
         expect(mockRequest).toHaveBeenCalledWith({
             path: '/endpoint',
@@ -86,7 +86,7 @@ describe('Request Handler', () => {
             headers: { foo: 'bar' },
             body: { json: async () => ({ result: 42 }) },
         });
-        const result = await invoke('POST', '/endpoint', { foo: 'bar' }, 'token123', true);
+        const result = await sendHttpRequest('POST', '/endpoint', { foo: 'bar' }, 'token123', true);
 
         expect(result).toEqual({
             responseBody: { result: 42 },
@@ -96,9 +96,9 @@ describe('Request Handler', () => {
 
     it('throws with correct message if getClient().request throws', async () => {
         mockRequest.mockRejectedValue(new Error('Network error'));
-        await expect(invoke('POST', '/endpoint', { foo: 'bar' }, 'token123', true)).rejects.toThrow(
-            'DMVIC Request error: Error: Network error'
-        );
+        await expect(
+            sendHttpRequest('POST', '/endpoint', { foo: 'bar' }, 'token123', true)
+        ).rejects.toThrow('DMVIC Request error: Error: Network error');
     });
 
     it('throws with correct message if response.json() throws', async () => {
@@ -111,8 +111,8 @@ describe('Request Handler', () => {
                 },
             },
         });
-        await expect(invoke('POST', '/endpoint', { foo: 'bar' }, 'token123', true)).rejects.toThrow(
-            'DMVIC Request error: Error: Bad JSON'
-        );
+        await expect(
+            sendHttpRequest('POST', '/endpoint', { foo: 'bar' }, 'token123', true)
+        ).rejects.toThrow('DMVIC Request error: Error: Bad JSON');
     });
 });
