@@ -1,31 +1,41 @@
-import { expect, jest } from '@jest/globals';
+import { jest } from '@jest/globals';
 
-import {
-    mockApiConfig,
-    mockInvoke,
-    mockRequestHandler,
-    mockSecretsHandler,
-} from '../mocks/mocks.mjs';
-import { getDateToday, getAnnualExpiry } from '../../lib/utils/standard-date-format.mjs';
+import { apiConfig } from '../../lib/config/api-configs.mjs';
 
-jest.unstable_mockModule('../../lib/utils/request-handler.mjs', () => mockRequestHandler);
-jest.unstable_mockModule('../../lib/config/api-configs.mjs', () => mockApiConfig);
-jest.unstable_mockModule('../../lib/utils/secrets-handler.mjs', () => mockSecretsHandler);
+const mockMakeAuthenticatedRequest = jest.fn();
+const mockGetAnnualExpiry = jest.fn(() =>
+    new Date(
+        new Date(new Date().setFullYear(new Date().getFullYear() + 1)).setDate(
+            new Date().getDate() - 1
+        )
+    ).toLocaleDateString('en-GB')
+);
+const mockGetDateToday = jest.fn(() => new Date().toLocaleDateString('en-GB'));
+
+jest.unstable_mockModule('../../lib/utils/api-helpers.mjs', () => ({
+    makeAuthenticatedRequest: mockMakeAuthenticatedRequest,
+}));
+
+jest.unstable_mockModule('../../lib/utils/standard-date-format.mjs', () => ({
+    getAnnualExpiry: mockGetAnnualExpiry,
+    getDateToday: mockGetDateToday,
+}));
 
 const { checkInsuranceStatus } = await import('../../lib/api/check-insurance-status.mjs');
 
 describe('check vehicle insurance status', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        jest.resetModules();
     });
 
-    it('should throw if no authToken is provided', async () => {
-        await expect(checkInsuranceStatus(null, 'CERT123')).rejects.toThrow(
-            'Authentication token is required!'
+    it('should reject if both chassisNumber and registrationNumber are missing', async () => {
+        await expect(checkInsuranceStatus('valid-auth-token', {})).rejects.toThrow(
+            'Either registration number or chassis number is required!'
         );
     });
 
-    [
+    it.each([
         {
             registrationNumber: 'KBJ705Y',
         },
@@ -36,93 +46,57 @@ describe('check vehicle insurance status', () => {
             chassisNumber: 'KL911-7689871',
             registrationNumber: 'KBO709P',
         },
-    ].forEach((payload) => {
-        it('should call invoke with correct arguments and returns response', async () => {
-            mockInvoke.mockResolvedValue({
-                Inputs: '',
-                callbackObj: {
-                    DoubleInsurance: [
-                        {
-                            CoverEndDate: '22/02/2026',
-                            InsuranceCertificateNo: 'C31309021',
-                            MemberCompanyName: 'Test Insurance Company Ltd.',
-                            InsurancePolicyNo: 'G/HQ/0700/019729',
-                            vehicleregistrationnumber: payload.registrationNumber
-                                ? payload.registrationNumber
-                                : undefined,
-                            chassisnumber: payload.chassisNumber
-                                ? payload.chassisNumber
-                                : undefined,
-                            MemberCompanyID: 44,
-                            CertificateStatus: 'Active',
-                        },
-                    ],
-                },
-                success: true,
-                Error: [],
-                APIRequestNumber: 'OA-YZ9058',
-                DMVICRefNo: null,
-            });
-            const result = await checkInsuranceStatus('token123', payload);
-            expect(mockInvoke).toHaveBeenCalledTimes(1);
-            expect(mockInvoke).toHaveBeenCalledWith(
-                'POST',
-                'https://test-api.example.com/api/t5/Integration/ValidateDoubleInsurance',
-                {
-                    vehicleregistrationnumber: payload.registrationNumber,
-                    chassisnumber: payload.chassisNumber,
-                    policystartdate: getDateToday(),
-                    policyenddate: getAnnualExpiry(),
-                },
-                'token123'
-            );
-            expect(result).toEqual({
-                Inputs: '',
-                callbackObj: {
-                    DoubleInsurance: [
-                        {
-                            CoverEndDate: '22/02/2026',
-                            InsuranceCertificateNo: 'C31309021',
-                            MemberCompanyName: 'Test Insurance Company Ltd.',
-                            InsurancePolicyNo: 'G/HQ/0700/019729',
-                            vehicleregistrationnumber: payload.registrationNumber
-                                ? payload.registrationNumber
-                                : undefined,
-                            chassisnumber: payload.chassisNumber
-                                ? payload.chassisNumber
-                                : undefined,
-                            MemberCompanyID: 44,
-                            CertificateStatus: 'Active',
-                        },
-                    ],
-                },
-                success: true,
-                Error: [],
-                APIRequestNumber: 'OA-YZ9058',
-                DMVICRefNo: null,
-            });
+    ])('should call makeAuthenticatedRequest with correct payload', async (testPayload) => {
+        const authToken = 'valid-auth-token';
+        await checkInsuranceStatus(authToken, testPayload);
+
+        const payload = {
+            vehicleregistrationnumber: testPayload.registrationNumber,
+            chassisnumber: testPayload.chassisNumber,
+            policystartdate: mockGetDateToday(),
+            policyenddate: mockGetAnnualExpiry(),
+        };
+
+        expect(mockGetAnnualExpiry).toHaveBeenCalledTimes(2);
+        expect(mockGetDateToday).toHaveBeenCalledTimes(2);
+        expect(mockMakeAuthenticatedRequest).toHaveBeenCalledTimes(1);
+
+        const [endpoint, requestBody, tkn] = mockMakeAuthenticatedRequest.mock.calls[0];
+
+        expect(endpoint).toBe(apiConfig.general.validateDoubleInsurance);
+        expect(tkn).toBe(authToken);
+        expect(requestBody).toStrictEqual(payload);
+        expect(mockMakeAuthenticatedRequest).toHaveBeenCalledWith(
+            apiConfig.general.validateDoubleInsurance,
+            payload,
+            authToken
+        );
+    });
+
+    it('should throw if getDateToday() throws', async () => {
+        mockGetDateToday.mockImplementationOnce(() => {
+            throw new Error('invalid Date!');
         });
-    });
-
-    it('should throw with correct message if correct payload is not passed', async () => {
-        mockInvoke.mockRejectedValue(
-            new Error('Either registration number or chassis number is required!')
-        );
-        await expect(checkInsuranceStatus('token123', {})).rejects.toThrow(
-            'Either registration number or chassis number is required!'
-        );
-        await expect(checkInsuranceStatus('token123', undefined)).rejects.toThrow(
-            'Either registration number or chassis number is required!'
-        );
-    });
-
-    it('should throw with correct message if invoke throws', async () => {
-        mockInvoke.mockRejectedValue(new Error('Network error'));
         await expect(
-            checkInsuranceStatus('token123', {
-                registrationNumber: 'KBJ705Y',
-                chassisNumber: 'AT211-7689809',
-            })
-        ).rejects.toThrow('Error fetching data: Network error');
+            checkInsuranceStatus('valid-auth-token', { registrationNumber: 'KAA121A' })
+        ).rejects.toThrow('invalid Date!');
+    });
+
+    it('should throw if getAnnualExpiry() throws', async () => {
+        mockGetAnnualExpiry.mockImplementationOnce(() => {
+            throw new Error('invalid Date!');
+        });
+        await expect(
+            checkInsuranceStatus('valid-auth-token', { registrationNumber: 'KAA121A' })
+        ).rejects.toThrow('invalid Date!');
+    });
+
+    it('should throw if makeAuthenticatedRequest() throws', async () => {
+        mockMakeAuthenticatedRequest.mockImplementationOnce(() => {
+            throw new Error('network error');
+        });
+        await expect(
+            checkInsuranceStatus('valid-auth-token', { registrationNumber: 'KAA121A' })
+        ).rejects.toThrow('network error');
     });
 });

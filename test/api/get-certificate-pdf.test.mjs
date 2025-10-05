@@ -1,51 +1,42 @@
-import { expect, jest } from '@jest/globals';
+import { jest } from '@jest/globals';
 
-import {
-    mockApiConfig,
-    mockInvoke,
-    mockRequestHandler,
-    mockGetSecret,
-    mockSecretsHandler,
-} from '../mocks/mocks.mjs';
+import { apiConfig } from '../../lib/config/api-configs.mjs';
 
-const mockGetAPIBaseURL = mockApiConfig.getAPIBaseURL;
+const mockMakeAuthenticatedRequest = jest.fn();
 
-jest.unstable_mockModule('../../lib/utils/request-handler.mjs', () => mockRequestHandler);
-jest.unstable_mockModule('../../lib/config/api-configs.mjs', () => mockApiConfig);
-jest.unstable_mockModule('../../lib/utils/secrets-handler.mjs', () => mockSecretsHandler);
+jest.unstable_mockModule('../../lib/utils/api-helpers.mjs', () => ({
+    makeAuthenticatedRequest: mockMakeAuthenticatedRequest,
+}));
 
 const { getCertificatePdf } = await import('../../lib/api/get-certificate-pdf.mjs');
 
 describe('getCertificatePdf', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        jest.resetModules();
     });
 
-    it('should throw if no authToken is provided', async () => {
-        await expect(getCertificatePdf(null, 'CERT123')).rejects.toThrow(
-            'Authentication token is required!'
+    it('should call makeAuthenticatedRequest', async () => {
+        const resolvedResponse = { success: true, data: {} };
+        mockMakeAuthenticatedRequest.mockResolvedValueOnce(resolvedResponse);
+        const certificateNumber = 'C27384993';
+        const response = await getCertificatePdf('auth-token', 'C27384993');
+
+        expect(mockMakeAuthenticatedRequest).toHaveBeenCalledTimes(1);
+        expect(mockMakeAuthenticatedRequest).toHaveBeenCalledWith(
+            apiConfig.general.getCertificatePDF,
+            {
+                CertificateNumber: certificateNumber,
+            },
+            'auth-token'
         );
+        expect(response).toBe(resolvedResponse);
     });
 
-    it('should call invoke with correct arguments and returns response', async () => {
-        mockInvoke.mockResolvedValue({ pdf: 'mocked-pdf-data' });
-        const result = await getCertificatePdf('token123', 'CERT123');
-        expect(mockGetSecret).toHaveBeenCalledWith('environment');
-        expect(mockGetAPIBaseURL).toHaveBeenCalledWith('test');
-        expect(mockInvoke).toHaveBeenCalledTimes(1);
-        expect(mockInvoke).toHaveBeenCalledWith(
-            'POST',
-            'https://test-api.example.com/api/t5/Integration/GetCertificate',
-            { CertificateNumber: 'CERT123' },
-            'token123'
-        );
-        expect(result).toEqual({ pdf: 'mocked-pdf-data' });
-    });
-
-    it('should throw with correct message if invoke throws', async () => {
-        mockInvoke.mockRejectedValue(new Error('Network error'));
-        await expect(getCertificatePdf('token123', 'CERT123')).rejects.toThrow(
-            'Error fetching data: Network error'
-        );
+    it('should throw with correct message if makeAuthenticatedRequest() throws', async () => {
+        mockMakeAuthenticatedRequest.mockImplementationOnce(() => {
+            throw new Error('Network error');
+        });
+        await expect(getCertificatePdf('auth-token', 'C27384993')).rejects.toThrow('Network error');
     });
 });
