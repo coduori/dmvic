@@ -115,9 +115,9 @@ describe('api-helpers tests', () => {
             mockSendHttpRequest.mockRejectedValueOnce(new Error('network error!'));
             mockGetApiBaseUrl.mockImplementationOnce(() => apiBase);
 
-            await expect(makeAuthenticatedRequest(testEndpoint, testBody, authToken)).rejects.toThrow(
-                /network error/
-            );
+            await expect(
+                makeAuthenticatedRequest(testEndpoint, testBody, authToken)
+            ).rejects.toThrow(/network error/);
 
             expect(mockGetApiBaseUrl).toHaveBeenCalledTimes(1);
             expect(mockSendHttpRequest).toHaveBeenCalledWith(
