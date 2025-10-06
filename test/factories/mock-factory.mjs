@@ -56,10 +56,10 @@ export const createMockInMemoryCache = () => ({
 });
 
 export const createMockRequestHandler = () => {
-    const mockInvoke = jest.fn();
+    const mockSendHttpRequest = jest.fn();
     return {
-        invoke: mockInvoke,
-        __mockInvoke: mockInvoke,
+        sendHttpRequest: mockSendHttpRequest,
+        __mockSendHttpRequest: mockSendHttpRequest,
     };
 };
 
@@ -80,7 +80,7 @@ export const createMockApiConfig = () => ({
             typeD: '/api/V5/IntermediaryIntegration/IssuanceTypeDCertificate',
         },
     },
-    getAPIBaseURL: jest.fn((environment) => `https://${environment}-api.example.com`),
+    getApiBaseUrl: jest.fn((environment) => `https://${environment}-api.example.com`),
 });
 
 export const createMockPayloadSchema = () => {

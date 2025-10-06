@@ -1,71 +1,80 @@
-import { expect, jest } from '@jest/globals';
+import { jest } from '@jest/globals';
 
-import {
-    mockApiConfig,
-    mockInvoke,
-    mockRequestHandler,
-    mockGetSecret,
-    mockSecretsHandler,
-} from '../mocks/mocks.mjs';
+import { mockApiConfig } from '../mocks/mocks.mjs';
 import { INSURERS } from '../../lib/utils/insurers.mjs';
-import { cryptoPickOne } from '../random-pick.mjs';
 
-const mockGetAPIBaseURL = mockApiConfig.getAPIBaseURL;
+const mockMakeAuthenticatedRequest = jest.fn();
+const mockValidateSupportedValues = jest.fn();
 
-jest.unstable_mockModule('../../lib/utils/request-handler.mjs', () => mockRequestHandler);
+jest.unstable_mockModule('../../lib/utils/api-helpers.mjs', () => ({
+    makeAuthenticatedRequest: mockMakeAuthenticatedRequest,
+    validateSupportedValues: mockValidateSupportedValues,
+}));
+
 jest.unstable_mockModule('../../lib/config/api-configs.mjs', () => mockApiConfig);
-jest.unstable_mockModule('../../lib/utils/secrets-handler.mjs', () => mockSecretsHandler);
 
 const { checkStockStatus } = await import('../../lib/api/stock-status.mjs');
 
 describe('checkStockStatus', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        jest.resetModules();
     });
 
-    it('should throw if no authToken is provided', async () => {
-        const insurer = cryptoPickOne(Object.keys(INSURERS));
-        await expect(checkStockStatus(null, insurer)).rejects.toThrow(
-            'Authentication token is required!'
+    it.each(Object.keys(INSURERS))('should call validateSupportedValues(): %s', (insurer) => {
+        const validAuthToken = 'valid-auth-token';
+        const { apiConfig } = mockApiConfig;
+
+        expect(() => checkStockStatus(validAuthToken, insurer)).not.toThrow();
+        expect(mockValidateSupportedValues).toHaveBeenCalledTimes(1);
+        expect(mockMakeAuthenticatedRequest).toHaveBeenCalledTimes(1);
+        expect(mockMakeAuthenticatedRequest).toHaveBeenCalledWith(
+            apiConfig.general.memberCompanyStock,
+            {
+                MemberCompanyId: INSURERS[insurer],
+            },
+            validAuthToken
         );
     });
 
-    it.each([
-        ['empty string', ''],
-        ['whitespace string', ' '],
-        ['invalid string', 'UNSUPPORTED_INSURER'],
-        ['invalid data type', true],
-    ])(
-        'should throw if provided insurer is not supported: %s - %s',
-        async (description, unsupportedInsurer) => {
-            await expect(checkStockStatus('valid-auth-token', unsupportedInsurer)).rejects.toThrow(
-                new RegExp(`${unsupportedInsurer} is not a supported insurer`)
+    it.each(Object.keys(INSURERS))(
+        'should throw if validateSupportedValues() throws: %s',
+        async (insurer) => {
+            mockValidateSupportedValues.mockImplementationOnce(() => {
+                throw new Error('unsupported value!');
+            });
+
+            const validAuthToken = 'valid-auth-token';
+
+            await expect(checkStockStatus(validAuthToken, insurer)).rejects.toThrow(
+                /unsupported value!/
             );
+            expect(mockValidateSupportedValues).toHaveBeenCalledTimes(1);
+            expect(mockMakeAuthenticatedRequest).not.toHaveBeenCalled();
         }
     );
 
     it.each(Object.keys(INSURERS))(
-        'should call invoke with correct arguments and returns response: %s',
+        'should throw if makeAuthenticatedRequest() throws: %s',
         async (insurer) => {
-            mockInvoke.mockResolvedValue({ stock: 10 });
-            const result = await checkStockStatus('token123', insurer);
-            expect(mockGetSecret).toHaveBeenCalledWith('environment');
-            expect(mockGetAPIBaseURL).toHaveBeenCalledWith('test');
-            expect(mockInvoke).toHaveBeenCalledWith(
-                'POST',
-                'https://test-api.example.com/api/t5/Integration/MemberCompanyStock',
-                { MemberCompanyId: INSURERS[insurer] },
-                'token123'
+            mockMakeAuthenticatedRequest.mockRejectedValueOnce(() => {
+                throw new Error('network error');
+            });
+            const validAuthToken = 'valid-auth-token';
+            const { apiConfig } = mockApiConfig;
+
+            await expect(() => checkStockStatus(validAuthToken, insurer)).rejects.toThrow(
+                /Stock Status Check Failed: /
             );
-            expect(result).toEqual({ stock: 10 });
+            expect(mockValidateSupportedValues).toHaveBeenCalledTimes(1);
+            expect(mockMakeAuthenticatedRequest).toHaveBeenCalledTimes(1);
+            expect(mockMakeAuthenticatedRequest).toHaveBeenCalledWith(
+                apiConfig.general.memberCompanyStock,
+                {
+                    MemberCompanyId: INSURERS[insurer],
+                },
+                validAuthToken
+            );
         }
     );
-
-    it('should throw with correct message if invoke throws', async () => {
-        const insurer = cryptoPickOne(Object.keys(INSURERS));
-        mockInvoke.mockRejectedValue(new Error('Network error'));
-        await expect(checkStockStatus('token123', insurer)).rejects.toThrow(
-            'Error fetching data: Network error'
-        );
-    });
 });

@@ -1,76 +1,58 @@
-import { expect, jest } from '@jest/globals';
+import { jest } from '@jest/globals';
 
-import {
-    mockApiConfig,
-    mockInvoke,
-    mockRequestHandler,
-    mockSecretsHandler,
-} from '../mocks/mocks.mjs';
+import { apiConfig } from '../../lib/config/api-configs.mjs';
+import { generateTestCredentials } from '../factories/test-credential-generator.mjs';
 
-jest.unstable_mockModule('../../lib/config/api-configs.mjs', () => mockApiConfig);
-jest.unstable_mockModule('../../lib/utils/request-handler.mjs', () => mockRequestHandler);
-jest.unstable_mockModule('../../lib/utils/secrets-handler.mjs', () => mockSecretsHandler);
+const testCredentials = generateTestCredentials();
+
+const mockGetSecret = jest.fn();
+jest.unstable_mockModule('../../lib/utils/secrets-handler.mjs', () => ({
+    getSecret: mockGetSecret,
+}));
+
+const mockMakeUnauthenticatedRequest = jest.fn();
+jest.unstable_mockModule('../../lib/utils/api-helpers.mjs', () => ({
+    makeUnauthenticatedRequest: mockMakeUnauthenticatedRequest,
+}));
 
 const { authenticate } = await import('../../lib/api/authenticate.mjs');
-const { getAPIBaseURL } = await import('../../lib/config/api-configs.mjs');
-const { getSecret } = await import('../../lib/utils/secrets-handler.mjs');
 
 describe('authenticate', () => {
+    beforeAll(() => {
+        mockGetSecret.mockImplementation((key) => {
+            const configs = {
+                username: testCredentials.username,
+                password: testCredentials.password,
+            };
+            return configs[key];
+        });
+    });
+
     beforeEach(() => {
         jest.clearAllMocks();
         jest.resetModules();
-        jest.clearAllMocks();
-        mockInvoke.mockResolvedValue({
-            responseBody: { token: 'mocked-token' },
-            statusCode: 200,
+    });
+
+    it('should call makeUnauthenticatedRequest', async () => {
+        const resolvedResponse = { responseBody: { token: 'auth.token', success: true } };
+        mockMakeUnauthenticatedRequest.mockResolvedValueOnce(resolvedResponse);
+
+        const response = await authenticate();
+
+        expect(mockGetSecret).toHaveBeenCalledTimes(2);
+        expect(mockMakeUnauthenticatedRequest).toHaveBeenCalledTimes(1);
+        expect(mockMakeUnauthenticatedRequest).toHaveBeenCalledWith(apiConfig.general.login, {
+            username: testCredentials.username,
+            password: testCredentials.password,
         });
+        expect(response).toBe(resolvedResponse.responseBody.token);
     });
 
-    it('should call getSecret() to get authentication credentials', async () => {
-        await authenticate();
-        expect(getSecret).toHaveBeenCalledWith('username');
-        expect(getSecret).toHaveBeenCalledWith('password');
-        expect(getSecret).toHaveBeenCalledWith('environment');
-        expect(getSecret).toHaveBeenCalledTimes(3);
-    });
+    it('should throw if makeUnauthenticatedRequest throws', async () => {
+        const errorMessage = new Error('an error occurred!');
 
-    it('should fetch the correct DMVIC base URL', async () => {
-        await authenticate();
-        expect(getAPIBaseURL).toHaveBeenCalledWith('test');
-        expect(getAPIBaseURL).toHaveReturnedWith('https://test-api.example.com');
-        expect(getAPIBaseURL).toHaveBeenCalledTimes(1);
-    });
+        mockMakeUnauthenticatedRequest.mockRejectedValueOnce(errorMessage);
 
-    it('should call invoke with correct arguments', async () => {
-        const username = mockSecretsHandler.getSecret('username');
-        const password = mockSecretsHandler.getSecret('password');
-
-        await authenticate();
-        expect(mockInvoke).toHaveBeenCalledWith(
-            'POST',
-            'https://test-api.example.com/api/T1/Account/Login',
-            { username, password },
-            null,
-            false
-        );
-        expect(mockInvoke).toHaveBeenCalledTimes(1);
-    });
-
-    it('should return the token from the response', async () => {
-        const token = await authenticate();
-        expect(token).toBe('mocked-token');
-    });
-
-    it('should throw an error if statusCode is not 200', async () => {
-        mockInvoke.mockResolvedValueOnce({
-            responseBody: { Errror: 'Invalid credentials' },
-            statusCode: 401,
-        });
-        await expect(authenticate()).rejects.toThrow('Authentication failed: Invalid credentials');
-    });
-
-    it('should throw an error if invoke throws', async () => {
-        mockInvoke.mockRejectedValueOnce(new Error('Network error'));
-        await expect(authenticate()).rejects.toThrow('Error fetching data: Network error');
+        await expect(authenticate()).rejects.toThrow(/Authentication Failed: /);
     });
 });
