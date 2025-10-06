@@ -97,6 +97,6 @@ describe('check vehicle insurance status', () => {
         });
         await expect(
             checkInsuranceStatus('valid-auth-token', { registrationNumber: 'KAA121A' })
-        ).rejects.toThrow('network error');
+        ).rejects.toThrow(/Insurance Status Check Failed: /);
     });
 });

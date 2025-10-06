@@ -64,7 +64,7 @@ describe('checkStockStatus', () => {
             const { apiConfig } = mockApiConfig;
 
             await expect(() => checkStockStatus(validAuthToken, insurer)).rejects.toThrow(
-                /network error/
+                /Stock Status Check Failed: /
             );
             expect(mockValidateSupportedValues).toHaveBeenCalledTimes(1);
             expect(mockMakeAuthenticatedRequest).toHaveBeenCalledTimes(1);

@@ -37,6 +37,8 @@ describe('getCertificatePdf', () => {
         mockMakeAuthenticatedRequest.mockImplementationOnce(() => {
             throw new Error('Network error');
         });
-        await expect(getCertificatePdf('auth-token', 'C27384993')).rejects.toThrow('Network error');
+        await expect(getCertificatePdf('auth-token', 'C27384993')).rejects.toThrow(
+            /Fetch Certificate PDF Failed: /
+        );
     });
 });

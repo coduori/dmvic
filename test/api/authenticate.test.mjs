@@ -1,9 +1,14 @@
-import Chance from 'chance';
 import { jest } from '@jest/globals';
 
 import { apiConfig } from '../../lib/config/api-configs.mjs';
+import { generateTestCredentials } from '../factories/test-credential-generator.mjs';
 
-const chance = new Chance();
+const testCredentials = generateTestCredentials();
+
+const mockGetSecret = jest.fn();
+jest.unstable_mockModule('../../lib/utils/secrets-handler.mjs', () => ({
+    getSecret: mockGetSecret,
+}));
 
 const mockMakeUnauthenticatedRequest = jest.fn();
 jest.unstable_mockModule('../../lib/utils/api-helpers.mjs', () => ({
@@ -13,34 +18,41 @@ jest.unstable_mockModule('../../lib/utils/api-helpers.mjs', () => ({
 const { authenticate } = await import('../../lib/api/authenticate.mjs');
 
 describe('authenticate', () => {
+    beforeAll(() => {
+        mockGetSecret.mockImplementation((key) => {
+            const configs = {
+                username: testCredentials.username,
+                password: testCredentials.password,
+            };
+            return configs[key];
+        });
+    });
+
     beforeEach(() => {
         jest.clearAllMocks();
         jest.resetModules();
     });
 
     it('should call makeUnauthenticatedRequest', async () => {
-        const email = chance.email();
-        const password = chance.string({ length: 8 });
-        const resolvedResponse = { success: true, data: {} };
+        const resolvedResponse = { responseBody: { token: 'auth.token', success: true } };
         mockMakeUnauthenticatedRequest.mockResolvedValueOnce(resolvedResponse);
 
-        const response = await authenticate(email, password);
+        const response = await authenticate();
 
+        expect(mockGetSecret).toHaveBeenCalledTimes(2);
         expect(mockMakeUnauthenticatedRequest).toHaveBeenCalledTimes(1);
         expect(mockMakeUnauthenticatedRequest).toHaveBeenCalledWith(apiConfig.general.login, {
-            email,
-            password,
+            username: testCredentials.username,
+            password: testCredentials.password,
         });
-        expect(response).toBe(resolvedResponse);
+        expect(response).toBe(resolvedResponse.responseBody.token);
     });
 
     it('should throw if makeUnauthenticatedRequest throws', async () => {
-        const email = chance.email();
-        const password = chance.string({ length: 8 });
         const errorMessage = new Error('an error occurred!');
 
         mockMakeUnauthenticatedRequest.mockRejectedValueOnce(errorMessage);
 
-        await expect(authenticate(email, password)).rejects.toThrow(errorMessage);
+        await expect(authenticate()).rejects.toThrow(/Authentication Failed: /);
     });
 });
