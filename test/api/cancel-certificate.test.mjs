@@ -67,7 +67,7 @@ describe('Cancel certificate issuance', () => {
         const cancellationReason = cryptoPickOne(Object.keys(CANCELLATION_REASONS));
 
         await expect(cancelCertificate('token123', 'CERT123', cancellationReason)).rejects.toThrow(
-            /Certificate Cancellation Failed/
+            /Network error/
         );
     });
 });

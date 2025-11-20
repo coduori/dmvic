@@ -136,7 +136,7 @@ describe('request insurance certificate', () => {
                     certificateRequestPayload,
                     validMotorClass
                 )
-            ).rejects.toThrow(/Request Insurance Certificate Failed:/);
+            ).rejects.toThrow(/could not standardize date format!/);
             expect(mockValidatePayload).toHaveBeenCalledTimes(1);
             expect(mockValidateSupportedValues).toHaveBeenCalledTimes(1);
             expect(mockGenerateInsurancePayload).toHaveBeenCalledTimes(1);
@@ -160,7 +160,7 @@ describe('request insurance certificate', () => {
                     certificateRequestPayload,
                     validMotorClass
                 )
-            ).rejects.toThrow(/Request Insurance Certificate Failed:/);
+            ).rejects.toThrow(/network error!/);
             expect(mockValidatePayload).toHaveBeenCalledTimes(1);
             expect(mockValidateSupportedValues).toHaveBeenCalledTimes(1);
             expect(mockGenerateInsurancePayload).toHaveBeenCalledTimes(1);

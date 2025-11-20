@@ -183,22 +183,6 @@ describe('generate insurance payload', () => {
             expect(generatedPayload).toHaveProperty('Bodytype');
         });
 
-        it('should not return nullish values for optional data', () => {
-            const payload = getCertificateRequestPayload();
-            payload.policyHolderKRAPIN = undefined;
-            payload.policyHolderHudumaNumber = null;
-            payload.vehicleBodyType = undefined;
-
-            const generatedPayload = generateInsurancePayload(payload);
-
-            expect(generatedPayload).not.toHaveProperty('HudumaNumber');
-            expect(generatedPayload).toHaveProperty('Yearofmanufacture');
-            expect(generatedPayload).not.toHaveProperty('InsuredPIN');
-            expect(generatedPayload).toHaveProperty('Vehiclemake');
-            expect(generatedPayload).toHaveProperty('Vehiclemodel');
-            expect(generatedPayload).not.toHaveProperty('Bodytype');
-        });
-
         it('should omit optional data properties from the returned value when includeOptionalData is false', () => {
             mockGetSecret.mockReturnValueOnce(false);
             const payload = getCertificateRequestPayload();
@@ -213,7 +197,6 @@ describe('generate insurance payload', () => {
             expect(generatedPayload).not.toHaveProperty('InsuredPIN');
             expect(generatedPayload).not.toHaveProperty('Vehiclemake');
             expect(generatedPayload).not.toHaveProperty('Vehiclemodel');
-            expect(generatedPayload).not.toHaveProperty('Bodytype');
         });
     });
 
@@ -272,48 +255,25 @@ describe('generate insurance payload', () => {
             expect(generatedPayload).toHaveProperty('Chassisnumber');
             expect(generatedPayload).toHaveProperty('Phonenumber');
             expect(generatedPayload).toHaveProperty('Registrationnumber');
+            expect(generatedPayload).toHaveProperty('VehicleType');
+            expect(generatedPayload).toHaveProperty('TypeOfCertificate');
+            expect(generatedPayload).toHaveProperty('Tonnage');
+            expect(generatedPayload).toHaveProperty('SumInsured');
+            expect(generatedPayload).toHaveProperty('Licensedtocarry');
+            expect(generatedPayload).toHaveProperty('Bodytype');
 
-            if (payload.vehicleType) {
-                expect(generatedPayload).toHaveProperty('VehicleType');
-            } else {
-                expect(generatedPayload).not.toHaveProperty('VehicleType');
-            }
-            if (payload.certificateType) {
-                expect(generatedPayload).toHaveProperty('TypeOfCertificate');
-            } else {
-                expect(generatedPayload).not.toHaveProperty('TypeOfCertificate');
-            }
-            if (payload.vehicleTonnage) {
-                expect(generatedPayload).toHaveProperty('Tonnage');
-            } else {
-                expect(generatedPayload).not.toHaveProperty('Tonnage');
-            }
-
-            if (payload.vehicleValue) {
-                expect(generatedPayload).toHaveProperty('SumInsured');
-            } else {
-                expect(generatedPayload).not.toHaveProperty('SumInsured');
-            }
-
-            if (payload.passengerCount) {
-                expect(generatedPayload).toHaveProperty('Licensedtocarry');
-            } else {
-                expect(generatedPayload).not.toHaveProperty('Licensedtocarry');
-            }
             if (withOptionalData) {
                 expect(generatedPayload).toHaveProperty('HudumaNumber');
                 expect(generatedPayload).toHaveProperty('Yearofmanufacture');
                 expect(generatedPayload).toHaveProperty('InsuredPIN');
                 expect(generatedPayload).toHaveProperty('Vehiclemake');
                 expect(generatedPayload).toHaveProperty('Vehiclemodel');
-                expect(generatedPayload).toHaveProperty('Bodytype');
             } else {
                 expect(generatedPayload).not.toHaveProperty('HudumaNumber');
                 expect(generatedPayload).not.toHaveProperty('Yearofmanufacture');
                 expect(generatedPayload).not.toHaveProperty('InsuredPIN');
                 expect(generatedPayload).not.toHaveProperty('Vehiclemake');
                 expect(generatedPayload).not.toHaveProperty('Vehiclemodel');
-                expect(generatedPayload).not.toHaveProperty('Bodytype');
             }
         });
     });

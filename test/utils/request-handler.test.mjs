@@ -4,7 +4,11 @@ const mockRequest = jest.fn();
 const mockClient = { request: mockRequest };
 const mockGetClient = jest.fn(() => mockClient);
 const mockGetSecret = jest.fn(() => 'testClientId');
+const mockParseDmvicResponse = jest.fn((value) => value);
 
+jest.unstable_mockModule('../../lib/utils/parse-http-response.mjs', () => ({
+    parseDmvicResponse: mockParseDmvicResponse,
+}));
 jest.unstable_mockModule('../../lib/utils/http-client.mjs', () => ({
     getClient: mockGetClient,
 }));
