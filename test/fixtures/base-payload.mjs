@@ -54,11 +54,10 @@ const getVehicleBodyType = (motorClass) => {
         A: ['Bus', 'Minibus', 'van'],
         B: ['Lorry', 'truck', 'Pickup'],
         C: ['sedan', 'station wagon', 'SUV'],
-        D: [' commuter', 'sportsbike', 'scooter', 'three-wheelers'],
-
-};
+        D: ['commuter', 'sportsbike', 'scooter', 'three-wheelers'],
+    };
     return chance.pickone(VEHICLE_BODY_TYPES[motorClass]);
-}
+};
 
 // eslint-disable-next-line max-lines-per-function
 const getBaseRequestPayload = (overrides = {}) => {
@@ -90,7 +89,7 @@ const getBaseRequestPayload = (overrides = {}) => {
         motorClass = cryptoPickOne(Object.values(MOTOR_CLASS_OPTIONS));
     }
     if (!(vehicleBodyType in overrides)) {
-        vehicleBodyType = getVehicleBodyType(motorClass)
+        vehicleBodyType = getVehicleBodyType(motorClass);
     }
     return {
         insurer,
