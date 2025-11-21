@@ -1,6 +1,5 @@
 {
     "compilerOptions": {
-        // ECMAScript and Module Configuration
         "target": "ES2022",
         "module": "NodeNext",
         "moduleResolution": "NodeNext",
@@ -9,13 +8,11 @@
         "forceConsistentCasingInFileNames": true,
         "verbatimModuleSyntax": false,
 
-        // Output Configuration (not used since noEmit: true)
         "declaration": true,
         "removeComments": false,
         "importHelpers": false,
         "downlevelIteration": true,
 
-        // Type Checking Configuration (Strict Mode)
         "strict": true,
         "noImplicitAny": true,
         "strictNullChecks": true,
@@ -29,19 +26,16 @@
         "allowUnusedLabels": false,
         "allowUnreachableCode": false,
 
-        // Additional Checks
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "exactOptionalPropertyTypes": true,
 
-        // Node.js Compatibility
         "lib": ["ES2022"],
         "types": ["node", "jest"],
         "resolveJsonModule": true,
         "allowJs": true,
         "checkJs": false,
 
-        // Emit Configuration
         "noEmit": true,
         "preserveConstEnums": false,
         "skipLibCheck": true
