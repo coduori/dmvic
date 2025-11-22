@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.8.1](https://github.com/coduori/dmvic/compare/v1.8.0...v1.8.1) (2025-11-22)
+
+
+### Features
+
+* handle dmvic error responses ([#65](https://github.com/coduori/dmvic/issues/65)) ([2e5f139](https://github.com/coduori/dmvic/commit/2e5f1398254a27418d10b75bbb421911b2d2e8d6))
+
+
+### Bug Fixes
+
+* upgrade undici from 7.15.0 to 7.16.0 ([#61](https://github.com/coduori/dmvic/issues/61)) ([b946654](https://github.com/coduori/dmvic/commit/b94665447256f9634285610b076ee96159fb7c02))
+
 ## [1.8.0](https://github.com/coduori/dmvic/compare/v1.7.2...v1.8.0) (2025-09-29)
 
 
