@@ -65,9 +65,9 @@ async function initializeDmvic() {
 
 initializeDmvic();
 ```
-Feature Documentation
-For specific feature documentation on implementation see 
 
+Feature Documentation
+For specific feature documentation on implementation see
 
 ## License
 

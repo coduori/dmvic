@@ -1,5 +1,3 @@
-
-
 ### Verify Insurance Certificate
 
 This feature helps in verifying the validity of a motor vehicle insurance certificate.
@@ -126,4 +124,5 @@ checkInsuranceCertificateValidity('KKA12A', 'AT211-7689809', 'B12984443');
     "DMVICRefNo": null
 }
 ```
+
 [Back to home page](../README.md)

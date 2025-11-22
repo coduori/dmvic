@@ -31,4 +31,5 @@ The stock count response is organised according to the types of motor vehicle in
     "Stock": 100
 },
 ```
+
 [Back to home page](../README.md)

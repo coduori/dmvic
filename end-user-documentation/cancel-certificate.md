@@ -1,4 +1,3 @@
-
 ### Cancel Certificate Issuance
 
 This feature facilitates cancellation of a motor vehicle certificate. DMVIC allows cancellation of a policy certificate if it is done within 6 hours of cover issuance. Beyond 6 hours intemediaries have to request cover cancellation directly from the insurer.
@@ -67,4 +66,5 @@ Cancelling a certificate that was not issued by the cancelling intermediary will
   statusCode: 200,
 }
 ```
+
 [Back to home page](../README.md)

@@ -1,4 +1,3 @@
-
 ### Request Insurance Certificate
 
 This is the core feature for DMVIC. It requests for a motor vehicle certificate from the DMVIC System. When calling this endpoint in production, ensure the provided data is accurate and necessary payments have been made. Ensure the insurer has accorded the necessary stock to request for the certificate. You can check your stock levels using the check stock feature.

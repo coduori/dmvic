@@ -1,4 +1,3 @@
-
 ### Check insurance status
 
 This feature checks whether a vehicle has han active cover. IRA prohibits double insurance for a single vehicle. For this reason, it is important to check whether a vehicle has an active cover before requesting for an insurance certificate from DMVIC. It is not possible to request for more than one insurance cover for a single vehicle.
@@ -64,4 +63,5 @@ preIssuanceCheck('KKA12A', 'AT211-7689809');
     "DMVICRefNo": null
 }
 ```
+
 [Back to home page](../README.md)
