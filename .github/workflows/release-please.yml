@@ -74,7 +74,7 @@ jobs:
                   token: ${{ secrets.GH_WORKFLOW_TOKEN_RELEASE }}
                   release-type: node
                   bump-minor-pre-major: true
-                  versioning-strategy: increase
+                  versioning-strategy: default
 
             - name: Merge release PR
               if: ${{ steps.release.outputs.pr != '' }}
