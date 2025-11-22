@@ -23,6 +23,67 @@ async function authenticateDMVICRequests() {
 }
 authenticateDMVICRequests();
 ```
+#### Responses
+**Successful authentication response**
+```javascript
+{
+  success: true,
+  responseData: {
+    token: 'eyJhbGciOiJIUzI1NiIsImtpZCI6IjVCQjRFNjE4NzdGNTMxRUJDQUZCOEIwMEFGRjkzMkU5QkI2Qjc0NjQiLCJ0eXAiOiJKV1QifQ.eyJyb2xlIjoiWU9VUl9VU0VSX1JPTEUiLCJ1bmlxdWVJRCI6IllPVVJfVU5JUVVFX0lEIiwibmJmIjoxNzYzODIyNDAwLCJleHAiOjE3NjQ0MjcxOTksImlhdCI6MTc2MzgyMjQwMCwiaXNzIjoiaHR0cHM6Ly91YXQtYXBpLmRtdmljLmNvbSIsImF1ZCI6Imh0dHBzOi8vdWF0LWFwaS5kbXZpYy5jb20ifQ.wYPJ8fkFzhiM2e9IAJS_IDHdLwVAOllzR4lm97uImuE',
+    loginUserId: '6080HJED-C5EC-4005-8B30-140EE8786YYA',
+    issueAt: '2025-11-22T14:34:59.4472082Z',
+    expires: '2025-11-29T14:39:59.4254222Z',
+    code: 1,
+    LoginHistoryId: 2068797,
+    firstName: 'User',
+    lastName: 'Name',
+    loggedinEntityId: 19950,
+    ApimSubscriptionKey: null,
+    IndustryTypeId: 4
+  },
+  httpStatusCode: 200
+}
+```
+
+**Invalid Username response**
+```javascript
+{
+  error: [
+    {
+      errorCode: -6,
+      errorText: 'Username is Invalid.please enter correct username',
+      sdkErrorCode: 'INVLD_USR'
+    }
+  ],
+  httpStatusCode: 200
+}
+```
+**Invalid Password response**
+```javascript
+{
+  error: [
+    {
+      errorCode: -3,
+      errorText: 'Incorrect Username or Password entered. -2 Attempts Remaining..!',
+      sdkErrorCode: 'INVLD_CRD'
+    }
+  ],
+  httpStatusCode: 200
+}
+```
+**Locked Account Response**
+```javascript
+{
+  error: [
+    {
+      errorCode: -4,
+      errorText: 'Your account has been locked, Please contact your administrator.',
+      sdkErrorCode: 'LCKD_ACC'
+    }
+  ],
+  httpStatusCode: 200
+}
+```
 
 All subsequent requests to DMVIC will require you to pass the token along when making a request.
 
