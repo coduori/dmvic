@@ -1,6 +1,9 @@
 import { jest } from '@jest/globals';
 
 import { apiConfig } from '../../lib/config/api-configs.mjs';
+import { generateTestCredentials } from '../factories/test-credential-generator.mjs';
+
+const testCredentials = generateTestCredentials();
 
 const mockMakeAuthenticatedRequest = jest.fn();
 const mockGetAnnualExpiry = jest.fn(() =>
@@ -47,7 +50,7 @@ describe('check vehicle insurance status', () => {
             registrationNumber: 'KBO709P',
         },
     ])('should call makeAuthenticatedRequest with correct payload', async (testPayload) => {
-        const authToken = 'valid-auth-token';
+        const authToken = testCredentials.password;
         await checkInsuranceStatus(authToken, testPayload);
 
         const payload = {
@@ -97,6 +100,6 @@ describe('check vehicle insurance status', () => {
         });
         await expect(
             checkInsuranceStatus('valid-auth-token', { registrationNumber: 'KAA121A' })
-        ).rejects.toThrow(/Insurance Status Check Failed: /);
+        ).rejects.toThrow(/network error/);
     });
 });

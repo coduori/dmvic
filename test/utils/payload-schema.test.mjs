@@ -592,7 +592,6 @@ describe('Certificate Issuance Payload Schema', () => {
         ])('should accept valid email address formats: %s', (description, validEmailFormat) => {
             const payload = getCertificateRequestPayload();
             payload.recipientEmail = validEmailFormat;
-
             expect(() => certificateIssuanceSchema.validateSync(payload)).not.toThrow();
         });
         it.each([
@@ -1004,12 +1003,14 @@ describe('Certificate Issuance Payload Schema', () => {
                 ).toThrow();
             }
         );
-        it('should not throw ValidationError when field is missing', () => {
+        it('should throw ValidationError when field is missing', () => {
             const payload = getCertificateRequestPayload();
             delete payload.vehicleBodyType;
 
             expect(payload).not.toHaveProperty('vehicleBodyType');
-            expect(() => certificateIssuanceSchema.validateSync(payload)).not.toThrow();
+            expect(() => certificateIssuanceSchema.validateSync(payload)).toThrow(
+                'vehicleBodyType is a required field'
+            );
         });
         it('should reject values longer than 50 characters', () => {
             const payload = getCertificateRequestPayload();

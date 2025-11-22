@@ -49,6 +49,16 @@ const generateValidCommencingDate = () => {
     return futureDate.toISOString().split('T')[0];
 };
 
+const getVehicleBodyType = (motorClass) => {
+    const VEHICLE_BODY_TYPES = {
+        A: ['Bus', 'Minibus', 'van'],
+        B: ['Lorry', 'truck', 'Pickup'],
+        C: ['sedan', 'station wagon', 'SUV'],
+        D: ['commuter', 'sportsbike', 'scooter', 'three-wheelers'],
+    };
+    return chance.pickone(VEHICLE_BODY_TYPES[motorClass]);
+};
+
 // eslint-disable-next-line max-lines-per-function
 const getBaseRequestPayload = (overrides = {}) => {
     let {
@@ -66,6 +76,7 @@ const getBaseRequestPayload = (overrides = {}) => {
         vehicleRegistrationNumber = chance.vehicleRegistration(),
         vehicleMake = chance.vehicleMake(),
         vehicleModel = chance.vehicleModel(overrides.vehicleMake || vehicleMake),
+        vehicleBodyType,
         vehicleChassisNumber = chance.string({
             length: 15,
             casing: 'upper',
@@ -76,6 +87,9 @@ const getBaseRequestPayload = (overrides = {}) => {
 
     if (!('motorClass' in overrides)) {
         motorClass = cryptoPickOne(Object.values(MOTOR_CLASS_OPTIONS));
+    }
+    if (!(vehicleBodyType in overrides)) {
+        vehicleBodyType = getVehicleBodyType(motorClass);
     }
     return {
         insurer,
@@ -92,6 +106,7 @@ const getBaseRequestPayload = (overrides = {}) => {
         vehicleMake,
         vehicleModel,
         vehicleChassisNumber,
+        vehicleBodyType,
     };
 };
 

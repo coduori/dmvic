@@ -59,7 +59,7 @@ describe('check vehicle insurance validity', () => {
             throw new Error('network error!');
         });
         await expect(verifyInsuranceCertificate('token123', payload)).rejects.toThrow(
-            /Insurance Certificate Verification Failed: /
+            /network error!/
         );
         expect(mockMakeAuthenticatedRequest).toHaveBeenCalledTimes(1);
     });

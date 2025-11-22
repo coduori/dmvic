@@ -45,7 +45,7 @@ describe('authenticate', () => {
             username: testCredentials.username,
             password: testCredentials.password,
         });
-        expect(response).toBe(resolvedResponse.responseBody.token);
+        expect(response).toBe(resolvedResponse);
     });
 
     it('should throw if makeUnauthenticatedRequest throws', async () => {
@@ -53,6 +53,6 @@ describe('authenticate', () => {
 
         mockMakeUnauthenticatedRequest.mockRejectedValueOnce(errorMessage);
 
-        await expect(authenticate()).rejects.toThrow(/Authentication Failed: /);
+        await expect(authenticate()).rejects.toThrow(/an error occurred!/);
     });
 });

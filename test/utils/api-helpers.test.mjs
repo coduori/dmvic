@@ -3,6 +3,9 @@ import { jest } from '@jest/globals';
 import { CANCELLATION_REASONS } from '../../lib/utils/cancellation-reasons.mjs';
 import { MOTOR_CLASS_OPTIONS } from '../../lib/utils/constants.mjs';
 import { cryptoPickOne } from '../random-pick.mjs';
+import { generateTestCredentials } from '../factories/test-credential-generator.mjs';
+
+const testCredentials = generateTestCredentials();
 
 const mockGetApiBaseUrl = jest.fn();
 jest.unstable_mockModule('../../lib/config/api-configs.mjs', () => ({
@@ -110,7 +113,7 @@ describe('api-helpers tests', () => {
             const testEndpoint = '/ping';
             const testBody = { test: true };
             const apiBase = 'https://test.dmvic.com';
-            const authToken = 'valid.auth.token';
+            const authToken = testCredentials.password;
 
             mockSendHttpRequest.mockRejectedValueOnce(new Error('network error!'));
             mockGetApiBaseUrl.mockImplementationOnce(() => apiBase);
