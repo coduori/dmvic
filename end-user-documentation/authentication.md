@@ -8,23 +8,25 @@ To authenticate your requests to DMVIC, use the `authenticate()` function. This 
 
 ```javascript
 import { authenticate } from 'dmvic';
-import redis from 'redis';
 
-const redisClient = redis.createClient({
-    url: 'redis://localhost:6379',
-});
-await redisClient.connect();
+import { redisClient } from './redis/client.mjs';
 
-async function authenticateDMVICRequests() {
-    const dmvicAuthToken = await authenticate();
-
-    // store the token in a redis cache
-    await redisClient.set('dmvic:auth:token', dmvicAuthToken, { EX: 604800 });
+async function authenticateOnDMVIC() {
+    const response = await authenticate();
+    if (response.responseData?.token) {
+        await redisClient.set('dmvic:auth:token', response.responseData.token, {
+            expiration: { type: 'EX', value: 604800 },
+        });
+    }
+    return response;
 }
-authenticateDMVICRequests();
+const response = await authenticateOnDMVIC();
 ```
+
 #### Responses
+
 **Successful authentication response**
+
 ```javascript
 {
   success: true,
@@ -46,6 +48,7 @@ authenticateDMVICRequests();
 ```
 
 **Invalid Username response**
+
 ```javascript
 {
   error: [
@@ -58,7 +61,9 @@ authenticateDMVICRequests();
   httpStatusCode: 200
 }
 ```
+
 **Invalid Password response**
+
 ```javascript
 {
   error: [
@@ -71,7 +76,9 @@ authenticateDMVICRequests();
   httpStatusCode: 200
 }
 ```
+
 **Locked Account Response**
+
 ```javascript
 {
   error: [
