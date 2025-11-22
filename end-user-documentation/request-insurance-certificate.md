@@ -1,7 +1,7 @@
 
 ### Request Insurance Certificate
 
-This is the core feature for DMVIC. It requests for a motor vehicle certificate from the DMVIC System. When calling this endpoint in production, ensure the provided data is accurate and necessary payments have been made to avoid legal complications. Ensure the insurer has accorded the necessary stock to request for the certificate. You can check your stock levels using the check stock feature.
+This is the core feature for DMVIC. It requests for a motor vehicle certificate from the DMVIC System. When calling this endpoint in production, ensure the provided data is accurate and necessary payments have been made. Ensure the insurer has accorded the necessary stock to request for the certificate. You can check your stock levels using the check stock feature.
 
 #### Example
 
@@ -30,7 +30,7 @@ async function main() {
         certificateType: 1,
         passengerCount: 5000,
         recipientPhoneNumber: '712345678',
-        recipientEmail: 'iconcept24@gmail.com',
+        recipientEmail: 'your-email@dmomain.tld',
         vehicleMake: 'BMW',
         vehicleModel: 'X1',
         policyHolderKRAPIN: 'P123456789A',
@@ -62,6 +62,7 @@ The payload structure varies depending on the motor vehicle class. Some fields a
 - `recipientEmail`
 - `vehicleChassisNumber`
 - `recipientPhoneNumber`
+- `vehicleBodyType`
 
 #### Dynamic Requirements
 
@@ -142,4 +143,5 @@ Required for Classes A, B, and D:
 - `policyHolderKRAPIN`
 - `vehicleMake`
 - `vehicleModel`
-- `vehicleBodyType`
+
+[Back to home page](../README.md)

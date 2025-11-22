@@ -4,7 +4,7 @@
 
 This feature helps in verifying the validity of a motor vehicle insurance certificate.
 Vehicle insurance certificate verification is important in preventing and minimizing insurance fraud.
-It is recommended to pass either one of the registration or chassis number because if both are provided and the chasis does not match the provided vehicle registration, the response returned by DMVIC will not be accurate.
+It is recommended to pass either one of registration or chassis number because if both are provided and the chasis does not match the provided vehicle registration, the response returned by DMVIC will not be accurate.
 
 #### Example
 
@@ -126,3 +126,4 @@ checkInsuranceCertificateValidity('KKA12A', 'AT211-7689809', 'B12984443');
     "DMVICRefNo": null
 }
 ```
+[Back to home page](../README.md)

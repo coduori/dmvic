@@ -1,7 +1,7 @@
 ### Check Insurance Company Stock Status
 
-Before requesting for a motor vehicle insurance certificate as an intermediary, the target insurance company
-should have allocated stock to your DMVIC account. This feature enables checking the stock count that has been provided by the insurance company. When the stock is 0, you cannot succesfully request for a motor vehicle certificate and thus you need to request for stock replenishment from the insurance company.
+Before requesting for a motor vehicle insurance certificate as an intermediary, the target insurance company should have allocated stock to your DMVIC account.
+This feature enables checking the stock count that has been provided by the insurance company. When the stock is 0, you cannot succesfully request for a motor vehicle certificate and thus you need to request for stock replenishment from the insurance company.
 
 ```javascript
 import { checkStockStatus } from 'dmvic';
@@ -21,7 +21,7 @@ async function checkInsuranceCompanyStockCount(insurer) {
 checkInsuranceCompanyStockCount();
 ```
 
-The options used for the insurer property can be found in the [supported insurers](#supported-insurers) section.
+The options used for the insurer property can be found in the [supported insurers](./request-insurance-certificate.md/#supported-insurers) section.
 The stock count response is organised according to the types of motor vehicle insurance certificates.
 
 ```
@@ -31,3 +31,4 @@ The stock count response is organised according to the types of motor vehicle in
     "Stock": 100
 },
 ```
+[Back to home page](../README.md)
