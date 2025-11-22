@@ -35,12 +35,6 @@ jobs:
               uses: github/codeql-action/upload-sarif@v4
               with:
                   sarif_file: snyk.sarif
-            - name: Debug - Check SARIF file
-              run: |
-                echo "SARIF file contents:"
-                cat snyk.sarif || echo "SARIF file not found"
-                echo "File exists:"
-                ls -la snyk.sarif || echo "File does not exist"
 
     test:
         name: Test, Lint, Format
