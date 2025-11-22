@@ -36,7 +36,7 @@ jobs:
               with:
                   sarif_file: snyk.sarif
             - name: Debug - Check SARIF file
-            - run: |
+              run: |
                 echo "SARIF file contents:"
                 cat snyk.sarif || echo "SARIF file not found"
                 echo "File exists:"
