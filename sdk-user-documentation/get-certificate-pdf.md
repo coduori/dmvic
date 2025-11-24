@@ -71,7 +71,7 @@ You may need to download it in case you need to store the actual copy.
   apiRequestNumber: 'UAT-OJM5557',
   success: true,
   responseData: {
-    URL: 'https://insurancedevelopment.blob.core.windows.net/immutable-dmvic-cert/67850_E7FD5850E904921B4E9844B81B96E3EDF620ED38.pdf?sv=2021-08-06&st=2025-11-24T06%3A33%3A47Z&se=2025-11-24T19%3A33%3A47Z&sr=b&sp=r&sig=TH8X4nAD57vDhLGctsODZmFYzmsGAup1Yc%2Fb5xumu5A%3D'
+    URL: 'https://insurancedevelopment.blob.core.windows.net/immutable-dmvic-cert/67850_E7FD5850620ED38.pdf'
   },
   requestData: { CertificateNumber: 'C27400612' },
   httpStatusCode: 200
