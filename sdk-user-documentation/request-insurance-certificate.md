@@ -42,6 +42,7 @@ main();
 ```
 
 #### Invalid Auth Token response
+
 For an invalid token response, always re-authenticate using the `authentication()` method to get a new token and use it to re-send the request
 
 ```javascript
@@ -59,13 +60,14 @@ For an invalid token response, always re-authenticate using the `authentication(
 ```
 
 #### Failed SDK Validation checks
+
 When calling the `requestInsuranceCertificate()` function, the SDK performs validation to ensure the passed parameters are accepted by the DMVIC API.
 This prevents sending an invalid request to the DMVIC API. When the provided data does not meet the required format, a `Validation failed!` response will be returned by the library without sending a request to the API.
 
 ```javascript
 {
     success: false,
-    errors: [ 
+    errors: [
         [
             {
                 field: 'vehicleChassisNumber',
@@ -84,6 +86,7 @@ This prevents sending an invalid request to the DMVIC API. When the provided dat
 ```
 
 #### Successful response for certificate cover issuance
+
 ```javascript
 {
     apiRequestNumber: 'UAT-OJM5632',

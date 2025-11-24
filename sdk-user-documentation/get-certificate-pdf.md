@@ -24,6 +24,7 @@ const certificateResponse = await downloadCertificatePdf('C27400610');
 ```
 
 #### Invalid Auth Token response
+
 For an invalid token response, always re-authenticate using the `authentication()` method to get a new token and use it to re-send the request
 
 ```javascript

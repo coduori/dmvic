@@ -22,6 +22,7 @@ The options used for the insurer property can be found in the [supported insurer
 The stock count response is organised according to the types of motor vehicle insurance certificates.
 
 #### Invalid Auth Token response
+
 For an invalid token response, always re-authenticate using the `authentication()` method to get a new token and use it to re-send the request
 
 ```javascript
@@ -39,6 +40,7 @@ For an invalid token response, always re-authenticate using the `authentication(
 ```
 
 #### Empty Stock
+
 ```javascript
 {
   apiRequestNumber: 'UAT-OJM5667',
@@ -94,7 +96,7 @@ For an invalid token response, always re-authenticate using the `authentication(
             ClassificationTitle: 'Type D – Motor Cycle Commercial',
             Stock: 0
         }
-    ] 
+    ]
   },
   httpStatusCode: 200
 }

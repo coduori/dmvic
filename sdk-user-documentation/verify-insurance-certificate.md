@@ -28,10 +28,14 @@ async function checkInsuranceCertificateValidity(
     });
     return insuranceStatus;
 }
-const result = await checkInsuranceCertificateValidity({ vehicleRegistration: 'KKA12A', certificateNumber: 'B12984443'});
+const result = await checkInsuranceCertificateValidity({
+    vehicleRegistration: 'KKA12A',
+    certificateNumber: 'B12984443',
+});
 ```
 
 #### Invalid Auth Token response
+
 For an invalid token response, always re-authenticate using the `authentication()` method to get a new token and use it to re-send the request
 
 ```javascript
@@ -49,7 +53,9 @@ For an invalid token response, always re-authenticate using the `authentication(
 ```
 
 #### Invalid certificate number response
+
 Ensure that the certificate number you provide matches the vehicle registraton, otherwise the data returned may be inaccurate.
+
 ```javascript
 {
     apiRequestNumber: 'UAT-OJM5688',
@@ -65,6 +71,7 @@ Ensure that the certificate number you provide matches the vehicle registraton, 
 ```
 
 #### Valid and Active insurance certificate response
+
 ```json
 {
     "Inputs": {
