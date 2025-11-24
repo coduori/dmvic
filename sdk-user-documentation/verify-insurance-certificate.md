@@ -9,10 +9,12 @@ It is recommended to pass either one of registration or chassis number because i
 ```javascript
 import { verifyInsuranceCertificate } from 'dmvic';
 
+import { redisClient } from './redis/client.mjs';
+
 async function checkInsuranceCertificateValidity(
     registrationNumber,
     chassisNumber,
-    certificateNumber
+    certificateNumber // optional
 ) {
     // retrieve the token from your cache
     const authToken = await redisClient.get('dmvic:auth:token');
@@ -26,11 +28,43 @@ async function checkInsuranceCertificateValidity(
     });
     return insuranceStatus;
 }
-checkInsuranceCertificateValidity('KKA12A', 'AT211-7689809', 'B12984443');
+const result = await checkInsuranceCertificateValidity({ vehicleRegistration: 'KKA12A', certificateNumber: 'B12984443'});
+```
+
+#### Invalid Auth Token response
+For an invalid token response, always re-authenticate using the `authentication()` method to get a new token and use it to re-send the request
+
+```javascript
+{
+    apiRequestNumber: 'UAT-OJM5688',
+    error: [
+        {
+            errorCode: 'ER001',
+            errorText: 'Token is expired or invalid',
+            sdkErrorCode: 'INVLD_TKN',
+        },
+    ],
+    httpStatusCode: 200
+}
+```
+
+#### Invalid certificate number response
+Ensure that the certificate number you provide matches the vehicle registraton, otherwise the data returned may be inaccurate.
+```javascript
+{
+    apiRequestNumber: 'UAT-OJM5688',
+    error: [
+        {
+            errorCode: 'ER004',
+            errorText: 'Certificate Number is not valid',
+            sdkErrorCode: 'INVLD_CERT'
+        },
+    ],
+    httpStatusCode: 200
+}
 ```
 
 #### Valid and Active insurance certificate response
-
 ```json
 {
     "Inputs": {

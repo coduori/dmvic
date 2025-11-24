@@ -2,18 +2,19 @@
 
 This is the core feature for DMVIC. It requests for a motor vehicle certificate from the DMVIC System. When calling this endpoint in production, ensure the provided data is accurate and necessary payments have been made. Ensure the insurer has accorded the necessary stock to request for the certificate. You can check your stock levels using the check stock feature.
 
+> NOTE: Personal data should always be processed in accordance with the Data Protection Regulations.
+
 #### Example
 
 ```javascript
 import { requestInsuranceCertificate } from 'dmvic';
 
-import { getDMVICAuthToken } from './authenticate.mjs';
-import { initializeDMVIC } from './initialize.mjs';
+import { redisClient } from './redis/client.mjs';
 
 async function main() {
-    await initializeDMVIC();
+    // retrieve the token from your cache
+    const authToken = await redisClient.get('dmvic:auth:token');
 
-    const authToken = await getDMVICAuthToken();
     const response = await requestInsuranceCertificate(authToken, {
         insurer: 'MONARCH',
         coverType: 'COMP'
@@ -28,16 +29,75 @@ async function main() {
         vehicleBodyType: 'SUV',
         certificateType: 1,
         passengerCount: 5000,
-        recipientPhoneNumber: '712345678',
+        recipientPhoneNumber: '[RECIPIENT_PHONE_NUMBER]', // 9 Digit phone number in string format
         recipientEmail: 'your-email@dmomain.tld',
         vehicleMake: 'BMW',
         vehicleModel: 'X1',
-        policyHolderKRAPIN: 'P123456789A',
+        policyHolderKRAPIN: '[POLICY_HOLDER_KRA_PIN]',
         vehicleRegistrationNumber: 'K7YY9CKELC',
     }, 'A');
 }
 
 main();
+```
+
+#### Invalid Auth Token response
+For an invalid token response, always re-authenticate using the `authentication()` method to get a new token and use it to re-send the request
+
+```javascript
+{
+    apiRequestNumber: 'UAT-OJM5688',
+    error: [
+        {
+            errorCode: 'ER001',
+            errorText: 'Token is expired or invalid',
+            sdkErrorCode: 'INVLD_TKN',
+        },
+    ],
+    httpStatusCode: 200
+}
+```
+
+#### Failed SDK Validation checks
+When calling the `requestInsuranceCertificate()` function, the SDK performs validation to ensure the passed parameters are accepted by the DMVIC API.
+This prevents sending an invalid request to the DMVIC API. When the provided data does not meet the required format, a `Validation failed!` response will be returned by the library without sending a request to the API.
+
+```javascript
+{
+    success: false,
+    errors: [ 
+        [
+            {
+                field: 'vehicleChassisNumber',
+                message: 'vehicleChassisNumber must be a `string` type, but the final value was: `false`.',
+                value: false
+            },
+            {
+                field: 'policyHolderKRAPIN',
+                message: 'policyHolderKRAPIN must match format: A123456789B',
+                value: 'A09088879J'
+            }
+        ]
+    ],
+    message: 'Validation failed!'
+}
+```
+
+#### Successful response for certificate cover issuance
+```javascript
+{
+    apiRequestNumber: 'UAT-OJM5632',
+    success: true,
+    responseData: {
+        issueCertificate: {
+            TransactionNo: 'UAT-TAB3238',
+            actualCNo: 'C27400613',
+            Email: '[RECIPIENT_EMAIL_ADDRESS]'
+        }
+    },
+    requestData: '{"membercompanyid":49,"typeofcover":200,"policyholder":"test","policynumber":"POL123456","commencingdate":"24/11/2025","expiringdate":"30/12/2025","email":"[RECIPIENT_EMAIL_ADDRESS]","chassisnumber":"1G6SD5P98FV4825","phonenumber":"[RECIPIENT_PHONE_NUMBER]","registrationnumber":"KBC705BB","bodytype":"test","insuredpin":"[POLICY_HOLDER_PIN_NUMBER]"}',
+    httpStatusCode: 200
+}
 ```
 
 The `requestInsuranceCertificate` function accepts three parameters:

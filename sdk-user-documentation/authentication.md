@@ -20,7 +20,7 @@ async function authenticateOnDMVIC() {
     }
     return response;
 }
-const response = await authenticateOnDMVIC();
+const authResponse = await authenticateOnDMVIC();
 ```
 
 #### Responses

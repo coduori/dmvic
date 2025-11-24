@@ -11,20 +11,69 @@ Opening the link on a browser automatically downloads the certificate PDF docume
 ```javascript
 import { getCertificatePdf } from 'dmvic';
 
-import { initializeDMVIC } from './initialize.mjs';
-import { getDMVICAuthToken } from './authenticate.mjs';
+import { redisClient } from './redis/client.mjs';
 
 const downloadCertificatePdf = async (insuranceCertificateNumber) => {
-    await initializeDMVIC();
-    const authToken = await getDMVICAuthToken();
+    // retrieve the token from your cache
+    const authToken = await redisClient.get('dmvic:auth:token');
+
     const result = await getCertificatePdf(authToken, insuranceCertificateNumber);
     return result;
 };
+const certificateResponse = await downloadCertificatePdf('C27400610');
 ```
 
-```
+#### Invalid Auth Token response
+For an invalid token response, always re-authenticate using the `authentication()` method to get a new token and use it to re-send the request
+
+```javascript
 {
-    "URL": "https://insurancedevelopment.blob.core.windows.net/immutable-cancelled-cert/49935_0137372C3723135FD26E3A643C99C5F54FF811A8.pdf?sv=2021-08-06&st=2025-05-20T05%3A53%3A32Z&se=2025-05-20T18%3A53%3A32Z&sr=b&sp=r&sig=WnfcVyCLMLPcggpTimvDQEILUt%2FZYPm4XhzsOde5VDk%3D"
+    apiRequestNumber: 'UAT-OJM5688',
+    error: [
+        {
+            errorCode: 'ER001',
+            errorText: 'Token is expired or invalid',
+            sdkErrorCode: 'INVLD_TKN',
+        },
+    ],
+    httpStatusCode: 200
+}
+```
+
+#### Invalid certificate number
+
+This means the certificate is invalid. Likely happens if you use a certificate number from an expired certificate.
+
+```javascript
+{
+    apiRequestNumber: 'UAT-OJM5552',
+    error: [
+        Error: [
+            {
+                errorCode: 'ER009',
+                errorText: 'Invalid CertificateNo',
+                sdkErrorCode: 'INVLD_CERT_PDF'
+            }
+        ]
+    ],
+    httpStatusCode: 200
+}
+```
+
+#### Successful request for insurance certificate PDF
+
+The link provided by the `URL` property is the link to download the certificate PDF document. The link is only valid for a short while.
+You may need to download it in case you need to store the actual copy.
+
+```javascript
+{
+  apiRequestNumber: 'UAT-OJM5557',
+  success: true,
+  responseData: {
+    URL: 'https://insurancedevelopment.blob.core.windows.net/immutable-dmvic-cert/67850_E7FD5850E904921B4E9844B81B96E3EDF620ED38.pdf?sv=2021-08-06&st=2025-11-24T06%3A33%3A47Z&se=2025-11-24T19%3A33%3A47Z&sr=b&sp=r&sig=TH8X4nAD57vDhLGctsODZmFYzmsGAup1Yc%2Fb5xumu5A%3D'
+  },
+  requestData: { CertificateNumber: 'C27400612' },
+  httpStatusCode: 200
 }
 ```
 
