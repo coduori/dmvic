@@ -49,13 +49,11 @@ This means the certificate is invalid. Likely happens if you use a certificate n
 {
     apiRequestNumber: 'UAT-OJM5552',
     error: [
-        Error: [
-            {
-                errorCode: 'ER009',
-                errorText: 'Invalid CertificateNo',
-                sdkErrorCode: 'INVLD_CERT_PDF'
-            }
-        ]
+        {
+            errorCode: 'ER009',
+            errorText: 'Invalid CertificateNo',
+            sdkErrorCode: 'INVLD_CERT_PDF'
+        }
     ],
     httpStatusCode: 200
 }
@@ -73,7 +71,7 @@ You may need to download it in case you need to store the actual copy.
   responseData: {
     URL: 'https://insurancedevelopment.blob.core.windows.net/immutable-dmvic-cert/67850_E7FD5850620ED38.pdf'
   },
-  requestData: { CertificateNumber: 'C27400612' },
+  requestData: '{ CertificateNumber: "C27400612" }',
   httpStatusCode: 200
 }
 ```
