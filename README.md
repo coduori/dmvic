@@ -23,13 +23,13 @@ yarn install dmvic
 ## Features
 
 - Initialization
-- [Authentication](./end-user-documentation/authentication.md)
-- [Check Insurance Company Stock Status](./end-user-documentation/check-insurance-status.md)
-- [Get certificate PDF document](./end-user-documentation/get-certificate-pdf.md)
-- [Cancel Certificate Issuance](./end-user-documentation/cancel-certificate.md)
-- [Check Insurance Status](./end-user-documentation/check-insurance-status.md)
-- [Verify Insurance Certificate](./end-user-documentation/verify-insurance-certificate.md)
-- [Request Insurance Certificate](./end-user-documentation/request-insurance-certificate.md)
+- [Authentication](./sdk-user-documentation/authentication.md)
+- [Check Insurance Company Stock Status](./sdk-user-documentation/check-insurance-status.md)
+- [Get certificate PDF document](./sdk-user-documentation/get-certificate-pdf.md)
+- [Cancel Certificate Issuance](./sdk-user-documentation/cancel-certificate.md)
+- [Check Insurance Status](./sdk-user-documentation/check-insurance-status.md)
+- [Verify Insurance Certificate](./sdk-user-documentation/verify-insurance-certificate.md)
+- [Request Insurance Certificate](./sdk-user-documentation/request-insurance-certificate.md)
 
 ## TypeScript Support
 
