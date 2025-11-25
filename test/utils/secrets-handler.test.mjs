@@ -27,10 +27,10 @@ describe('Configure DMVIC Secrets', () => {
 
     it('should throw an error for missing secrets configurations', () => {
         expect(() => configureSecrets({})).toThrow(
-            'Configuration errors: Missing one or more required keys: username, password, clientid, environment, includeoptionaldata. Expected keys are: username, password, clientid, environment, includeoptionaldata.'
+            'Configuration errors: Missing one or more required keys: username, password, clientid, environment, includeoptionaldata, autoreauthenticate. Expected keys are: username, password, clientid, environment, includeoptionaldata, autoreauthenticate.'
         );
         expect(() => configureSecrets({ username: testCredentials.username })).toThrow(
-            'Configuration errors: Missing one or more required keys: password, clientid, environment, includeoptionaldata. Expected keys are: username, password, clientid, environment, includeoptionaldata.'
+            'Configuration errors: Missing one or more required keys: password, clientid, environment, includeoptionaldata, autoreauthenticate. Expected keys are: username, password, clientid, environment, includeoptionaldata, autoreauthenticate.'
         );
         expect(() =>
             configureSecrets({
@@ -38,7 +38,7 @@ describe('Configure DMVIC Secrets', () => {
                 password: testCredentials.password,
             })
         ).toThrow(
-            'Configuration errors: Missing one or more required keys: clientid, environment, includeoptionaldata. Expected keys are: username, password, clientid, environment, includeoptionaldata.'
+            'Configuration errors: Missing one or more required keys: clientid, environment, includeoptionaldata, autoreauthenticate. Expected keys are: username, password, clientid, environment, includeoptionaldata, autoreauthenticate.'
         );
         expect(() =>
             configureSecrets({
@@ -47,7 +47,7 @@ describe('Configure DMVIC Secrets', () => {
                 clientid: testCredentials.clientid,
             })
         ).toThrow(
-            'Configuration errors: Missing one or more required keys: environment, includeoptionaldata. Expected keys are: username, password, clientid, environment, includeoptionaldata.'
+            'Configuration errors: Missing one or more required keys: environment, includeoptionaldata, autoreauthenticate. Expected keys are: username, password, clientid, environment, includeoptionaldata, autoreauthenticate.'
         );
         expect(() =>
             configureSecrets({
@@ -57,7 +57,19 @@ describe('Configure DMVIC Secrets', () => {
                 environment: testCredentials.environment,
             })
         ).toThrow(
-            'Configuration errors: Missing one or more required keys: includeoptionaldata. Expected keys are: username, password, clientid, environment, includeoptionaldata.'
+            'Configuration errors: Missing one or more required keys: includeoptionaldata, autoreauthenticate. Expected keys are: username, password, clientid, environment, includeoptionaldata, autoreauthenticate.'
+        );
+
+        expect(() =>
+            configureSecrets({
+                username: testCredentials.username,
+                password: testCredentials.password,
+                clientid: testCredentials.clientid,
+                environment: testCredentials.environment,
+                includeoptionaldata: testCredentials.includeoptionaldata,
+            })
+        ).toThrow(
+            'Configuration errors: Missing one or more required keys: autoreauthenticate. Expected keys are: username, password, clientid, environment, includeoptionaldata, autoreauthenticate.'
         );
     });
 
@@ -69,6 +81,7 @@ describe('Configure DMVIC Secrets', () => {
                 clientid: testCredentials.clientid,
                 environment: testCredentials.environment,
                 includeoptionaldata: testCredentials.includeoptionaldata,
+                autoreauthenticate: true,
             })
         ).not.toThrow();
     });

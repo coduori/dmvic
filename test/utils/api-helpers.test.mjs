@@ -131,6 +131,25 @@ describe('api-helpers tests', () => {
                 true
             );
         });
+
+        it('should reauthenticate if INVLD_TKN sdk error code is returned', async () => {
+            const testEndpoint = '/post-data';
+            const testBody = { test: true };
+            const apiBase = 'https://test.dmvic.com';
+            const authToken = testCredentials.password;
+
+            mockSendHttpRequest.mockResolvedValueOnce({
+                success: false,
+                error: [{ sdkErrorCode: 'INVLD_TKN' }],
+            });
+
+            mockGetApiBaseUrl.mockImplementationOnce(() => apiBase);
+
+            await expect(makeAuthenticatedRequest(testEndpoint, testBody, authToken)).not.toThrow();
+            expect(mockSendHttpRequest).toHaveBeenCalledTimes(2);
+        });
+
+        it('should return the new auth token if reauthentication was done', async () => {});
     });
 
     describe('makeUnauthenticatedRequest()', () => {
@@ -176,3 +195,5 @@ describe('api-helpers tests', () => {
         });
     });
 });
+
+// Add tests for the rest of the exported functions
