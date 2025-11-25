@@ -43,6 +43,7 @@ To send a request to a protected DMVIC endpoint, you need to be authenticated us
 
 Before making any requests, you need to initialize the library with your credentials and security certificates in order to prepare the library for usage. The library stores these configurations in memory. For the environment property, specify `production` to connect to DMVIC's live environment; `sandbox` will connect to DMVIC's UAT environment.
 `includeoptionaldata` specifies whether optional data in the API request sent to DMVIC API should be included in the payload.
+`coveragegappolicy` specifies how duration gaps between insurance covers should be handled. `strict` means not to issue the cover if a duration gap exists, `bypass` means issue the certificate even if a period gap exists between insurance covers.
 
 ```javascript
 import { initialize } from 'dmvic';
@@ -55,6 +56,7 @@ async function initializeDmvic() {
             clientid: 'your_dmvic_client_id',
             environment: 'sandbox', // sandbox || production
             includeoptionaldata: false, // true || false
+            coveragegappolicy: 'bypass', // strict || bypass
         },
         certificates: {
             sslCert: './path/to/your/dmvic/cert.pem',
