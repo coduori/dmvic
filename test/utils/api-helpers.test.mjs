@@ -8,8 +8,10 @@ import { generateTestCredentials } from '../factories/test-credential-generator.
 const testCredentials = generateTestCredentials();
 
 const mockGetApiBaseUrl = jest.fn();
+const mockApiConfig = jest.fn();
 jest.unstable_mockModule('../../lib/config/api-configs.mjs', () => ({
     getApiBaseUrl: mockGetApiBaseUrl,
+    apiConfig: mockApiConfig,
 }));
 
 const mockSendHttpRequest = jest.fn();
@@ -17,7 +19,7 @@ jest.unstable_mockModule('../../lib/utils/request-handler.mjs', () => ({
     sendHttpRequest: mockSendHttpRequest,
 }));
 
-jest.mock('../../lib/api/confirm-cover-issuance', () => ({
+jest.unstable_mockModule('../../lib/api/confirm-cover-issuance', () => ({
     confirmCoverIssuance: jest.fn().mockResolvedValue({ mocked: 'confirmation' }),
 }));
 
@@ -95,20 +97,20 @@ describe('api-helpers tests', () => {
 
                 mockSendHttpRequest.mockResolvedValueOnce({ status: 200, ok: true });
                 mockGetApiBaseUrl.mockImplementationOnce(() => apiBase);
-                const response = await makeAuthenticatedRequest(
-                    testEndpoint,
-                    testBody,
-                    validAuthToken
-                );
+                const response = await makeAuthenticatedRequest({
+                    endpoint: testEndpoint,
+                    requestPayload: testBody,
+                    authToken: validAuthToken,
+                });
 
                 expect(mockGetApiBaseUrl).toHaveBeenCalledTimes(1);
-                expect(mockSendHttpRequest).toHaveBeenCalledWith(
-                    'POST',
-                    `${apiBase}${testEndpoint}`,
-                    testBody,
-                    validAuthToken,
-                    true
-                );
+                expect(mockSendHttpRequest).toHaveBeenCalledWith({
+                    method: 'POST',
+                    endpoint: `${apiBase}${testEndpoint}`,
+                    requestPayload: testBody,
+                    authToken: validAuthToken,
+                    isProtectedEndpoint: true,
+                });
                 expect(response).toEqual({ status: 200, ok: true });
             }
         );
@@ -123,17 +125,21 @@ describe('api-helpers tests', () => {
             mockGetApiBaseUrl.mockImplementationOnce(() => apiBase);
 
             await expect(
-                makeAuthenticatedRequest(testEndpoint, testBody, authToken)
+                makeAuthenticatedRequest({
+                    endpoint: testEndpoint,
+                    requestPayload: testBody,
+                    authToken,
+                })
             ).rejects.toThrow(/network error/);
 
             expect(mockGetApiBaseUrl).toHaveBeenCalledTimes(1);
-            expect(mockSendHttpRequest).toHaveBeenCalledWith(
-                'POST',
-                `${apiBase}${testEndpoint}`,
-                testBody,
+            expect(mockSendHttpRequest).toHaveBeenCalledWith({
+                method: 'POST',
+                endpoint: `${apiBase}${testEndpoint}`,
+                requestPayload: testBody,
                 authToken,
-                true
-            );
+                isProtectedEndpoint: true,
+            });
         });
     });
 
@@ -145,18 +151,18 @@ describe('api-helpers tests', () => {
             mockSendHttpRequest.mockRejectedValueOnce(new Error('network error!'));
             mockGetApiBaseUrl.mockImplementationOnce(() => apiBase);
 
-            await expect(makeUnauthenticatedRequest(testEndpoint, testBody)).rejects.toThrow(
-                /network error/
-            );
+            await expect(
+                makeUnauthenticatedRequest({ endpoint: testEndpoint, requestPayload: testBody })
+            ).rejects.toThrow(/network error/);
 
             expect(mockGetApiBaseUrl).toHaveBeenCalledTimes(1);
-            expect(mockSendHttpRequest).toHaveBeenCalledWith(
-                'POST',
-                `${apiBase}${testEndpoint}`,
-                testBody,
-                null,
-                false
-            );
+            expect(mockSendHttpRequest).toHaveBeenCalledWith({
+                method: 'POST',
+                endpoint: `${apiBase}${testEndpoint}`,
+                requestPayload: testBody,
+                authToken: null,
+                isProtectedEndpoint: false,
+            });
         });
 
         it('should call sendHttpRequest without auth', async () => {
@@ -166,16 +172,19 @@ describe('api-helpers tests', () => {
 
             mockSendHttpRequest.mockResolvedValueOnce({ status: 200, ok: true });
             mockGetApiBaseUrl.mockImplementationOnce(() => apiBase);
-            const response = await makeUnauthenticatedRequest(testEndpoint, testBody);
+            const response = await makeUnauthenticatedRequest({
+                endpoint: testEndpoint,
+                requestPayload: testBody,
+            });
 
             expect(mockGetApiBaseUrl).toHaveBeenCalledTimes(1);
-            expect(mockSendHttpRequest).toHaveBeenCalledWith(
-                'POST',
-                `${apiBase}${testEndpoint}`,
-                testBody,
-                null,
-                false
-            );
+            expect(mockSendHttpRequest).toHaveBeenCalledWith({
+                method: 'POST',
+                endpoint: `${apiBase}${testEndpoint}`,
+                requestPayload: testBody,
+                authToken: null,
+                isProtectedEndpoint: false,
+            });
             expect(response).toEqual({ status: 200, ok: true });
         });
     });
