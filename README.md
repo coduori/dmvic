@@ -30,6 +30,7 @@ yarn install dmvic
 - [Check Insurance Status](./sdk-user-documentation/check-insurance-status.md)
 - [Verify Insurance Certificate](./sdk-user-documentation/verify-insurance-certificate.md)
 - [Request Insurance Certificate](./sdk-user-documentation/request-insurance-certificate.md)
+- [Confirm Cover Issuance](./sdk-user-documentation/confirm-cover-issuance.md)
 
 ## TypeScript Support
 

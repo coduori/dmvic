@@ -23,13 +23,13 @@ describe('getCertificatePdf', () => {
         const response = await getCertificatePdf('auth-token', 'C27384993');
 
         expect(mockMakeAuthenticatedRequest).toHaveBeenCalledTimes(1);
-        expect(mockMakeAuthenticatedRequest).toHaveBeenCalledWith(
-            apiConfig.general.getCertificatePDF,
-            {
+        expect(mockMakeAuthenticatedRequest).toHaveBeenCalledWith({
+            endpoint: apiConfig.general.getCertificatePDF,
+            requestPayload: {
                 CertificateNumber: certificateNumber,
             },
-            'auth-token'
-        );
+            authToken: 'auth-token',
+        });
         expect(response).toBe(resolvedResponse);
     });
 

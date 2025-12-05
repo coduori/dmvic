@@ -17,6 +17,10 @@ jest.unstable_mockModule('../../lib/utils/request-handler.mjs', () => ({
     sendHttpRequest: mockSendHttpRequest,
 }));
 
+jest.mock('../../lib/api/confirm-cover-issuance', () => ({
+    confirmCoverIssuance: jest.fn().mockResolvedValue({ mocked: 'confirmation' }),
+}));
+
 const { makeUnauthenticatedRequest, makeAuthenticatedRequest, validateSupportedValues } =
     await import('../../lib/utils/api-helpers.mjs');
 

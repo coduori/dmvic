@@ -2,6 +2,7 @@ import { jest } from '@jest/globals';
 
 import { CANCELLATION_REASONS } from '../../lib/utils/cancellation-reasons.mjs';
 import { cryptoPickOne } from '../random-pick.mjs';
+import { apiConfig } from '../../lib/config/api-configs.mjs';
 
 const mockMakeAuthenticatedRequest = jest.fn();
 const mockValidateSupportedValues = jest.fn();
@@ -46,18 +47,17 @@ describe('Cancel certificate issuance', () => {
 
     it('should call makeAuthenticatedRequest', async () => {
         const cancellationReason = cryptoPickOne(Object.keys(CANCELLATION_REASONS));
-
         await cancelCertificate('token123', 'C27384993', cancellationReason);
 
         expect(mockMakeAuthenticatedRequest).toHaveBeenCalledTimes(1);
-        expect(mockMakeAuthenticatedRequest).toHaveBeenCalledWith(
-            '/api/v5/Integration/CancelCertificate',
-            {
+        expect(mockMakeAuthenticatedRequest).toHaveBeenCalledWith({
+            endpoint: apiConfig.general.cancelCertificate,
+            requestPayload: {
                 CertificateNumber: 'C27384993',
                 cancelreasonid: CANCELLATION_REASONS[cancellationReason],
             },
-            'token123'
-        );
+            authToken: 'token123',
+        });
     });
 
     it('should throw if makeAuthenticatedRequest throws', async () => {

@@ -28,13 +28,13 @@ describe('checkStockStatus', () => {
         expect(() => checkStockStatus(validAuthToken, insurer)).not.toThrow();
         expect(mockValidateSupportedValues).toHaveBeenCalledTimes(1);
         expect(mockMakeAuthenticatedRequest).toHaveBeenCalledTimes(1);
-        expect(mockMakeAuthenticatedRequest).toHaveBeenCalledWith(
-            apiConfig.general.memberCompanyStock,
-            {
+        expect(mockMakeAuthenticatedRequest).toHaveBeenCalledWith({
+            endpoint: apiConfig.general.memberCompanyStock,
+            requestPayload: {
                 MemberCompanyId: INSURERS[insurer],
             },
-            validAuthToken
-        );
+            authToken: validAuthToken,
+        });
     });
 
     it.each(Object.keys(INSURERS))(
@@ -68,13 +68,13 @@ describe('checkStockStatus', () => {
             );
             expect(mockValidateSupportedValues).toHaveBeenCalledTimes(1);
             expect(mockMakeAuthenticatedRequest).toHaveBeenCalledTimes(1);
-            expect(mockMakeAuthenticatedRequest).toHaveBeenCalledWith(
-                apiConfig.general.memberCompanyStock,
-                {
+            expect(mockMakeAuthenticatedRequest).toHaveBeenCalledWith({
+                endpoint: apiConfig.general.memberCompanyStock,
+                requestPayload: {
                     MemberCompanyId: INSURERS[insurer],
                 },
-                validAuthToken
-            );
+                authToken: validAuthToken,
+            });
         }
     );
 });
