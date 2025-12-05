@@ -111,7 +111,7 @@ describe('api-helpers tests', () => {
                     authToken: validAuthToken,
                     isProtectedEndpoint: true,
                 });
-                expect(response).toEqual({ status: 200, ok: true });
+                expect(response).toEqual({ status: 200, ok: true, tokenRefreshed: false });
             }
         );
 
