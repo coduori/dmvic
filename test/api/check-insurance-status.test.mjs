@@ -64,16 +64,20 @@ describe('check vehicle insurance status', () => {
         expect(mockGetDateToday).toHaveBeenCalledTimes(2);
         expect(mockMakeAuthenticatedRequest).toHaveBeenCalledTimes(1);
 
-        const [endpoint, requestBody, tkn] = mockMakeAuthenticatedRequest.mock.calls[0];
+        const {
+            endpoint,
+            requestPayload,
+            authToken: tkn,
+        } = mockMakeAuthenticatedRequest.mock.calls[0][0];
 
         expect(endpoint).toBe(apiConfig.general.validateDoubleInsurance);
         expect(tkn).toBe(authToken);
-        expect(requestBody).toStrictEqual(payload);
-        expect(mockMakeAuthenticatedRequest).toHaveBeenCalledWith(
-            apiConfig.general.validateDoubleInsurance,
-            payload,
-            authToken
-        );
+        expect(requestPayload).toStrictEqual(payload);
+        expect(mockMakeAuthenticatedRequest).toHaveBeenCalledWith({
+            endpoint: apiConfig.general.validateDoubleInsurance,
+            requestPayload: payload,
+            authToken,
+        });
     });
 
     it('should throw if getDateToday() throws', async () => {

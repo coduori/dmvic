@@ -41,9 +41,13 @@ describe('authenticate', () => {
 
         expect(mockGetSecret).toHaveBeenCalledTimes(2);
         expect(mockMakeUnauthenticatedRequest).toHaveBeenCalledTimes(1);
-        expect(mockMakeUnauthenticatedRequest).toHaveBeenCalledWith(apiConfig.general.login, {
-            username: testCredentials.username,
-            password: testCredentials.password,
+        expect(mockMakeUnauthenticatedRequest).toHaveBeenCalledWith({
+            endpoint: apiConfig.general.login,
+
+            requestPayload: {
+                username: testCredentials.username,
+                password: testCredentials.password,
+            },
         });
         expect(response).toBe(resolvedResponse);
     });

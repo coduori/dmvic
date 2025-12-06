@@ -35,7 +35,15 @@ describe('Request Handler', () => {
             headers: {},
             body: { json: async () => ({ ok: true }) },
         });
-        await expect(sendHttpRequest('GET', '/endpoint', {}, null, false)).resolves.toBeDefined();
+        await expect(
+            sendHttpRequest({
+                method: 'GET',
+                endpoint: '/endpoint',
+                requestPayload: {},
+                authToken: null,
+                isProtectedEndpoint: false,
+            })
+        ).resolves.toBeDefined();
     });
 
     it('sets correct headers for authorized requests', async () => {
@@ -44,7 +52,13 @@ describe('Request Handler', () => {
             headers: {},
             body: { json: async () => ({ ok: true }) },
         });
-        await sendHttpRequest('POST', '/endpoint', { foo: 'bar' }, 'token123', true);
+        await sendHttpRequest({
+            method: 'POST',
+            endpoint: '/endpoint',
+            requestPayload: { foo: 'bar' },
+            authToken: 'token123',
+            isProtectedEndpoint: true,
+        });
 
         const call = mockRequest.mock.calls[0][0];
         expect(call.headers.authorization).toBe('Bearer token123');
@@ -59,7 +73,13 @@ describe('Request Handler', () => {
             headers: {},
             body: { json: async () => ({ ok: true }) },
         });
-        await sendHttpRequest('GET', '/endpoint', {}, null, false);
+        await sendHttpRequest({
+            method: 'GET',
+            endpoint: '/endpoint',
+            requestPayload: {},
+            authToken: null,
+            isProtectedEndpoint: false,
+        });
 
         const call = mockRequest.mock.calls[0][0];
         expect(call.headers.authorization).toBeUndefined();
@@ -71,7 +91,13 @@ describe('Request Handler', () => {
             headers: { foo: 'bar' },
             body: { json: async () => ({ ok: true }) },
         });
-        await sendHttpRequest('POST', '/endpoint', { foo: 'bar' }, 'token123', true);
+        await sendHttpRequest({
+            method: 'POST',
+            endpoint: '/endpoint',
+            requestPayload: { foo: 'bar' },
+            authToken: 'token123',
+            isProtectedEndpoint: true,
+        });
 
         expect(mockRequest).toHaveBeenCalledWith({
             path: '/endpoint',
@@ -90,7 +116,13 @@ describe('Request Handler', () => {
             headers: { foo: 'bar' },
             body: { json: async () => ({ result: 42 }) },
         });
-        const result = await sendHttpRequest('POST', '/endpoint', { foo: 'bar' }, 'token123', true);
+        const result = await sendHttpRequest({
+            method: 'POST',
+            endpoint: '/endpoint',
+            requestPayload: { foo: 'bar' },
+            authToken: 'token123',
+            isProtectedEndpoint: true,
+        });
 
         expect(result).toEqual({
             responseBody: { result: 42 },
@@ -101,7 +133,13 @@ describe('Request Handler', () => {
     it('throws with correct message if getClient().request throws', async () => {
         mockRequest.mockRejectedValue(new Error('Network error'));
         await expect(
-            sendHttpRequest('POST', '/endpoint', { foo: 'bar' }, 'token123', true)
+            sendHttpRequest({
+                method: 'POST',
+                endpoint: '/endpoint',
+                requestPayload: { foo: 'bar' },
+                authToken: 'token123',
+                isProtectedEndpoint: true,
+            })
         ).rejects.toThrow('DMVIC Request error: Error: Network error');
     });
 
@@ -116,7 +154,13 @@ describe('Request Handler', () => {
             },
         });
         await expect(
-            sendHttpRequest('POST', '/endpoint', { foo: 'bar' }, 'token123', true)
+            sendHttpRequest({
+                method: 'POST',
+                endpoint: '/endpoint',
+                requestPayload: { foo: 'bar' },
+                authToken: 'token123',
+                isProtectedEndpoint: true,
+            })
         ).rejects.toThrow('DMVIC Request error: Error: Bad JSON');
     });
 });

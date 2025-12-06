@@ -67,7 +67,7 @@ describe('DMVIC_RESPONSE_ERRORS', () => {
         });
     });
 
-    describe('DAY_GAP regex flexibility', () => {
+    describe('COVERAGE_GAP regex flexibility', () => {
         it.each([
             'There is a 1 day gap between the previous insurance and the proposed one',
             'There is a 5 days gap between the previous insurance and the proposed one',
@@ -75,12 +75,12 @@ describe('DMVIC_RESPONSE_ERRORS', () => {
             'There is a 365 days gap between the previous insurance and the proposed one',
             'there is a 999 days gap between the previous insurance and the proposed one',
         ])('should accept different day values in the pattern: %s', (testCase) => {
-            const { regex } = DMVIC_RESPONSE_ERRORS.find((e) => e.code === 'DAY_GAP');
+            const { regex } = DMVIC_RESPONSE_ERRORS.find((e) => e.code === 'COVERAGE_GAP');
             expect(testCase).toMatch(regex);
         });
 
         it('should handle both singular and plural day forms', () => {
-            const { regex } = DMVIC_RESPONSE_ERRORS.find((e) => e.code === 'DAY_GAP');
+            const { regex } = DMVIC_RESPONSE_ERRORS.find((e) => e.code === 'COVERAGE_GAP');
 
             expect(
                 'There is a 1 day gap between the previous insurance and the proposed one'
