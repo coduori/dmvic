@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0](https://github.com/coduori/dmvic/compare/v1.8.1...v1.9.0) (2025-12-06)
+
+
+### Features
+
+* auth and confirm cover afterwares ([#73](https://github.com/coduori/dmvic/issues/73)) ([8ccc36a](https://github.com/coduori/dmvic/commit/8ccc36a2d2cc8c5814ca9d6b695a807d5afb2d5c))
+
 ## [1.8.1](https://github.com/coduori/dmvic/compare/v1.8.0...v1.8.1) (2025-11-22)
 
 
