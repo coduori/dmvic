@@ -44,7 +44,6 @@ initializeDmvic();
 
 > **Note:** It is recommended that you cache your authentication token for 7 days.
 
-
 ```javascript
 import { authenticate } from 'dmvic';
 
@@ -61,6 +60,7 @@ async function authenticateOnDMVIC() {
 }
 const authResponse = await authenticateOnDMVIC();
 ```
+
 ### Request Insurance Certificate
 
 #### Example
@@ -212,7 +212,7 @@ const issueCertificateWithDurationGaps = async (issuanceRequestId) => {
     // retrieve the token from your cache
     const authToken = await redisClient.get('dmvic:auth:token');
 
-    // get the issuanceRequestId from the COVERAGE_GAP error response payload returned after calling requestInsuranceCertificate 
+    // get the issuanceRequestId from the COVERAGE_GAP error response payload returned after calling requestInsuranceCertificate
     const result = await confirmCoverIssuance(authToken, issuanceRequestId);
     return result;
 };
@@ -244,6 +244,7 @@ const cancelledCertificate = await cancelMotorVehicleCertificate('C27400610', 'I
   AMEND_INSURED_DETAILS, AMEND_VEHICLE_DETAILS, SUSPECTED_FRAUD, NON_PAYMENT, MISSING_KYC, GOVERNMENT_REQUEST,
   SUBJECT_MATTER_CEASED, CHANGE_PERIOD_OF_INSURANCE, INSURER_DECLINED_COVER, WRITTEN_OFF, STOLEN,
 ```
+
 ### Check insurance status
 
 #### Example
@@ -286,6 +287,7 @@ const downloadCertificatePdf = async (insuranceCertificateNumber) => {
 };
 const certificateResponse = await downloadCertificatePdf('C27400610');
 ```
+
 ### Check Insurance Company Stock Status
 
 ```javascript
@@ -302,6 +304,7 @@ async function checkInsuranceCompanyStockCount(insurer) {
 }
 const result = await checkInsuranceCompanyStockCount('DEFINITE_INSURANCE');
 ```
+
 The options used for the insurer property can be found in the [supported insurers section](#supported-insurers-supported-insurers).
 
 ### Verify Insurance Certificate
