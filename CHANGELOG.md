@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://github.com/coduori/dmvic/compare/v1.9.0...v1.10.0) (2025-12-09)
+
+
+### Features
+
+* search vehicle details ([#75](https://github.com/coduori/dmvic/issues/75)) ([3cdf414](https://github.com/coduori/dmvic/commit/3cdf4142a9c423456009c1a3f727033b7eff5962))
+
 ## [1.9.0](https://github.com/coduori/dmvic/compare/v1.8.1...v1.9.0) (2025-12-06)
 
 
