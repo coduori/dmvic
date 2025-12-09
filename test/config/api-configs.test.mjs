@@ -96,6 +96,7 @@ describe('API Endpoints Configuration', () => {
             validateInsuranceCertificate: '/api/v5/Integration/ValidateInsurance',
             cancelCertificate: '/api/v5/Integration/CancelCertificate',
             validateDoubleInsurance: '/api/v5/Integration/ValidateDoubleInsurance',
+            getVehicleDetails: '/api/v5/Integration/VehicleSearch',
         });
     });
 });

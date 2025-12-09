@@ -8,6 +8,7 @@ import {
     cancelCertificate,
     checkInsuranceStatus,
     verifyInsuranceCertificate,
+    getVehicleDetails,
 } from '../lib/index.mjs';
 
 describe('index.mjs exports', () => {
@@ -39,6 +40,11 @@ describe('index.mjs exports', () => {
     it('should export getCertificatePdf', () => {
         expect(getCertificatePdf).toBeDefined();
         expect(typeof getCertificatePdf).toBe('function');
+    });
+
+    it('should export getVehicleDetails', () => {
+        expect(getVehicleDetails).toBeDefined();
+        expect(typeof getVehicleDetails).toBe('function');
     });
 
     it('should export initialize', () => {
