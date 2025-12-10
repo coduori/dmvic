@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.1](https://github.com/coduori/dmvic/compare/v1.10.0...v1.10.1) (2025-12-10)
+
+
+### Bug Fixes
+
+* add insufficient inventory custom error code ([#77](https://github.com/coduori/dmvic/issues/77)) ([c1dac4f](https://github.com/coduori/dmvic/commit/c1dac4f850798f351f2c04bdc4996fabf6beab4c))
+
 ## [1.10.0](https://github.com/coduori/dmvic/compare/v1.9.0...v1.10.0) (2025-12-09)
 
 
