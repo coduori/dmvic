@@ -827,6 +827,39 @@ describe('Certificate Issuance Payload Schema', () => {
                 })
             ).toThrow();
         });
+
+        test('should reject more than 20 characters', () => {
+            const payload = getCertificateRequestPayload();
+
+            expect(() =>
+                certificateIssuanceSchema.validateSync({
+                    ...payload,
+                    vehicleChassisNumber: 'chassis-with-more-than-20-characters',
+                })
+            ).toThrow('vehicleChassisNumber must be at most 20 characters');
+        });
+
+        test('should accept less than 20 characters', () => {
+            const payload = getCertificateRequestPayload();
+
+            expect(() =>
+                certificateIssuanceSchema.validateSync({
+                    ...payload,
+                    vehicleChassisNumber: 'very-valid-chassis',
+                })
+            ).not.toThrow();
+        });
+
+        test('should accept 20 characters', () => {
+            const payload = getCertificateRequestPayload();
+
+            expect(() =>
+                certificateIssuanceSchema.validateSync({
+                    ...payload,
+                    vehicleChassisNumber: 'verry-vallid-chassis',
+                })
+            ).not.toThrow();
+        });
     });
 
     describe('vehicleMake field validation', () => {
