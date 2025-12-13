@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.2](https://github.com/coduori/dmvic/compare/v1.10.1...v1.10.2) (2025-12-13)
+
+
+### Bug Fixes
+
+* update maximum length for chassis number to 20 characters ([#81](https://github.com/coduori/dmvic/issues/81)) ([1cecdd7](https://github.com/coduori/dmvic/commit/1cecdd71606902b0a6cd4d05b9a77458dca37341))
+
 ## [1.10.1](https://github.com/coduori/dmvic/compare/v1.10.0...v1.10.1) (2025-12-10)
 
 
