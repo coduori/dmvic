@@ -20,8 +20,8 @@
 ```javascript
 import { initialize } from 'dmvic';
 
-async function initializeDmvic() {
-    await initialize({
+function initializeDmvic() {
+    initialize({
         secrets: {
             username: 'your_dmvic_username',
             password: 'your_dmvic_password',
@@ -77,7 +77,7 @@ async function main() {
     const response = await requestInsuranceCertificate(authToken, {
         insurer: 'MONARCH',
         coverType: 'COMP'
-        policyHolderFullName: 'John Doe',
+        policyHolderFullName: '[RECIPIENT_FULL_NAME]',
         policyNumber: 'MON/TEST/COMP/001',
         commencingDate: '01/01/2026',
         expiringDate: '31/12/2026',
@@ -89,7 +89,7 @@ async function main() {
         certificateType: 1,
         passengerCount: 5000,
         recipientPhoneNumber: '[RECIPIENT_PHONE_NUMBER]', // 9 Digit phone number in string format
-        recipientEmail: 'your-email@dmomain.tld',
+        recipientEmail: '[RECIPIENT_EMAIL_ADDRESS]',
         vehicleMake: 'BMW',
         vehicleModel: 'X1',
         policyHolderKRAPIN: '[POLICY_HOLDER_KRA_PIN]',
@@ -213,8 +213,7 @@ const issueCertificateWithDurationGaps = async (issuanceRequestId) => {
     const authToken = await redisClient.get('dmvic:auth:token');
 
     // get the issuanceRequestId from the COVERAGE_GAP error response payload returned after calling requestInsuranceCertificate
-    const result = await confirmCoverIssuance(authToken, issuanceRequestId);
-    return result;
+    return confirmCoverIssuance(authToken, issuanceRequestId);
 };
 const certificateResponse = await issueCertificateWithDurationGaps('UAT-OJQ0842');
 ```
@@ -258,13 +257,12 @@ async function preIssuanceCheck(registrationNumber, chassisNumber) {
     // retrieve the token from your cache
     const authToken = await redisClient.get('dmvic:auth:token');
 
-    const insuranceStatus = await checkInsuranceStatus(authToken, {
+    return checkInsuranceStatus(authToken, {
         // vehicle registration must be passed if the chassis number is not passed
         registrationNumber,
         // you can optionally pass the chassis number
         chassisNumber,
     });
-    return insuranceStatus;
 }
 const insuranceStatus = await preIssuanceCheck('KKA12A', 'AT211-7689809');
 ```
@@ -282,8 +280,7 @@ const downloadCertificatePdf = async (insuranceCertificateNumber) => {
     // retrieve the token from your cache
     const authToken = await redisClient.get('dmvic:auth:token');
 
-    const result = await getCertificatePdf(authToken, insuranceCertificateNumber);
-    return result;
+    return getCertificatePdf(authToken, insuranceCertificateNumber);
 };
 const certificateResponse = await downloadCertificatePdf('C27400610');
 ```
@@ -299,8 +296,7 @@ async function checkInsuranceCompanyStockCount(insurer) {
     // retrieve the token from your cache
     const authToken = await redisClient.get('dmvic:auth:token');
 
-    const stockStatus = await checkStockStatus(authToken, partnerName);
-    return stockStatus;
+    return checkStockStatus(authToken, partnerName);
 }
 const result = await checkInsuranceCompanyStockCount('DEFINITE_INSURANCE');
 ```
@@ -324,14 +320,13 @@ async function checkInsuranceCertificateValidity(
     // retrieve the token from your cache
     const authToken = await redisClient.get('dmvic:auth:token');
 
-    const insuranceStatus = await verifyInsuranceCertificate(authToken, {
+    return verifyInsuranceCertificate(authToken, {
         // vehicle registration must be passed if the chassis number is not passed
         registrationNumber,
         certifcateNumber,
         // you can optionally pass the chassis number
         chassisNumber,
     });
-    return insuranceStatus;
 }
 const result = await checkInsuranceCertificateValidity({
     vehicleRegistration: 'KKA12A',
