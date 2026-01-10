@@ -62,18 +62,12 @@ describe('initialize DMVIC Configurations', () => {
         mockReadFileSync.mockClear().mockReturnValue('mocked-cert-content');
     });
 
-    it('should throw an error for invalid initialization configurations', async () => {
-        await expect(initialize()).rejects.toThrow('Invalid configuration. Expected an object.');
-        await expect(initialize(null)).rejects.toThrow(
-            'Invalid configuration. Expected an object.'
-        );
-        await expect(initialize(undefined)).rejects.toThrow(
-            'Invalid configuration. Expected an object.'
-        );
-        await expect(initialize('invalid')).rejects.toThrow(
-            'Invalid configuration. Expected an object.'
-        );
-        await expect(initialize({})).rejects.toThrow(
+    it('should throw an error for invalid initialization configurations', () => {
+        expect(() => initialize()).toThrow('Invalid configuration. Expected an object.');
+        expect(() => initialize(null)).toThrow('Invalid configuration. Expected an object.');
+        expect(() => initialize(undefined)).toThrow('Invalid configuration. Expected an object.');
+        expect(() => initialize('invalid')).toThrow('Invalid configuration. Expected an object.');
+        expect(() => initialize({})).toThrow(
             'Configuration must include "secrets" and "certificates".'
         );
     });
@@ -85,7 +79,7 @@ describe('initialize DMVIC Configurations', () => {
             );
         });
 
-        await expect(
+        expect(() =>
             initialize({
                 secrets: {},
                 certificates: {
@@ -93,7 +87,7 @@ describe('initialize DMVIC Configurations', () => {
                     sslCert: '/path/to/test/sslCert.pem',
                 },
             })
-        ).rejects.toThrow(
+        ).toThrow(
             'Configuration errors: Missing one or more required keys: username, password, clientid, environment. Expected keys are: username, password, clientid, environment.'
         );
     });
@@ -107,7 +101,7 @@ describe('initialize DMVIC Configurations', () => {
 
         mockInMemoryCache.data.environment = 'sandbox';
 
-        await expect(
+        expect(() =>
             initialize({
                 secrets: {
                     username: testCredentials.username,
@@ -118,13 +112,13 @@ describe('initialize DMVIC Configurations', () => {
                 },
                 certificates: {},
             })
-        ).rejects.toThrow('Configuration errors: sslKey is required; sslCert is required');
+        ).toThrow('Configuration errors: sslKey is required; sslCert is required');
 
         mockValidateCertConfig.mockImplementationOnce(() => {
             throw new Error('Configuration errors: sslCert is required');
         });
 
-        await expect(
+        expect(() =>
             initialize({
                 secrets: {
                     username: testCredentials.username,
@@ -137,7 +131,7 @@ describe('initialize DMVIC Configurations', () => {
                     sslKey: '/path/to/test/sslKey.pem',
                 },
             })
-        ).rejects.toThrow('Configuration errors: sslCert is required');
+        ).toThrow('Configuration errors: sslCert is required');
     });
 
     it('should persist valid configuration', async () => {
@@ -146,7 +140,7 @@ describe('initialize DMVIC Configurations', () => {
         mockValidateFilePaths.mockImplementation(() => {});
         mockValidateCertContents.mockImplementation(() => {});
 
-        await expect(
+        expect(() =>
             initialize({
                 secrets: {
                     username: testCredentials.username,
@@ -160,7 +154,7 @@ describe('initialize DMVIC Configurations', () => {
                     sslCert: '/path/to/test/sslCert.pem',
                 },
             })
-        ).resolves.toBeUndefined();
+        ).not.toThrow();
 
         expect(mockInMemoryCache.set).toHaveBeenCalledWith('username', testCredentials.username);
         expect(mockInMemoryCache.set).toHaveBeenCalledWith('password', testCredentials.password);
