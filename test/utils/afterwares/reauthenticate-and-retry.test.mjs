@@ -12,9 +12,8 @@ jest.unstable_mockModule('../../../lib/index.mjs', () => ({
     authenticate: mockAuthenticate,
 }));
 
-const { reauthenticateAndRetryAfterware } = await import(
-    '../../../lib/utils/afterwares/reauthenticate-and-retry.mjs'
-);
+const { reauthenticateAndRetryAfterware } =
+    await import('../../../lib/utils/afterwares/reauthenticate-and-retry.mjs');
 
 describe('reauthentication afterware', () => {
     it.each([

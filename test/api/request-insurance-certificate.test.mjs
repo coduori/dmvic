@@ -22,9 +22,8 @@ jest.unstable_mockModule(
     })
 );
 
-const { requestInsuranceCertificate } = await import(
-    '../../lib/api/request-insurance-certificate.mjs'
-);
+const { requestInsuranceCertificate } =
+    await import('../../lib/api/request-insurance-certificate.mjs');
 
 describe('request insurance certificate', () => {
     beforeEach(() => {
