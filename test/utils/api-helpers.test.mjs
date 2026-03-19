@@ -93,20 +93,17 @@ describe('api-helpers tests', () => {
             async (validAuthToken) => {
                 const testEndpoint = '/ping';
                 const testBody = { test: true };
-                const apiBase = 'https://test.dmvic.com';
 
                 mockSendHttpRequest.mockResolvedValueOnce({ status: 200, ok: true });
-                mockGetApiBaseUrl.mockImplementationOnce(() => apiBase);
                 const response = await makeAuthenticatedRequest({
                     endpoint: testEndpoint,
                     requestPayload: testBody,
                     authToken: validAuthToken,
                 });
 
-                expect(mockGetApiBaseUrl).toHaveBeenCalledTimes(1);
                 expect(mockSendHttpRequest).toHaveBeenCalledWith({
                     method: 'POST',
-                    endpoint: `${apiBase}${testEndpoint}`,
+                    endpoint: `${testEndpoint}`,
                     requestPayload: testBody,
                     authToken: validAuthToken,
                     isProtectedEndpoint: true,
@@ -118,11 +115,9 @@ describe('api-helpers tests', () => {
         it('should throw if sendHttpRequest() throws', async () => {
             const testEndpoint = '/ping';
             const testBody = { test: true };
-            const apiBase = 'https://test.dmvic.com';
             const authToken = testCredentials.password;
 
             mockSendHttpRequest.mockRejectedValueOnce(new Error('network error!'));
-            mockGetApiBaseUrl.mockImplementationOnce(() => apiBase);
 
             await expect(
                 makeAuthenticatedRequest({
@@ -132,10 +127,9 @@ describe('api-helpers tests', () => {
                 })
             ).rejects.toThrow(/network error/);
 
-            expect(mockGetApiBaseUrl).toHaveBeenCalledTimes(1);
             expect(mockSendHttpRequest).toHaveBeenCalledWith({
                 method: 'POST',
-                endpoint: `${apiBase}${testEndpoint}`,
+                endpoint: `${testEndpoint}`,
                 requestPayload: testBody,
                 authToken,
                 isProtectedEndpoint: true,
@@ -147,18 +141,15 @@ describe('api-helpers tests', () => {
         it('should throw if sendHttpRequest() throws', async () => {
             const testEndpoint = '/ping';
             const testBody = { test: true };
-            const apiBase = 'https://test.dmvic.com';
             mockSendHttpRequest.mockRejectedValueOnce(new Error('network error!'));
-            mockGetApiBaseUrl.mockImplementationOnce(() => apiBase);
 
             await expect(
                 makeUnauthenticatedRequest({ endpoint: testEndpoint, requestPayload: testBody })
             ).rejects.toThrow(/network error/);
 
-            expect(mockGetApiBaseUrl).toHaveBeenCalledTimes(1);
             expect(mockSendHttpRequest).toHaveBeenCalledWith({
                 method: 'POST',
-                endpoint: `${apiBase}${testEndpoint}`,
+                endpoint: `${testEndpoint}`,
                 requestPayload: testBody,
                 authToken: null,
                 isProtectedEndpoint: false,
@@ -168,19 +159,16 @@ describe('api-helpers tests', () => {
         it('should call sendHttpRequest without auth', async () => {
             const testEndpoint = '/ping';
             const testBody = { test: true };
-            const apiBase = 'https://test.dmvic.com';
 
             mockSendHttpRequest.mockResolvedValueOnce({ status: 200, ok: true });
-            mockGetApiBaseUrl.mockImplementationOnce(() => apiBase);
             const response = await makeUnauthenticatedRequest({
                 endpoint: testEndpoint,
                 requestPayload: testBody,
             });
 
-            expect(mockGetApiBaseUrl).toHaveBeenCalledTimes(1);
             expect(mockSendHttpRequest).toHaveBeenCalledWith({
                 method: 'POST',
-                endpoint: `${apiBase}${testEndpoint}`,
+                endpoint: `${testEndpoint}`,
                 requestPayload: testBody,
                 authToken: null,
                 isProtectedEndpoint: false,
