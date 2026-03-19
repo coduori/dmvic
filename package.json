@@ -31,7 +31,7 @@
         "aki"
     ],
     "author": "oduori oranga <oduori.oranga@gmail.com>",
-    "license": "GNU",
+    "license": "MIT",
     "bugs": {
         "url": "https://github.com/coduori/dmvic/issues"
     },
