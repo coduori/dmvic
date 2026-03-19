@@ -6,9 +6,8 @@ jest.unstable_mockModule('../../../lib/utils/payload-schema.mjs', () => ({
     certificateIssuanceSchema: mockPayloadSchema,
 }));
 
-const { validatePayload } = await import(
-    '../../../lib/utils/config-validation/request-certificate-validation.mjs'
-);
+const { validatePayload } =
+    await import('../../../lib/utils/config-validation/request-certificate-validation.mjs');
 
 describe('validate payload data', () => {
     const expectToThrowWith = (fn, expected) => {

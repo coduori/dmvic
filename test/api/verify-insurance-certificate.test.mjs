@@ -9,9 +9,8 @@ jest.unstable_mockModule('../../lib/utils/api-helpers.mjs', () => ({
     makeAuthenticatedRequest: mockMakeAuthenticatedRequest,
 }));
 
-const { verifyInsuranceCertificate } = await import(
-    '../../lib/api/verify-insurance-certificate.mjs'
-);
+const { verifyInsuranceCertificate } =
+    await import('../../lib/api/verify-insurance-certificate.mjs');
 
 describe('check vehicle insurance validity', () => {
     beforeEach(() => {

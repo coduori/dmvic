@@ -74,27 +74,31 @@ async function main() {
     // retrieve the token from your cache
     const authToken = await redisClient.get('dmvic:auth:token');
 
-    const response = await requestInsuranceCertificate(authToken, {
-        insurer: 'MONARCH',
-        coverType: 'COMP'
-        policyHolderFullName: '[RECIPIENT_FULL_NAME]',
-        policyNumber: 'MON/TEST/COMP/001',
-        commencingDate: '01/01/2026',
-        expiringDate: '31/12/2026',
-        vehicleChassisNumber: '1G6SD5P98FV489725',
-        vehicleEngineNumber: 'C8N-725-H8J-9842',
-        vehicleValue: 1500000,
-        vehicleYearOfManufacture: 2020,
-        vehicleBodyType: 'SUV',
-        certificateType: 1,
-        passengerCount: 5000,
-        recipientPhoneNumber: '[RECIPIENT_PHONE_NUMBER]', // 9 Digit phone number in string format
-        recipientEmail: '[RECIPIENT_EMAIL_ADDRESS]',
-        vehicleMake: 'BMW',
-        vehicleModel: 'X1',
-        policyHolderKRAPIN: '[POLICY_HOLDER_KRA_PIN]',
-        vehicleRegistrationNumber: 'K7YY9CKELC',
-    }, 'A');
+    const response = await requestInsuranceCertificate(
+        authToken,
+        {
+            insurer: 'MONARCH',
+            coverType: 'COMP',
+            policyHolderFullName: '[RECIPIENT_FULL_NAME]',
+            policyNumber: 'MON/TEST/COMP/001',
+            commencingDate: '01/01/2026',
+            expiringDate: '31/12/2026',
+            vehicleChassisNumber: '1G6SD5P98FV489725',
+            vehicleEngineNumber: 'C8N-725-H8J-9842',
+            vehicleValue: 1500000,
+            vehicleYearOfManufacture: 2020,
+            vehicleBodyType: 'SUV',
+            certificateType: 1,
+            passengerCount: 5000,
+            recipientPhoneNumber: '[RECIPIENT_PHONE_NUMBER]', // 9 Digit phone number in string format
+            recipientEmail: '[RECIPIENT_EMAIL_ADDRESS]',
+            vehicleMake: 'BMW',
+            vehicleModel: 'X1',
+            policyHolderKRAPIN: '[POLICY_HOLDER_KRA_PIN]',
+            vehicleRegistrationNumber: 'K7YY9CKELC',
+        },
+        'A'
+    );
 }
 
 main();

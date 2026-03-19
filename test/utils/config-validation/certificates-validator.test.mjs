@@ -54,9 +54,8 @@ import { validateCertConfig } from '../../../lib/utils/config-validation/certifi
 async function testCertValidation(cryptoMock, testFn) {
     jest.resetModules();
     jest.unstable_mockModule('crypto', () => cryptoMock);
-    const { validateCertContents } = await import(
-        '../../../lib/utils/config-validation/certificates-validator.mjs'
-    );
+    const { validateCertContents } =
+        await import('../../../lib/utils/config-validation/certificates-validator.mjs');
     testFn(validateCertContents);
 }
 
