@@ -1,10 +1,10 @@
 import {
-    createMockApiConfig,
-    createMockHttpClient,
-    createMockInMemoryCache,
-    createMockPayloadSchema,
-    createMockRequestHandler,
-    createMockSecretsHandler,
+  createMockApiConfig,
+  createMockHttpClient,
+  createMockInMemoryCache,
+  createMockPayloadSchema,
+  createMockRequestHandler,
+  createMockSecretsHandler,
 } from '../factories/mock-factory.mjs';
 
 const mockInMemoryCache = createMockInMemoryCache();
@@ -18,13 +18,13 @@ const mockRequest = mockHttpClient.__mockRequest;
 const mockPayloadSchema = createMockPayloadSchema();
 
 export {
-    mockApiConfig,
-    mockGetSecret,
-    mockHttpClient,
-    mockInMemoryCache,
-    mockPayloadSchema,
-    mockRequest,
-    mockRequestHandler,
-    mockSecretsHandler,
-    mockSendHttpRequest,
+  mockApiConfig,
+  mockGetSecret,
+  mockHttpClient,
+  mockInMemoryCache,
+  mockPayloadSchema,
+  mockRequest,
+  mockRequestHandler,
+  mockSecretsHandler,
+  mockSendHttpRequest,
 };

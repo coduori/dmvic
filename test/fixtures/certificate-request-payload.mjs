@@ -6,20 +6,21 @@ import { getClassCCertificateRequestPayload } from './class-c-certificate-reques
 import { getClassDCertificateRequestPayload } from './class-d-certificate-request-payload.mjs';
 
 const PAYLOAD_GENERATORS = {
-    A: getClassACertificateRequestPayload,
-    B: getClassBCertificateRequestPayload,
-    C: getClassCCertificateRequestPayload,
-    D: getClassDCertificateRequestPayload,
+  A: getClassACertificateRequestPayload,
+  B: getClassBCertificateRequestPayload,
+  C: getClassCCertificateRequestPayload,
+  D: getClassDCertificateRequestPayload,
 };
 
 const getCertificateRequestPayload = (overrides = {}) => {
-    const motorClass = overrides.motorClass || cryptoPickOne(Object.values(MOTOR_CLASS_OPTIONS));
-    const payloadGenerator = PAYLOAD_GENERATORS[motorClass];
-    const generatedPayload = payloadGenerator({ ...overrides, motorClass });
-    return {
-        ...generatedPayload,
-        ...overrides,
-    };
+  const motorClass =
+    overrides.motorClass || cryptoPickOne(Object.values(MOTOR_CLASS_OPTIONS));
+  const payloadGenerator = PAYLOAD_GENERATORS[motorClass];
+  const generatedPayload = payloadGenerator({ ...overrides, motorClass });
+  return {
+    ...generatedPayload,
+    ...overrides,
+  };
 };
 
 export { getCertificateRequestPayload };
