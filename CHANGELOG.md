@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.10.3](https://github.com/coduori/dmvic/compare/v1.10.2...v1.10.3) (2026-03-19)
+
+
+### Bug Fixes
+
+* endpoint property value for sendHttpRequest function ([#87](https://github.com/coduori/dmvic/issues/87)) ([48c1235](https://github.com/coduori/dmvic/commit/48c12358bc5f814d64267e2b9b5b2f14684ab801))
+* update initialize functiont to make it synchronous ([#83](https://github.com/coduori/dmvic/issues/83)) ([3302be9](https://github.com/coduori/dmvic/commit/3302be9f96d5d71be2944b1d7836ecd0c0fc3bae))
+
 ## [1.10.2](https://github.com/coduori/dmvic/compare/v1.10.1...v1.10.2) (2025-12-13)
 
 
